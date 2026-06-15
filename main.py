@@ -116,6 +116,14 @@ def run_scan(args) -> None:
     if args.output == "csv" and signals:
         csv_report.export(signals)
 
+    # ── Step 8: Paper trade execution ─────────────────────────────────────────
+    from paper_trading.executor import execute_buy_signals
+    executed = execute_buy_signals(signals)
+    if executed:
+        console.print(f"[green]Paper trades placed: {len(executed)} new positions[/green]")
+        for t in executed:
+            console.print(f"  [green]+[/green] {t['symbol']}  {t['tier']}  ₹{t['price']:,.2f}")
+
 
 def run_brief(args) -> None:
     from market_intelligence.morning_brief import generate_brief, print_brief
