@@ -52,6 +52,8 @@ def parse_args():
     paper = sub.add_parser("paper", help="Show paper trading portfolio")
     paper.add_argument("--history", action="store_true", help="Show all trades")
 
+    sub.add_parser("dashboard", help="Launch web dashboard")
+
     return p.parse_args()
 
 
@@ -164,6 +166,10 @@ def main():
         run_portfolio(args)
     elif args.command == "paper":
         run_paper(args)
+    elif args.command == "dashboard":
+        from dashboard.app import app as flask_app
+        console.print("[cyan]Starting dashboard at http://localhost:5000[/cyan]")
+        flask_app.run(debug=False, port=5000)
     else:
         print(__doc__)
         sys.exit(0)
