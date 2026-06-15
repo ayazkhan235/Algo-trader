@@ -1,0 +1,156 @@
+"""
+Fetches global pre-market indicators before NSE opens (9:15 AM IST).
+All data via yfinance — free, no API key needed.
+"""
+import yfinance as yf
+from datetime import datetime
+from typing import Optional
+from data import cache
+
+INDICATORS = {
+    "SGX Nifty":       "^SG30",        # Singapore proxy (CNX Nifty futures)
+    "S&P 500":         "^GSPC",
+    "Dow Jones":       "^DJI",
+    "Nasdaq":          "^IXIC",
+    "Nikkei 225":      "^N225",
+    "Hang Seng":       "^HSI",
+    "India VIX":       "^INDIAVIX",
+    "US VIX":          "^VIX",
+    "USD/INR":         "USDINR=X",
+    "US 10Y Yield":    "^TNX",
+    "Crude Oil (WTI)": "CL=F",
+    "Brent Crude":     "BZ=F",
+    "Gold":            "GC=F",
+    "Silver":          "SI=F",
+    "EUR/USD":         "EURUSD=X",
+    "JPY/USD":         "JPY=X",
+}
+
+SECTOR_IMPACT = {
+    "Information Technology": {
+        "S&P 500":    ("negative", 0.7),   # (direction if down, sensitivity)
+        "Nasdaq":     ("negative", 0.9),
+        "USD/INR":    ("positive", 0.5),   # weak INR helps IT exporters
+        "US 10Y Yield": ("negative", 0.4),
+    },
+    "Healthcare": {
+        "USD/INR":    ("positive", 0.5),
+        "US VIX":     ("negative", 0.3),
+    },
+    "Energy": {
+        "Brent Crude": ("positive", 0.9),
+        "Crude Oil (WTI)": ("positive", 0.9),
+    },
+    "Materials": {
+        "Hang Seng":  ("positive", 0.6),   # China demand proxy
+        "USD/INR":    ("negative", 0.4),
+    },
+    "Consumer Staples": {
+        "USD/INR":    ("negative", 0.3),   # import costs
+        "Gold":       ("positive", 0.2),
+    },
+    "Industrials": {
+        "Crude Oil (WTI)": ("negative", 0.4),
+        "USD/INR":    ("negative", 0.3),
+    },
+    "Utilities": {
+        "Crude Oil (WTI)": ("negative", 0.3),
+        "US 10Y Yield": ("negative", 0.5),
+    },
+}
+
+
+def _pct_change(ticker_sym: str) -> Optional[dict]:
+    try:
+        t = yf.Ticker(ticker_sym)
+        hist = t.history(period="2d", interval="1d")
+        if hist.empty or len(hist) < 2:
+            info = t.info
+            price = info.get("regularMarketPrice") or info.get("currentPrice")
+            prev  = info.get("regularMarketPreviousClose")
+            if price and prev:
+                chg = (price - prev) / prev
+                return {"price": price, "change_pct": chg}
+            return None
+        latest = hist["Close"].iloc[-1]
+        prev   = hist["Close"].iloc[-2]
+        return {"price": round(latest, 2), "change_pct": round((latest - prev) / prev, 4)}
+    except Exception:
+        return None
+
+
+def fetch_global_indicators(refresh: bool = False) -> dict:
+    cache_key = f"pre_market_{datetime.now().strftime('%Y%m%d')}"
+    if not refresh:
+        cached = cache.get(cache_key, ttl_hours=1)
+        if cached:
+            return cached
+
+    result = {}
+    for name, sym in INDICATORS.items():
+        data = _pct_change(sym)
+        if data:
+            result[name] = data
+
+    cache.set(cache_key, result)
+    return result
+
+
+def assess_market_sentiment(indicators: dict) -> str:
+    """Returns overall market sentiment: BULLISH / NEUTRAL / BEARISH."""
+    if not indicators:
+        return "UNKNOWN"
+
+    score = 0
+    checked = 0
+
+    positive_on_up = ["S&P 500", "Nasdaq", "Nikkei 225", "Hang Seng"]
+    negative_on_up = ["US VIX", "USD/INR", "US 10Y Yield"]
+
+    for name in positive_on_up:
+        if name in indicators:
+            chg = indicators[name]["change_pct"]
+            score += 1 if chg > 0.003 else (-1 if chg < -0.003 else 0)
+            checked += 1
+
+    for name in negative_on_up:
+        if name in indicators:
+            chg = indicators[name]["change_pct"]
+            score += -1 if chg > 0.003 else (1 if chg < -0.003 else 0)
+            checked += 1
+
+    if checked == 0:
+        return "UNKNOWN"
+    ratio = score / checked
+    if ratio > 0.3:
+        return "BULLISH"
+    if ratio < -0.3:
+        return "BEARISH"
+    return "NEUTRAL"
+
+
+def sector_impact_summary(indicators: dict, portfolio_sectors: list[str]) -> dict[str, str]:
+    """
+    For each sector in the portfolio, summarize expected pre-market impact.
+    Returns {sector: impact_string}
+    """
+    impacts = {}
+    for sector in portfolio_sectors:
+        correlations = SECTOR_IMPACT.get(sector, {})
+        sector_score = 0
+        for indicator, (direction, sensitivity) in correlations.items():
+            if indicator not in indicators:
+                continue
+            chg = indicators[indicator]["change_pct"]
+            # direction = "positive" means indicator UP is good for sector
+            effect = chg * sensitivity if direction == "positive" else -chg * sensitivity
+            sector_score += effect
+
+        if sector_score > 0.005:
+            impacts[sector] = f"✓ Mild positive ({sector_score:+.1%} expected)"
+        elif sector_score < -0.005:
+            impacts[sector] = f"✗ Mild negative ({sector_score:+.1%} expected)"
+        else:
+            impacts[sector] = "→ Neutral"
+
+    return impacts

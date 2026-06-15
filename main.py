@@ -45,6 +45,13 @@ def parse_args():
     scan.add_argument("--output", choices=["csv", "none"], default="csv")
     scan.add_argument("--mode", choices=["STANDARD", "STRICT_INDIA"], default="STANDARD")
 
+    brief = sub.add_parser("brief", help="Show pre-market morning brief")
+
+    portfolio = sub.add_parser("portfolio", help="Analyse your real holdings")
+
+    paper = sub.add_parser("paper", help="Show paper trading portfolio")
+    paper.add_argument("--history", action="store_true", help="Show all trades")
+
     return p.parse_args()
 
 
@@ -108,11 +115,55 @@ def run_scan(args) -> None:
         csv_report.export(signals)
 
 
+def run_brief(args) -> None:
+    from market_intelligence.morning_brief import generate_brief, print_brief
+    brief = generate_brief()
+    print_brief(brief)
+
+
+def run_portfolio(args) -> None:
+    from portfolio.aggregator import get_consolidated_holdings
+    from portfolio.analyzer import analyse_portfolio, print_portfolio_report
+    from data.fetcher import fetch_batch
+
+    holdings = get_consolidated_holdings()
+    if not holdings:
+        console.print("[yellow]No holdings found. Add CSV files to /input/ or configure Upstox API.[/yellow]")
+        return
+
+    symbols = [h.symbol for h in holdings]
+    console.print(f"[cyan]Fetching data for {len(symbols)} held stocks...[/cyan]")
+    data = fetch_batch(symbols, max_workers=config.MAX_WORKERS)
+
+    analyses = analyse_portfolio(holdings, data)
+    print_portfolio_report(analyses)
+
+
+def run_paper(args) -> None:
+    from paper_trading.executor import print_portfolio_summary
+    from paper_trading.sqlite_engine import get_all_trades
+    print_portfolio_summary()
+
+    if args.history:
+        trades = get_all_trades()
+        console.print(f"\n[dim]All trades ({len(trades)} total):[/dim]")
+        for t in trades[:20]:
+            status = "[green]OPEN[/green]" if t["status"] == "OPEN" else "[dim]CLOSED[/dim]"
+            pnl = f"P&L: {t['pnl_pct']:+.1%}" if t["pnl_pct"] else ""
+            console.print(f"  {t['entry_date']}  {t['symbol']:15}  {t['signal_tier']:10}  {status}  {pnl}")
+
+
 def main():
     args = parse_args()
 
     if args.command == "scan":
         run_scan(args)
+    elif args.command == "brief":
+        run_brief(args)
+    elif args.command == "portfolio":
+        run_portfolio(args)
+    elif args.command == "paper":
+        run_paper(args)
     else:
         print(__doc__)
         sys.exit(0)
