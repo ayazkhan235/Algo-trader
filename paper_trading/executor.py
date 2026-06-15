@@ -114,6 +114,7 @@ def _check_sell_reason(
 
 
 def print_portfolio_summary(current_prices: dict[str, float] = None) -> dict:
+    init_db()
     summary = portfolio_summary(current_prices)
     print("\n── Paper Portfolio Summary ───────────────────────────")
     print(f"  Open positions : {summary['open_positions']}")
