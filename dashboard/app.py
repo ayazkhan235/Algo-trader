@@ -435,7 +435,7 @@ def _enrich_open_trades(trades: list[dict]) -> tuple[list[dict], dict]:
 
 def _enrich_closed_trades(trades: list[dict]) -> list[dict]:
     enriched = []
-    for t in dict_copy := [dict(r) for r in trades]:
+    for t in [dict(r) for r in trades]:
         pnl = t.get("pnl_inr") or 0.0
         pnl_pct_raw = (t.get("pnl_pct") or 0.0) * 100
         t["pnl_class"] = pnl_class(pnl)
