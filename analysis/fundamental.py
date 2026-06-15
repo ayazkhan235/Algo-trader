@@ -25,7 +25,10 @@ def cagr(values: list, years: int = 3) -> Optional[float]:
     if oldest is None or oldest <= 0 or newest is None:
         return None
     n = min(years, len(vals) - 1)
-    return (newest / oldest) ** (1 / n) - 1
+    ratio = newest / oldest
+    if ratio < 0:
+        return None
+    return ratio ** (1 / n) - 1
 
 
 def earnings_consistency(net_incomes: list) -> float:
