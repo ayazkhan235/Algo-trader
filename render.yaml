@@ -1,0 +1,17 @@
+services:
+  - type: web
+    name: nse-halal-trader
+    env: python
+    buildCommand: pip install -r requirements.txt
+    startCommand: python -m gunicorn dashboard.app:app
+    envVars:
+      - key: DATABASE_URL
+        fromDatabase:
+          name: nse-trader-db
+          property: connectionString
+      - key: PYTHON_VERSION
+        value: 3.11.0
+
+databases:
+  - name: nse-trader-db
+    plan: free

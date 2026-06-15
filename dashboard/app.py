@@ -6,13 +6,13 @@ Run via:  python main.py dashboard
 """
 import os
 import csv
-import sqlite3
 import time
 from datetime import date, datetime
 from functools import lru_cache
 from typing import Optional
 
 from flask import Flask, render_template_string
+from paper_trading.db import get_connection, placeholder, is_postgres
 
 # ── Project root (one level up from this file) ─────────────────────────────
 PROJECT_ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -26,42 +26,36 @@ _price_cache: dict[str, tuple[float, float]] = {}
 CACHE_TTL = 15 * 60  # 15 minutes
 
 
-def _get_db() -> Optional[sqlite3.Connection]:
-    if not os.path.exists(DB_PATH):
-        return None
-    con = sqlite3.connect(DB_PATH)
-    con.row_factory = sqlite3.Row
-    return con
-
-
 def get_open_trades() -> list[dict]:
-    con = _get_db()
-    if con is None:
-        return []
     try:
-        rows = con.execute(
-            "SELECT * FROM trades WHERE status='OPEN' ORDER BY entry_date"
-        ).fetchall()
-        return [dict(r) for r in rows]
-    except sqlite3.OperationalError:
+        con = get_connection()
+        try:
+            cur = con.cursor()
+            cur.execute("SELECT * FROM trades WHERE status='OPEN' ORDER BY entry_date")
+            rows = cur.fetchall()
+            return [dict(r) for r in rows]
+        except Exception:
+            return []
+        finally:
+            con.close()
+    except Exception:
         return []
-    finally:
-        con.close()
 
 
 def get_closed_trades() -> list[dict]:
-    con = _get_db()
-    if con is None:
-        return []
     try:
-        rows = con.execute(
-            "SELECT * FROM trades WHERE status='CLOSED' ORDER BY exit_date DESC"
-        ).fetchall()
-        return [dict(r) for r in rows]
-    except sqlite3.OperationalError:
+        con = get_connection()
+        try:
+            cur = con.cursor()
+            cur.execute("SELECT * FROM trades WHERE status='CLOSED' ORDER BY exit_date DESC")
+            rows = cur.fetchall()
+            return [dict(r) for r in rows]
+        except Exception:
+            return []
+        finally:
+            con.close()
+    except Exception:
         return []
-    finally:
-        con.close()
 
 
 def fetch_current_prices(symbols: list[str]) -> dict[str, float]:
