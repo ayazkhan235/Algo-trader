@@ -46,6 +46,8 @@ def parse_args():
     scan.add_argument("--mode", choices=["STANDARD", "STRICT_INDIA"], default="STANDARD")
     scan.add_argument("--live", action="store_true",
                       help="Semi-auto live trading via Upstox (asks confirmation per order)")
+    scan.add_argument("--no-execute", action="store_true",
+                      help="Skip paper trade execution (signals only — used by CI)")
 
     brief = sub.add_parser("brief", help="Show pre-market morning brief")
 
@@ -119,7 +121,9 @@ def run_scan(args) -> None:
         csv_report.export(signals)
 
     # ── Step 8: Execution (paper or live) ────────────────────────────────────
-    if args.live:
+    if getattr(args, "no_execute", False):
+        console.print("[dim]--no-execute: skipping trade placement (CI mode)[/dim]")
+    elif args.live:
         config.LIVE_TRADING = True
         from brokers.live_executor import execute_live_signals
         execute_live_signals(signals)
