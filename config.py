@@ -60,6 +60,8 @@ SELL_ROE_FLOOR = 0.10
 SELL_DRAWDOWN_STOP = -0.30
 MAX_PE_SELL = 60
 POSITION_SIZE_INR = 10_000          # Virtual position size for paper trading
+LIVE_POSITION_SIZE_INR = 5_000      # Real money per trade via Upstox
+LIVE_TRADING = False                # Set True via --live flag; never commit True
 
 # ── DATA ───────────────────────────────────────────────────────────────────────
 NSE_UNIVERSE = "nifty500"           # nifty50 | nifty200 | nifty500
