@@ -1,0 +1,48 @@
+Loading nifty50 universe...
+[universe] Loaded 50 symbols for 'nifty50'
+Fetching data for 50 stocks...
+[fetcher] 50/50 fetched, 50 valid
+[fetcher] Complete: 50/50 symbols returned data
+Running halal screen...
+[halal] 22/50 stocks passed halal screening
+Computing fundamentals for 22 halal stocks...
+
+═══ NSE HALAL ALGO TRADER ═══
+  Universe: 50 stocks  →  Halal: 22  →  Quality gates: 11  →  Signals: 10
+
+                                  Buy Signals                                   
+╭┬─────────┬───────┬─┬┬─┬─┬──┬──┬┬──────────────┬──────────────────────────────╮
+││ Symbol  │ Sign… │ ││ │ │  │  ││ Sector       │ Top Strength                 │
+├┼─────────┼───────┼─┼┼─┼─┼──┼──┼┼──────────────┼──────────────────────────────┤
+││ COALIN… │ BUY   │ ││ │ │  │  ││ Energy       │ Strong ROE of 28.1% —        │
+││         │       │ ││ │ │  │  ││              │ efficient cap                │
+├┼─────────┼───────┼─┼┼─┼─┼──┼──┼┼──────────────┼──────────────────────────────┤
+││ WIPRO   │ BUY   │ ││ │ │  │  ││ Technology   │ High FCF yield of 6.0% —     │
+││         │       │ ││ │ │  │  ││              │ strong cas                   │
+├┼─────────┼───────┼─┼┼─┼─┼──┼──┼┼──────────────┼──────────────────────────────┤
+││ BAJAJ-… │ BUY   │ ││ │ │  │  ││ Consumer     │ Strong ROE of 28.0% —        │
+││         │       │ ││ │ │  │  ││ Cyclical     │ efficient cap                │
+├┼─────────┼───────┼─┼┼─┼─┼──┼──┼┼──────────────┼──────────────────────────────┤
+││ EICHER… │ BUY   │ ││ │ │  │  ││ Consumer     │ Strong ROE of 23.8% —        │
+││         │       │ ││ │ │  │  ││ Cyclical     │ efficient cap                │
+├┼─────────┼───────┼─┼┼─┼─┼──┼──┼┼──────────────┼──────────────────────────────┤
+││ INFY    │ BUY   │ ││ │ │  │  ││ Technology   │ Strong ROE of 31.4% —        │
+││         │       │ ││ │ │  │  ││              │ efficient cap                │
+├┼─────────┼───────┼─┼┼─┼─┼──┼──┼┼──────────────┼──────────────────────────────┤
+││ TECHM   │ BUY   │ ││ │ │  │  ││ Technology   │ Strong financial health:     │
+││         │       │ ││ │ │  │  ││              │ Piotroski                    │
+├┼─────────┼───────┼─┼┼─┼─┼──┼──┼┼──────────────┼──────────────────────────────┤
+││ SUNPHA… │ WATCH │ ││ │ │  │  ││ Healthcare   │ Gross margin expanding —     │
+││         │       │ ││ │ │  │  ││              │ pricing po                   │
+├┼─────────┼───────┼─┼┼─┼─┼──┼──┼┼──────────────┼──────────────────────────────┤
+││ HCLTECH │ WATCH │ ││ │ │  │  ││ Technology   │ Strong ROE of 23.4% —        │
+││         │       │ ││ │ │  │  ││              │ efficient cap                │
+├┼─────────┼───────┼─┼┼─┼─┼──┼──┼┼──────────────┼──────────────────────────────┤
+││ MARUTI  │ WATCH │ ││ │ │  │  ││ Consumer     │ Revenue grew 16.6% CAGR over │
+││         │       │ ││ │ │  │  ││ Cyclical     │ 3 year                       │
+├┼─────────┼───────┼─┼┼─┼─┼──┼──┼┼──────────────┼──────────────────────────────┤
+││ LT      │ WATCH │ ││ │ │  │  ││ Industrials  │ Revenue grew 16.1% CAGR over │
+││         │       │ ││ │ │  │  ││              │ 3 year                       │
+╰┴─────────┴───────┴─┴┴─┴─┴──┴──┴┴──────────────┴──────────────────────────────╯
+[report] CSV exported → output/signals_2026-06-16.csv
+--no-execute: skipping trade placement (CI mode)
