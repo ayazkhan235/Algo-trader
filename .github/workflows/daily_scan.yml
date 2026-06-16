@@ -1,36 +1,56 @@
-name: Daily Halal Stock Scan
+name: Daily Halal Stock Scan + Upstox Paper Trades
 
 on:
   schedule:
     - cron: "0 4 * * 1-5"   # 9:30 AM IST (4:00 UTC), weekdays only
-  workflow_dispatch:          # manual trigger button on GitHub
+  workflow_dispatch:          # manual "Run workflow" button on GitHub
 
 permissions:
-  contents: write             # needed to commit results back to repo
+  contents: write
 
 jobs:
-  scan:
+  scan-and-trade:
     runs-on: ubuntu-latest
-    timeout-minutes: 30
+    timeout-minutes: 45
+
+    env:
+      UPSTOX_API_KEY:     ${{ secrets.UPSTOX_API_KEY }}
+      UPSTOX_API_SECRET:  ${{ secrets.UPSTOX_API_SECRET }}
+      UPSTOX_MOBILE:      ${{ secrets.UPSTOX_MOBILE }}
+      UPSTOX_PASSWORD:    ${{ secrets.UPSTOX_PASSWORD }}
+      UPSTOX_TOTP_SECRET: ${{ secrets.UPSTOX_TOTP_SECRET }}
+      UPSTOX_PIN:         ${{ secrets.UPSTOX_PIN }}
+      UPSTOX_REDIRECT_URI: "http://127.0.0.1:8080/callback"
+      UPSTOX_SANDBOX:     "true"
+      POSITION_SIZE_INR:  "5000"
 
     steps:
       - name: Checkout repo
         uses: actions/checkout@v4
-        with:
-          fetch-depth: 1
 
-      - name: Set up Python
+      - name: Set up Python 3.11
         uses: actions/setup-python@v5
         with:
           python-version: "3.11"
           cache: pip
 
       - name: Install dependencies
-        run: pip install -r requirements.txt
+        run: pip install -r requirements.txt pyotp
 
-      - name: Run halal stock scan
-        env:
-          POSITION_SIZE_INR: "5000"
+      # ── Step 1: Auto-login to Upstox Sandbox ────────────────────────────────
+      - name: Refresh Upstox access token
+        id: upstox_login
+        run: |
+          TOKEN=$(python -m brokers.upstox_auto_login | grep "^UPSTOX_ACCESS_TOKEN=" | cut -d= -f2-)
+          if [ -z "$TOKEN" ]; then
+            echo "::error::Failed to get Upstox access token"
+            exit 1
+          fi
+          echo "UPSTOX_ACCESS_TOKEN=$TOKEN" >> $GITHUB_ENV
+          echo "::notice::Upstox sandbox login successful"
+
+      # ── Step 2: Run the halal scan ───────────────────────────────────────────
+      - name: Run halal stock scan (Nifty 50)
         run: |
           python main.py scan \
             --universe nifty50 \
@@ -40,53 +60,140 @@ jobs:
             --mode STANDARD \
           2>&1 | tee output/scan_log.txt
 
-      - name: Generate portfolio snapshot
-        run: python -c "
-          import sys, json
-          from paper_trading.sqlite_engine import portfolio_summary, get_all_trades
-          summary = portfolio_summary()
-          trades  = get_all_trades()
-          print(json.dumps({'summary': summary, 'trades': trades}, indent=2, default=str))
-          " > output/portfolio_snapshot.json 2>/dev/null || echo "{}" > output/portfolio_snapshot.json
+      # ── Step 3: Place paper orders on Upstox Sandbox ────────────────────────
+      - name: Place paper trades on Upstox Sandbox
+        run: |
+          python - <<'EOF'
+          import os, json, sys
+          sys.path.insert(0, ".")
+          import config
 
-      - name: Commit results back to repo
+          # Pick up signals from the scan
+          from data.nse_universe import get_symbols
+          from data.fetcher import fetch_batch
+          from screening.halal_screener import screen_batch
+          from analysis.fundamental import compute
+          from analysis.scorer import compute_conviction_score
+          from signals.generator import generate
+
+          config.LIVE_POSITION_SIZE_INR = int(os.getenv("POSITION_SIZE_INR", 5000))
+
+          symbols = get_symbols("nifty50")
+          data    = fetch_batch(symbols, max_workers=5)
+          halal   = screen_batch(data)
+          passed  = {s: d for s, d in data.items() if halal[s].passed}
+          metrics = {s: compute(s, d) for s, d in passed.items()}
+          scores  = {s: compute_conviction_score(d, metrics[s]) for s, d in passed.items()}
+          signals = generate(data, halal, metrics, scores, min_score=50)
+
+          # Place on Upstox sandbox (no confirmation needed in CI)
+          from brokers import upstox_broker
+          import math
+
+          placed = []
+          for sig in signals:
+              if sig.tier not in ("STRONG BUY", "BUY"):
+                  continue
+              price = sig.metrics.get("price")
+              if not price:
+                  continue
+              sym   = sig.symbol.replace(".NS", "")
+              qty   = max(1, math.floor(config.LIVE_POSITION_SIZE_INR / price))
+              key   = upstox_broker.get_instrument_key(sym)
+              if not key:
+                  print(f"  [skip] {sym} — instrument key not found")
+                  continue
+              try:
+                  result = upstox_broker.place_market_buy(sym, qty, key)
+                  order_id = result.get("data", {}).get("order_id", "?")
+                  print(f"  [ORDER] {sym}  {sig.tier}  qty={qty}  order_id={order_id}")
+                  placed.append({"symbol": sym, "tier": sig.tier, "qty": qty,
+                                 "price": price, "order_id": order_id})
+              except Exception as e:
+                  print(f"  [FAIL]  {sym} — {e}")
+
+          # Save order log
+          os.makedirs("output", exist_ok=True)
+          from datetime import date
+          log_file = f"output/upstox_orders_{date.today()}.json"
+          with open(log_file, "w") as f:
+              json.dump(placed, f, indent=2)
+          print(f"\n[done] {len(placed)} orders placed. Log: {log_file}")
+          EOF
+
+      # ── Step 4: Portfolio snapshot ────────────────────────────────────────────
+      - name: Save portfolio snapshot
+        run: |
+          python - <<'EOF'
+          import json, sys
+          sys.path.insert(0, ".")
+          try:
+              from paper_trading.sqlite_engine import portfolio_summary, get_all_trades
+              summary = portfolio_summary()
+              trades  = get_all_trades()
+              out = {"summary": summary, "trades": trades}
+          except Exception as e:
+              out = {"error": str(e)}
+          with open("output/portfolio_snapshot.json", "w") as f:
+              json.dump(out, f, indent=2, default=str)
+          print("Portfolio snapshot saved.")
+          EOF
+
+      # ── Step 5: Commit results back to repo ───────────────────────────────────
+      - name: Commit results
         run: |
           git config user.name  "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
           git add output/
-          git diff --cached --quiet || git commit -m "chore: daily scan $(date -u '+%Y-%m-%d') [skip ci]"
+          git diff --cached --quiet || git commit -m "chore: scan $(date -u '+%Y-%m-%d') [skip ci]"
           git push
 
-      - name: Post scan summary to job summary
+      # ── Step 6: Job summary ───────────────────────────────────────────────────
+      - name: Write job summary
+        if: always()
         run: |
-          echo "## Halal Scan — $(date -u '+%Y-%m-%d %H:%M UTC')" >> $GITHUB_STEP_SUMMARY
+          DATE=$(date -u '+%Y-%m-%d %H:%M UTC')
+          echo "## Halal Algo Trader — $DATE" >> $GITHUB_STEP_SUMMARY
+          echo "_Mode: Upstox Sandbox (paper trading)_" >> $GITHUB_STEP_SUMMARY
           echo "" >> $GITHUB_STEP_SUMMARY
 
-          # Top signals from CSV
           CSV=$(ls output/signals_*.csv 2>/dev/null | sort | tail -1)
           if [ -f "$CSV" ]; then
-            echo "### Top Signals" >> $GITHUB_STEP_SUMMARY
+            echo "### Top Buy Signals" >> $GITHUB_STEP_SUMMARY
             echo '```' >> $GITHUB_STEP_SUMMARY
-            head -21 "$CSV" | column -t -s, >> $GITHUB_STEP_SUMMARY
+            python -c "
+          import csv, sys
+          rows = list(csv.DictReader(open('$CSV')))[:10]
+          if rows:
+              cols = ['symbol','signal_tier','score','sector']
+              header = '  '.join(f'{c:15}' for c in cols if c in rows[0])
+              print(header)
+              print('-' * len(header))
+              for r in rows:
+                  print('  '.join(f\"{r.get(c,''):15}\" for c in cols if c in r))
+          " 2>/dev/null || cat "$CSV" | head -11
             echo '```' >> $GITHUB_STEP_SUMMARY
           fi
 
-          # Portfolio snapshot
+          ORDERS=$(ls output/upstox_orders_*.json 2>/dev/null | sort | tail -1)
+          if [ -f "$ORDERS" ]; then
+            echo "### Orders Placed on Upstox Sandbox" >> $GITHUB_STEP_SUMMARY
+            echo '```json' >> $GITHUB_STEP_SUMMARY
+            cat "$ORDERS" >> $GITHUB_STEP_SUMMARY
+            echo '```' >> $GITHUB_STEP_SUMMARY
+          fi
+
           if [ -f output/portfolio_snapshot.json ]; then
             echo "### Paper Portfolio" >> $GITHUB_STEP_SUMMARY
-            echo '```json' >> $GITHUB_STEP_SUMMARY
+            echo '```' >> $GITHUB_STEP_SUMMARY
             python -c "
           import json
           d = json.load(open('output/portfolio_snapshot.json'))
           s = d.get('summary', {})
           print(f\"Open positions : {s.get('open_positions', 0)}\")
-          print(f\"Total invested : ₹{s.get('total_invested', 0):,.0f}\")
-          print(f\"Current value  : ₹{s.get('total_value', 0):,.0f}\")
-          print(f\"Open P&L       : ₹{s.get('open_pnl_inr', 0):+,.0f}  ({s.get('open_pnl_pct', 0):+.1%})\")
-          print(f\"Closed trades  : {s.get('closed_trades', 0)}  (P&L: ₹{s.get('closed_pnl_inr', 0):+,.0f})\")
-          " 2>/dev/null || echo "No trades yet"
+          print(f\"Total invested : Rs{s.get('total_invested', 0):,.0f}\")
+          print(f\"Current value  : Rs{s.get('total_value', 0):,.0f}\")
+          print(f\"Open P&L       : Rs{s.get('open_pnl_inr', 0):+,.0f}  ({s.get('open_pnl_pct', 0):+.1%})\")
+          " 2>/dev/null || echo "No portfolio data yet"
             echo '```' >> $GITHUB_STEP_SUMMARY
           fi
-
-          echo "" >> $GITHUB_STEP_SUMMARY
-          echo "Full results: [output/](./output/)" >> $GITHUB_STEP_SUMMARY
