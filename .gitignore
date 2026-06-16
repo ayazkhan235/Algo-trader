@@ -3,6 +3,8 @@
 output/*.csv
 output/*.html
 output/*.json
+output/*.db
+*.db
 __pycache__/
 *.pyc
 *.pyo
