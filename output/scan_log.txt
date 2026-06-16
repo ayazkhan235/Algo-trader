@@ -45,16 +45,4 @@ Computing fundamentals for 22 halal stocks...
 ││         │       │ ││ │ │  │  ││              │ 3 year                       │
 ╰┴─────────┴───────┴─┴┴─┴─┴──┴──┴┴──────────────┴──────────────────────────────╯
 [report] CSV exported → output/signals_2026-06-16.csv
-[paper] OPEN  COALINDIA.NS @ ₹452.10  qty=22.1190  tier=BUY  score=71  id=1
-[paper] OPEN  WIPRO.NS @ ₹182.42  qty=54.8186  tier=BUY  score=68  id=2
-[paper] OPEN  BAJAJ-AUTO.NS @ ₹9957.00  qty=1.0043  tier=BUY  score=64  id=3
-[paper] OPEN  EICHERMOT.NS @ ₹7572.00  qty=1.3207  tier=BUY  score=63  id=4
-[paper] OPEN  INFY.NS @ ₹1140.90  qty=8.7650  tier=BUY  score=63  id=5
-[paper] OPEN  TECHM.NS @ ₹1435.30  qty=6.9672  tier=BUY  score=60  id=6
-Paper trades placed: 6 new positions
-  + COALINDIA.NS  BUY  ₹452.10
-  + WIPRO.NS  BUY  ₹182.42
-  + BAJAJ-AUTO.NS  BUY  ₹9,957.00
-  + EICHERMOT.NS  BUY  ₹7,572.00
-  + INFY.NS  BUY  ₹1,140.90
-  + TECHM.NS  BUY  ₹1,435.30
+--no-execute: skipping trade placement (CI mode)
