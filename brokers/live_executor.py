@@ -43,7 +43,9 @@ def execute_live_signals(signals: list[BuySignal]) -> list[dict]:
         )
         return []
 
-    console.print(f"\n[bold cyan]── Live Trade Executor (₹{config.LIVE_POSITION_SIZE_INR:,}/trade) ──[/bold cyan]")
+    from brokers.upstox_broker import _MODE
+    mode_label = "[yellow]SANDBOX (paper)[/yellow]" if _MODE == "SANDBOX" else "[bold red]LIVE (real money)[/bold red]"
+    console.print(f"\n[bold cyan]── Upstox Trade Executor ──[/bold cyan]  Mode: {mode_label}  ₹{config.LIVE_POSITION_SIZE_INR:,}/trade")
     console.print(f"[dim]{len(actionable)} signal(s) to review. You will confirm each one.[/dim]\n")
 
     executed = []

@@ -20,9 +20,22 @@ import config
 
 _TOKEN_FILE = Path(__file__).parent.parent / ".upstox_token.json"
 
-UPSTOX_BASE = "https://api.upstox.com/v2"
-AUTH_URL    = "https://api.upstox.com/v2/login/authorization/dialog"
-TOKEN_URL   = "https://api.upstox.com/v2/login/authorization/token"
+_SANDBOX = os.getenv("UPSTOX_SANDBOX", "true").lower() != "false"
+
+UPSTOX_BASE = (
+    "https://api-sandbox.upstox.com/v2" if _SANDBOX
+    else "https://api.upstox.com/v2"
+)
+AUTH_URL = (
+    "https://api-sandbox.upstox.com/v2/login/authorization/dialog" if _SANDBOX
+    else "https://api.upstox.com/v2/login/authorization/dialog"
+)
+TOKEN_URL = (
+    "https://api-sandbox.upstox.com/v2/login/authorization/token" if _SANDBOX
+    else "https://api.upstox.com/v2/login/authorization/token"
+)
+
+_MODE = "SANDBOX" if _SANDBOX else "LIVE"
 
 
 # ── OAuth Login Flow ──────────────────────────────────────────────────────────
@@ -82,7 +95,8 @@ def login() -> str:
         "redirect_uri": config.UPSTOX_REDIRECT_URI,
     }
     url = AUTH_URL + "?" + urllib.parse.urlencode(params)
-    print(f"\n[upstox] Opening browser for login...")
+    print(f"\n[upstox] Mode: {_MODE}")
+    print(f"[upstox] Opening browser for login...")
     print(f"[upstox] If browser doesn't open, visit:\n  {url}\n")
     webbrowser.open(url)
 
