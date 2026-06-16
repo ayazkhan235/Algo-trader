@@ -44,6 +44,8 @@ def parse_args():
     scan.add_argument("--detail", metavar="SYMBOL", help="Print detailed view for one symbol")
     scan.add_argument("--output", choices=["csv", "none"], default="csv")
     scan.add_argument("--mode", choices=["STANDARD", "STRICT_INDIA"], default="STANDARD")
+    scan.add_argument("--live", action="store_true",
+                      help="Semi-auto live trading via Upstox (asks confirmation per order)")
 
     brief = sub.add_parser("brief", help="Show pre-market morning brief")
 
@@ -116,13 +118,18 @@ def run_scan(args) -> None:
     if args.output == "csv" and signals:
         csv_report.export(signals)
 
-    # ── Step 8: Paper trade execution ─────────────────────────────────────────
-    from paper_trading.executor import execute_buy_signals
-    executed = execute_buy_signals(signals)
-    if executed:
-        console.print(f"[green]Paper trades placed: {len(executed)} new positions[/green]")
-        for t in executed:
-            console.print(f"  [green]+[/green] {t['symbol']}  {t['tier']}  ₹{t['price']:,.2f}")
+    # ── Step 8: Execution (paper or live) ────────────────────────────────────
+    if args.live:
+        config.LIVE_TRADING = True
+        from brokers.live_executor import execute_live_signals
+        execute_live_signals(signals)
+    else:
+        from paper_trading.executor import execute_buy_signals
+        executed = execute_buy_signals(signals)
+        if executed:
+            console.print(f"[green]Paper trades placed: {len(executed)} new positions[/green]")
+            for t in executed:
+                console.print(f"  [green]+[/green] {t['symbol']}  {t['tier']}  ₹{t['price']:,.2f}")
 
 
 def run_brief(args) -> None:
