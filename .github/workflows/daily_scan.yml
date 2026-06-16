@@ -54,6 +54,7 @@ jobs:
             --min-score 50 \
             --output csv \
             --mode STANDARD \
+            --no-execute \
           2>&1 | tee output/scan_log.txt
 
       # ── Step 3: Place paper orders on Upstox Sandbox ────────────────────────
@@ -82,11 +83,8 @@ jobs:
           signals = generate(data, halal, metrics, scores, min_score=50)
 
           from brokers import upstox_broker
-          from paper_trading.sqlite_engine import is_already_held, init_db
-          init_db()
 
           placed = []
-          skipped = []
 
           for sig in signals:
               if sig.tier not in ("STRONG BUY", "BUY"):
@@ -95,11 +93,6 @@ jobs:
               if not price:
                   continue
               sym = sig.symbol.replace(".NS", "")
-
-              # Skip if already held in paper portfolio
-              if is_already_held(sig.symbol):
-                  skipped.append(sym)
-                  continue
 
               qty = max(1, math.floor(config.LIVE_POSITION_SIZE_INR / price))
               key = upstox_broker.get_instrument_key(sym)
@@ -119,9 +112,6 @@ jobs:
                   })
               except Exception as e:
                   print(f"  [FAIL]  {sym} — {e}")
-
-          if skipped:
-              print(f"\n  [already held] {', '.join(skipped)}")
 
           os.makedirs("output", exist_ok=True)
           from datetime import date
