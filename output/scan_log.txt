@@ -1,0 +1,60 @@
+Loading nifty50 universe...
+[universe] Loaded 50 symbols for 'nifty50'
+Fetching data for 50 stocks...
+[fetcher] 50/50 fetched, 50 valid
+[fetcher] Complete: 50/50 symbols returned data
+Running halal screen...
+[halal] 22/50 stocks passed halal screening
+Computing fundamentals for 22 halal stocks...
+
+═══ NSE HALAL ALGO TRADER ═══
+  Universe: 50 stocks  →  Halal: 22  →  Quality gates: 11  →  Signals: 10
+
+                                  Buy Signals                                   
+╭┬─────────┬───────┬─┬┬─┬─┬──┬──┬┬──────────────┬──────────────────────────────╮
+││ Symbol  │ Sign… │ ││ │ │  │  ││ Sector       │ Top Strength                 │
+├┼─────────┼───────┼─┼┼─┼─┼──┼──┼┼──────────────┼──────────────────────────────┤
+││ COALIN… │ BUY   │ ││ │ │  │  ││ Energy       │ Strong ROE of 28.1% —        │
+││         │       │ ││ │ │  │  ││              │ efficient cap                │
+├┼─────────┼───────┼─┼┼─┼─┼──┼──┼┼──────────────┼──────────────────────────────┤
+││ WIPRO   │ BUY   │ ││ │ │  │  ││ Technology   │ High FCF yield of 6.0% —     │
+││         │       │ ││ │ │  │  ││              │ strong cas                   │
+├┼─────────┼───────┼─┼┼─┼─┼──┼──┼┼──────────────┼──────────────────────────────┤
+││ BAJAJ-… │ BUY   │ ││ │ │  │  ││ Consumer     │ Strong ROE of 28.0% —        │
+││         │       │ ││ │ │  │  ││ Cyclical     │ efficient cap                │
+├┼─────────┼───────┼─┼┼─┼─┼──┼──┼┼──────────────┼──────────────────────────────┤
+││ EICHER… │ BUY   │ ││ │ │  │  ││ Consumer     │ Strong ROE of 23.8% —        │
+││         │       │ ││ │ │  │  ││ Cyclical     │ efficient cap                │
+├┼─────────┼───────┼─┼┼─┼─┼──┼──┼┼──────────────┼──────────────────────────────┤
+││ INFY    │ BUY   │ ││ │ │  │  ││ Technology   │ Strong ROE of 31.4% —        │
+││         │       │ ││ │ │  │  ││              │ efficient cap                │
+├┼─────────┼───────┼─┼┼─┼─┼──┼──┼┼──────────────┼──────────────────────────────┤
+││ TECHM   │ BUY   │ ││ │ │  │  ││ Technology   │ Strong financial health:     │
+││         │       │ ││ │ │  │  ││              │ Piotroski                    │
+├┼─────────┼───────┼─┼┼─┼─┼──┼──┼┼──────────────┼──────────────────────────────┤
+││ SUNPHA… │ WATCH │ ││ │ │  │  ││ Healthcare   │ Gross margin expanding —     │
+││         │       │ ││ │ │  │  ││              │ pricing po                   │
+├┼─────────┼───────┼─┼┼─┼─┼──┼──┼┼──────────────┼──────────────────────────────┤
+││ HCLTECH │ WATCH │ ││ │ │  │  ││ Technology   │ Strong ROE of 23.4% —        │
+││         │       │ ││ │ │  │  ││              │ efficient cap                │
+├┼─────────┼───────┼─┼┼─┼─┼──┼──┼┼──────────────┼──────────────────────────────┤
+││ MARUTI  │ WATCH │ ││ │ │  │  ││ Consumer     │ Revenue grew 16.6% CAGR over │
+││         │       │ ││ │ │  │  ││ Cyclical     │ 3 year                       │
+├┼─────────┼───────┼─┼┼─┼─┼──┼──┼┼──────────────┼──────────────────────────────┤
+││ LT      │ WATCH │ ││ │ │  │  ││ Industrials  │ Revenue grew 16.1% CAGR over │
+││         │       │ ││ │ │  │  ││              │ 3 year                       │
+╰┴─────────┴───────┴─┴┴─┴─┴──┴──┴┴──────────────┴──────────────────────────────╯
+[report] CSV exported → output/signals_2026-06-16.csv
+[paper] OPEN  COALINDIA.NS @ ₹452.10  qty=22.1190  tier=BUY  score=71  id=1
+[paper] OPEN  WIPRO.NS @ ₹182.42  qty=54.8186  tier=BUY  score=68  id=2
+[paper] OPEN  BAJAJ-AUTO.NS @ ₹9957.00  qty=1.0043  tier=BUY  score=64  id=3
+[paper] OPEN  EICHERMOT.NS @ ₹7572.00  qty=1.3207  tier=BUY  score=63  id=4
+[paper] OPEN  INFY.NS @ ₹1140.90  qty=8.7650  tier=BUY  score=63  id=5
+[paper] OPEN  TECHM.NS @ ₹1435.30  qty=6.9672  tier=BUY  score=60  id=6
+Paper trades placed: 6 new positions
+  + COALINDIA.NS  BUY  ₹452.10
+  + WIPRO.NS  BUY  ₹182.42
+  + BAJAJ-AUTO.NS  BUY  ₹9,957.00
+  + EICHERMOT.NS  BUY  ₹7,572.00
+  + INFY.NS  BUY  ₹1,140.90
+  + TECHM.NS  BUY  ₹1,435.30
