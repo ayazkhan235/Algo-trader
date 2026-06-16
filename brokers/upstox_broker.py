@@ -152,24 +152,63 @@ def _headers() -> dict:
     }
 
 
+# ── Instrument Master ────────────────────────────────────────────────────────
+
+_instrument_cache: dict[str, str] = {}   # symbol → instrument_key
+_INSTRUMENTS_URL = "https://assets.upstox.com/market-quote/instruments/exchange/NSE.json.gz"
+
+
+def _load_instruments() -> dict[str, str]:
+    """
+    Downloads Upstox NSE instruments master (no auth needed) and builds
+    a symbol → instrument_key lookup. Cached in memory for the session.
+    """
+    global _instrument_cache
+    if _instrument_cache:
+        return _instrument_cache
+
+    import gzip, io
+    print("[upstox] Downloading NSE instruments master...")
+    resp = requests.get(_INSTRUMENTS_URL, timeout=30)
+    resp.raise_for_status()
+
+    instruments = json.loads(gzip.decompress(resp.content))
+    lookup: dict[str, str] = {}
+    for item in instruments:
+        segment = item.get("segment", "")
+        symbol  = item.get("trading_symbol", "") or item.get("tradingsymbol", "")
+        key     = item.get("instrument_key", "")
+        itype   = item.get("instrument_type", "") or item.get("instrumenttype", "")
+        # Only NSE equity (not F&O, not SME)
+        if segment == "NSE_EQ" and symbol and key:
+            lookup[symbol.upper()] = key
+        # Also handle EQ suffix variants
+        if symbol.endswith("-EQ") and key:
+            lookup[symbol.replace("-EQ", "").upper()] = key
+
+    _instrument_cache = lookup
+    print(f"[upstox] Loaded {len(lookup)} NSE equity instruments")
+    return lookup
+
+
 # ── Market Data ───────────────────────────────────────────────────────────────
 
 def get_instrument_key(trading_symbol: str) -> str | None:
     """
     Converts NSE trading symbol (e.g. 'EICHERMOT') to Upstox instrument key
     (e.g. 'NSE_EQ|INE066A01021').
-    Uses Upstox search API.
+    Uses Upstox instruments master file (no auth needed, cached per run).
     """
-    sym = trading_symbol.replace(".NS", "")
-    url = f"{UPSTOX_BASE}/market-quote/search"
-    resp = requests.get(url, params={"query": sym, "segment": "NSE"}, headers=_headers())
-    if resp.status_code != 200:
-        return None
-    results = resp.json().get("data", {}).get("securities", [])
-    for item in results:
-        if item.get("tradingsymbol") == sym and item.get("segment") == "NSE_EQ":
-            return item.get("instrument_key")
-    return None
+    sym = trading_symbol.replace(".NS", "").upper()
+    instruments = _load_instruments()
+    key = instruments.get(sym)
+    if not key:
+        # Try common suffix variants
+        for variant in [f"{sym}-EQ", sym.replace("&", "AND")]:
+            key = instruments.get(variant)
+            if key:
+                break
+    return key
 
 
 def get_ltp(instrument_key: str) -> float | None:
