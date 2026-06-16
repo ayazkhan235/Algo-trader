@@ -1,4 +1,4 @@
-name: Daily Halal Stock Scan + Upstox Paper Trades
+name: Daily Halal Stock Scan + OpenAlgo Paper Trades
 
 on:
   schedule:
@@ -14,12 +14,9 @@ jobs:
     timeout-minutes: 45
 
     env:
-      UPSTOX_API_KEY:      ${{ secrets.UPSTOX_API_KEY }}
-      UPSTOX_API_SECRET:   ${{ secrets.UPSTOX_API_SECRET }}
-      UPSTOX_ACCESS_TOKEN: ${{ secrets.UPSTOX_ACCESS_TOKEN }}
-      UPSTOX_REDIRECT_URI: "http://127.0.0.1:8080/callback"
-      UPSTOX_SANDBOX:      "true"
-      POSITION_SIZE_INR:   "5000"
+      OPENALGO_HOST:    ${{ secrets.OPENALGO_HOST }}      # e.g. https://yourapp.onrender.com
+      OPENALGO_API_KEY: ${{ secrets.OPENALGO_API_KEY }}   # from OpenAlgo dashboard
+      POSITION_SIZE_INR: "5000"
 
     steps:
       - name: Checkout repo
@@ -34,16 +31,19 @@ jobs:
       - name: Install dependencies
         run: pip install -r requirements.txt
 
-      # ── Step 1: Verify token is available ────────────────────────────────────
-      - name: Check Upstox token
+      # ── Step 1: Check OpenAlgo is reachable ──────────────────────────────────
+      - name: Check OpenAlgo connection
         run: |
-          if [ -z "$UPSTOX_ACCESS_TOKEN" ]; then
-            echo "::error::UPSTOX_ACCESS_TOKEN secret is not set."
-            echo "::error::Go to Upstox developer portal → Sandbox → your app → Get Token"
-            echo "::error::Then add it as GitHub Secret: UPSTOX_ACCESS_TOKEN"
-            exit 1
-          fi
-          echo "::notice::Upstox access token found ✓"
+          python - <<'EOF'
+          import os, sys
+          sys.path.insert(0, ".")
+          from brokers.openalgo_client import ping
+          if not ping():
+              print(f"::error::Cannot reach OpenAlgo at {os.getenv('OPENALGO_HOST')}")
+              print("::error::Make sure OpenAlgo is deployed and OPENALGO_HOST secret is set correctly")
+              sys.exit(1)
+          print(f"::notice::OpenAlgo reachable ✓  ({os.getenv('OPENALGO_HOST')})")
+          EOF
 
       # ── Step 2: Run the halal scan ───────────────────────────────────────────
       - name: Run halal stock scan (Nifty 50)
@@ -57,8 +57,8 @@ jobs:
             --no-execute \
           2>&1 | tee output/scan_log.txt
 
-      # ── Step 3: Place paper orders on Upstox Sandbox ────────────────────────
-      - name: Place paper trades on Upstox Sandbox
+      # ── Step 3: Place orders via OpenAlgo ────────────────────────────────────
+      - name: Place paper trades via OpenAlgo
         run: |
           python - <<'EOF'
           import os, json, sys, math
@@ -73,6 +73,7 @@ jobs:
           from analysis.fundamental import compute
           from analysis.scorer import compute_conviction_score
           from signals.generator import generate
+          from brokers.openalgo_client import place_buy
 
           symbols = get_symbols("nifty50")
           data    = fetch_batch(symbols, max_workers=5)
@@ -82,61 +83,38 @@ jobs:
           scores  = {s: compute_conviction_score(d, metrics[s]) for s, d in passed.items()}
           signals = generate(data, halal, metrics, scores, min_score=50)
 
-          from brokers import upstox_broker
-
           placed = []
-
           for sig in signals:
               if sig.tier not in ("STRONG BUY", "BUY"):
                   continue
               price = sig.metrics.get("price")
               if not price:
                   continue
-              sym = sig.symbol.replace(".NS", "")
-
-              qty = max(1, math.floor(config.LIVE_POSITION_SIZE_INR / price))
-              key = upstox_broker.get_instrument_key(sym)
-              if not key:
-                  print(f"  [skip] {sym} — instrument key not found on Upstox")
-                  continue
               try:
-                  result = upstox_broker.place_market_buy(sym, qty, key)
-                  order_id = result.get("data", {}).get("order_id", "?")
-                  print(f"  [ORDER] {sym}  {sig.tier}  score={sig.score:.0f}  qty={qty}  order_id={order_id}")
+                  result = place_buy(sig.symbol, price, sig.tier)
+                  status = result.get("status", "?")
+                  order_id = result.get("orderid", result.get("data", {}).get("orderid", "?"))
+                  print(f"  [ORDER] {sig.symbol.replace('.NS','')}  {sig.tier}  score={sig.score:.0f}  ₹{price:,.0f}  → {status}  id={order_id}")
                   placed.append({
-                      "symbol": sym, "tier": sig.tier,
-                      "score": round(sig.score, 1),
-                      "qty": qty, "price": price,
-                      "order_value": qty * price,
+                      "symbol":   sig.symbol.replace(".NS", ""),
+                      "tier":     sig.tier,
+                      "score":    round(sig.score, 1),
+                      "price":    price,
+                      "status":   status,
                       "order_id": order_id,
                   })
               except Exception as e:
-                  print(f"  [FAIL]  {sym} — {e}")
+                  print(f"  [FAIL]  {sig.symbol} — {e}")
 
           os.makedirs("output", exist_ok=True)
           from datetime import date
-          log_file = f"output/upstox_orders_{date.today()}.json"
+          log_file = f"output/openalgo_orders_{date.today()}.json"
           with open(log_file, "w") as f:
               json.dump(placed, f, indent=2)
-          print(f"\n[done] {len(placed)} new orders placed → {log_file}")
+          print(f"\n[done] {len(placed)} orders sent to OpenAlgo → {log_file}")
           EOF
 
-      # ── Step 4: Portfolio snapshot ────────────────────────────────────────────
-      - name: Save portfolio snapshot
-        run: |
-          python - <<'EOF'
-          import json, sys
-          sys.path.insert(0, ".")
-          try:
-              from paper_trading.sqlite_engine import portfolio_summary, get_all_trades
-              out = {"summary": portfolio_summary(), "trades": get_all_trades()}
-          except Exception as e:
-              out = {"error": str(e)}
-          with open("output/portfolio_snapshot.json", "w") as f:
-              json.dump(out, f, indent=2, default=str)
-          EOF
-
-      # ── Step 5: Commit results ────────────────────────────────────────────────
+      # ── Step 4: Commit results ────────────────────────────────────────────────
       - name: Commit results
         run: |
           git config user.name  "github-actions[bot]"
@@ -145,37 +123,26 @@ jobs:
           git diff --cached --quiet || git commit -m "chore: scan $(date -u '+%Y-%m-%d') [skip ci]"
           git push
 
-      # ── Step 6: Job summary ───────────────────────────────────────────────────
+      # ── Step 5: Job summary ───────────────────────────────────────────────────
       - name: Write job summary
         if: always()
         run: |
           echo "## Halal Algo Trader — $(date -u '+%Y-%m-%d %H:%M UTC')" >> $GITHUB_STEP_SUMMARY
-          echo "_Upstox Sandbox · paper trading · ₹5,000/position_" >> $GITHUB_STEP_SUMMARY
+          echo "_OpenAlgo · Upstox Sandbox · ₹5,000/position_" >> $GITHUB_STEP_SUMMARY
           echo "" >> $GITHUB_STEP_SUMMARY
 
-          ORDERS=$(ls output/upstox_orders_*.json 2>/dev/null | sort | tail -1)
+          ORDERS=$(ls output/openalgo_orders_*.json 2>/dev/null | sort | tail -1)
           if [ -f "$ORDERS" ]; then
             COUNT=$(python -c "import json; print(len(json.load(open('$ORDERS'))))" 2>/dev/null || echo 0)
-            echo "### Orders Placed on Upstox Sandbox: $COUNT" >> $GITHUB_STEP_SUMMARY
+            echo "### Orders Sent to OpenAlgo: $COUNT" >> $GITHUB_STEP_SUMMARY
             echo '```' >> $GITHUB_STEP_SUMMARY
             python -c "
           import json
-          orders = json.load(open('$ORDERS'))
-          for o in orders:
-              print(f\"{o['symbol']:15} {o['tier']:12} score={o['score']}  qty={o['qty']}  ₹{o['order_value']:,.0f}  id={o['order_id']}\")
+          for o in json.load(open('$ORDERS')):
+              print(f\"{o['symbol']:15} {o['tier']:12} score={o['score']}  ₹{o['price']:,.0f}  {o['status']}\")
           " 2>/dev/null
             echo '```' >> $GITHUB_STEP_SUMMARY
           fi
 
-          if [ -f output/portfolio_snapshot.json ]; then
-            echo "### Paper Portfolio" >> $GITHUB_STEP_SUMMARY
-            echo '```' >> $GITHUB_STEP_SUMMARY
-            python -c "
-          import json
-          s = json.load(open('output/portfolio_snapshot.json')).get('summary', {})
-          print(f\"Open positions : {s.get('open_positions', 0)}\")
-          print(f\"Total invested : Rs{s.get('total_invested', 0):,.0f}\")
-          print(f\"Open P&L       : Rs{s.get('open_pnl_inr', 0):+,.0f}  ({s.get('open_pnl_pct', 0):+.1%})\")
-          " 2>/dev/null || echo "No data yet"
-            echo '```' >> $GITHUB_STEP_SUMMARY
-          fi
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "View portfolio: $OPENALGO_HOST" >> $GITHUB_STEP_SUMMARY
