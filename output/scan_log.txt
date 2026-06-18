@@ -20,14 +20,14 @@ Computing fundamentals for 22 halal stocks...
 ││ WIPRO   │ BUY   │ ││ │ │  │  ││ Technology   │ High FCF yield of 6.0% —     │
 ││         │       │ ││ │ │  │  ││              │ strong cas                   │
 ├┼─────────┼───────┼─┼┼─┼─┼──┼──┼┼──────────────┼──────────────────────────────┤
+││ INFY    │ BUY   │ ││ │ │  │  ││ Technology   │ Strong ROE of 31.4% —        │
+││         │       │ ││ │ │  │  ││              │ efficient cap                │
+├┼─────────┼───────┼─┼┼─┼─┼──┼──┼┼──────────────┼──────────────────────────────┤
 ││ BAJAJ-… │ BUY   │ ││ │ │  │  ││ Consumer     │ Strong ROE of 28.0% —        │
 ││         │       │ ││ │ │  │  ││ Cyclical     │ efficient cap                │
 ├┼─────────┼───────┼─┼┼─┼─┼──┼──┼┼──────────────┼──────────────────────────────┤
 ││ EICHER… │ BUY   │ ││ │ │  │  ││ Consumer     │ Strong ROE of 23.8% —        │
 ││         │       │ ││ │ │  │  ││ Cyclical     │ efficient cap                │
-├┼─────────┼───────┼─┼┼─┼─┼──┼──┼┼──────────────┼──────────────────────────────┤
-││ INFY    │ BUY   │ ││ │ │  │  ││ Technology   │ Strong ROE of 31.4% —        │
-││         │       │ ││ │ │  │  ││              │ efficient cap                │
 ├┼─────────┼───────┼─┼┼─┼─┼──┼──┼┼──────────────┼──────────────────────────────┤
 ││ TECHM   │ BUY   │ ││ │ │  │  ││ Technology   │ Strong financial health:     │
 ││         │       │ ││ │ │  │  ││              │ Piotroski                    │
@@ -44,5 +44,5 @@ Computing fundamentals for 22 halal stocks...
 ││ LT      │ WATCH │ ││ │ │  │  ││ Industrials  │ Revenue grew 16.1% CAGR over │
 ││         │       │ ││ │ │  │  ││              │ 3 year                       │
 ╰┴─────────┴───────┴─┴┴─┴─┴──┴──┴┴──────────────┴──────────────────────────────╯
-[report] CSV exported → output/signals_2026-06-17.csv
+[report] CSV exported → output/signals_2026-06-18.csv
 --no-execute: skipping trade placement (CI mode)
