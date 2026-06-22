@@ -68,6 +68,10 @@ def parse_args():
                     help="Monthly SIP amount (default = your ₹7k real budget)")
     bt.add_argument("--mode", choices=["STANDARD", "STRICT_INDIA"], default="STANDARD")
 
+    l30 = sub.add_parser("last30days",
+                         help="30-day market / sector / company sentiment memory")
+    l30.add_argument("--days", type=int, default=30)
+
     return p.parse_args()
 
 
@@ -76,6 +80,9 @@ def run_scan(args) -> None:
     config.SCREENING_MODE = args.mode
     if args.mode == "STRICT_INDIA":
         console.print("[yellow]Mode: STRICT_INDIA (Nifty50 Shariah — 25% debt threshold)[/yellow]")
+
+    # ── Step 0: Morning global-market check (logged for 30-day memory) ─────────
+    _log_market_regime()
 
     # ── Step 1: Universe ──────────────────────────────────────────────────────
     console.print(f"[cyan]Loading {args.universe} universe...[/cyan]")
@@ -139,7 +146,9 @@ def run_scan(args) -> None:
         execute_live_signals(signals)
     else:
         from paper_trading.executor import execute_buy_signals
-        executed = execute_buy_signals(signals)
+        # ── News: headlines + sector sentiment for the shortlist (logged) ──────
+        news_map = _gather_news(signals)
+        executed = execute_buy_signals(signals, news_map=news_map)
         if executed:
             console.print(f"[green]Paper trades placed: {len(executed)} new positions[/green]")
             for t in executed:
@@ -206,6 +215,99 @@ def run_portfolio(args) -> None:
 
     analyses = analyse_portfolio(holdings, data)
     print_portfolio_report(analyses)
+
+
+def _log_market_regime() -> None:
+    """Fetch + log today's global-market mood for the 30-day memory."""
+    try:
+        from market_intelligence.regime import snapshot_market
+        from paper_trading.sqlite_engine import init_db, save_market_regime
+        init_db()
+        row = snapshot_market()
+        save_market_regime(row)
+        console.print(f"[cyan]Global market: {row['sentiment']} "
+                      f"(avg {row['score']:+.2%}, India VIX {row.get('india_vix') or '—'})[/cyan]")
+    except Exception as e:  # noqa: BLE001
+        console.print(f"[dim]Market regime log skipped: {e}[/dim]")
+
+
+def _gather_news(signals) -> dict:
+    """Fetch headlines for BUY/STRONG BUY + held names; log company + sector sentiment."""
+    from datetime import date as _date
+    try:
+        from market_intelligence.sentiment import fetch_headlines, score_headlines
+        from paper_trading.sqlite_engine import (
+            init_db, save_stock_news, save_sector_sentiment, get_open_trades,
+        )
+    except Exception as e:  # noqa: BLE001
+        console.print(f"[dim]News skipped: {e}[/dim]")
+        return {}
+
+    init_db()
+    sector_of = {s.symbol: s.sector for s in signals}
+    targets = {s.symbol for s in signals if s.tier in ("STRONG BUY", "BUY")}
+    targets.update(t["symbol"] for t in get_open_trades())
+    if not targets:
+        return {}
+
+    console.print(f"[cyan]Checking news for {len(targets)} stocks...[/cyan]")
+    news_map, news_rows = {}, []
+    sector_scores: dict[str, list] = {}
+    for sym in targets:
+        agg = score_headlines(fetch_headlines(sym))
+        news_map[sym] = agg
+        news_rows.append({"symbol": sym, "score": agg["score"],
+                          "label": agg["label"], "headline": agg["top_headline"]})
+        sec = sector_of.get(sym)
+        if sec:
+            sector_scores.setdefault(sec, []).append(agg["score"])
+
+    today = _date.today().isoformat()
+    save_stock_news(today, news_rows)
+    sectors = {
+        sec: {"avg": round(sum(v) / len(v), 3),
+              "label": "POSITIVE" if sum(v) / len(v) > 0.1
+              else "NEGATIVE" if sum(v) / len(v) < -0.1 else "NEUTRAL"}
+        for sec, v in sector_scores.items() if v
+    }
+    save_sector_sentiment(today, sectors)
+    return news_map
+
+
+def run_last30days(args) -> None:
+    """Report market / sector / company sentiment over the last N days."""
+    from paper_trading.sqlite_engine import (
+        init_db, get_market_regime, get_sector_sentiment, get_stock_news,
+    )
+    from market_intelligence.regime import (
+        summarize_market, summarize_sectors, summarize_companies,
+    )
+    init_db()
+    days = getattr(args, "days", 30)
+
+    mkt = summarize_market(get_market_regime(), days)
+    console.print(f"\n[bold]═══ LAST {days} DAYS — MARKET MEMORY ═══[/bold]")
+    console.print(f"[bold]Market regime:[/bold] {mkt['label']}  "
+                  f"({mkt['bullish']} bullish / {mkt['bearish']} bearish / {mkt['neutral']} neutral "
+                  f"over {mkt['days']}d, avg {mkt['avg_score']:+.2%}, trend {mkt['trend']})")
+
+    secs = summarize_sectors(get_sector_sentiment(), days)
+    if secs:
+        console.print("\n[bold]Sector sentiment (news-based):[/bold]")
+        for s in secs[:10]:
+            console.print(f"  {s['sector']:24} {s['label']:8} ({s['avg']:+.2f}, {s['n']} obs)")
+
+    comps = summarize_companies(get_stock_news(), days)
+    if comps:
+        console.print("\n[bold]Company sentiment (news-based):[/bold]")
+        for c in comps[:15]:
+            hl = f" — \"{c['headline'][:60]}\"" if c["headline"] else ""
+            console.print(f"  {c['symbol'].replace('.NS',''):12} {c['label']:8} "
+                          f"({c['avg']:+.2f}, {c['n']} obs){hl}")
+
+    if mkt["days"] == 0:
+        console.print("\n[yellow]No history yet — runs accumulate one row per scan day. "
+                      "Check back after a few daily runs.[/yellow]")
 
 
 def run_backtest(args) -> None:
@@ -323,6 +425,8 @@ def main():
         run_sync_sheets(args)
     elif args.command == "backtest":
         run_backtest(args)
+    elif args.command == "last30days":
+        run_last30days(args)
     elif args.command == "dashboard":
         from dashboard.app import app as flask_app
         console.print("[cyan]Starting dashboard at http://localhost:5000[/cyan]")

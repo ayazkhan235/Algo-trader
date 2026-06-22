@@ -139,6 +139,13 @@ def _build_trade_html(executed: list, brief: dict, paper_summary: dict) -> str:
     for t in executed:
         why = "".join(f"<li>{s}</li>" for s in t.get("strengths", [])) or "<li>Passed halal + quality screens</li>"
         tier_col = {"STRONG BUY": "#27ae60", "BUY": "#f39c12"}.get(t["tier"], "#3498db")
+        headline = t.get("news_headline")
+        news_col = {"POSITIVE": "#27ae60", "NEGATIVE": "#e74c3c"}.get(t.get("news_label"), "#888")
+        news_block = (
+            f'<div style="margin-top:6px; color:{news_col};">📰 <i>In the news '
+            f'({t.get("news_label","").title()}):</i> "{headline}"</div>'
+            if headline else ""
+        )
         cards += f"""
         <div style="border:1px solid #eee; border-left:4px solid {tier_col}; padding:10px 14px; margin:10px 0; border-radius:4px;">
           <b>{t['symbol'].replace('.NS','')}</b> — {t.get('name','')}
@@ -146,6 +153,7 @@ def _build_trade_html(executed: list, brief: dict, paper_summary: dict) -> str:
           &nbsp;<span style="color:#888;">score {t['score']:.0f} · {t.get('sector','')}</span><br/>
           Invested ₹{t.get('invested',0):,.0f} · {t.get('qty',0)} sh @ ₹{t['price']:,.2f}
           <div style="margin-top:6px; color:#444;"><i>Why picked:</i><ul style="margin:4px 0;">{why}</ul></div>
+          {news_block}
         </div>"""
 
     paper_line = ""
