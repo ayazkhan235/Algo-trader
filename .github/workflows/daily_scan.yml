@@ -27,6 +27,11 @@ jobs:
       GOOGLE_SERVICE_ACCOUNT_JSON: ${{ secrets.GOOGLE_SERVICE_ACCOUNT_JSON }}
       GOOGLE_SHEET_ID:     ${{ secrets.GOOGLE_SHEET_ID }}
       GSHEET_SHARE_EMAIL:  ${{ secrets.GSHEET_SHARE_EMAIL }}
+      # Email trade notifications (Gmail API OAuth)
+      GMAIL_CLIENT_ID:     ${{ secrets.GMAIL_CLIENT_ID }}
+      GMAIL_CLIENT_SECRET: ${{ secrets.GMAIL_CLIENT_SECRET }}
+      GMAIL_REFRESH_TOKEN: ${{ secrets.GMAIL_REFRESH_TOKEN }}
+      REPORT_EMAIL_TO:     ${{ secrets.REPORT_EMAIL_TO }}
 
     steps:
       - name: Checkout repo

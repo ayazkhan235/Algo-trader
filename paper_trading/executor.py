@@ -14,29 +14,62 @@ from screening.halal_screener import HalalResult
 
 def execute_buy_signals(signals: list[BuySignal]) -> list[dict]:
     """
-    Places paper buy trades for STRONG BUY and BUY signals.
-    Skips if symbol is already held.
+    Places paper buy trades for STRONG BUY and BUY signals within a fixed budget.
+
+    Total open exposure is capped at config.MONTHLY_BUDGET_INR across at most
+    config.MAX_POSITIONS positions. The remaining budget is split equally across
+    the highest-scoring new (not already held) signals. Skips already-held names.
     """
     init_db()
     executed = []
 
-    for sig in signals:
-        if sig.tier not in ("STRONG BUY", "BUY"):
-            continue
-        if is_already_held(sig.symbol):
-            continue
-        if not sig.metrics.get("price"):
-            continue
+    open_trades = get_open_trades()
+    invested = sum(t["position_inr"] for t in open_trades)
+    remaining = config.MONTHLY_BUDGET_INR - invested
+    free_slots = config.MAX_POSITIONS - len(open_trades)
 
+    if remaining <= 0 or free_slots <= 0:
+        print(f"[paper] Budget fully deployed "
+              f"(₹{invested:,.0f}/₹{config.MONTHLY_BUDGET_INR:,.0f}, "
+              f"{len(open_trades)}/{config.MAX_POSITIONS} positions) — no new trades")
+        return executed
+
+    # Highest-conviction, not-yet-held BUY/STRONG BUY signals with a price
+    candidates = [
+        s for s in signals
+        if s.tier in ("STRONG BUY", "BUY")
+        and s.metrics.get("price")
+        and not is_already_held(s.symbol)
+    ]
+    candidates.sort(key=lambda s: s.score, reverse=True)
+    candidates = candidates[:free_slots]
+    if not candidates:
+        return executed
+
+    per_position = remaining / len(candidates)
+
+    for sig in candidates:
+        price = sig.metrics["price"]
         trade_id = open_trade(
             symbol=sig.symbol,
             name=sig.name,
-            entry_price=sig.metrics["price"],
+            entry_price=price,
             signal_tier=sig.tier,
             score=sig.score,
+            position_size_inr=per_position,
         )
-        executed.append({"trade_id": trade_id, "symbol": sig.symbol,
-                         "price": sig.metrics["price"], "tier": sig.tier})
+        executed.append({
+            "trade_id": trade_id,
+            "symbol": sig.symbol,
+            "name": sig.name,
+            "price": price,
+            "tier": sig.tier,
+            "score": sig.score,
+            "sector": sig.sector,
+            "invested": round(per_position, 2),
+            "qty": round(per_position / price, 4),
+            "strengths": list(sig.strengths[:3]),
+        })
 
     return executed
 

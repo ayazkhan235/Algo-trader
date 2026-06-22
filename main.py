@@ -135,10 +135,31 @@ def run_scan(args) -> None:
         if executed:
             console.print(f"[green]Paper trades placed: {len(executed)} new positions[/green]")
             for t in executed:
-                console.print(f"  [green]+[/green] {t['symbol']}  {t['tier']}  ₹{t['price']:,.2f}")
+                console.print(f"  [green]+[/green] {t['symbol']}  {t['tier']}  "
+                              f"₹{t['invested']:,.0f} @ ₹{t['price']:,.2f}")
+            # ── Step 9: Email a short why-summary of the trades just placed ─────
+            _email_trade_summary(executed, metrics)
 
-        # ── Step 9: Sync paper portfolio to Google Sheets ──────────────────────
+        # ── Step 10: Sync paper portfolio to Google Sheets ─────────────────────
         _sync_google_sheets(metrics)
+
+
+def _email_trade_summary(executed: list, metrics: dict) -> None:
+    """Send a short email summarising the executed trades and why (if configured)."""
+    from reports.email_report import send_trade_notification
+    from paper_trading.sqlite_engine import portfolio_summary
+
+    # Market / global context (best-effort — needs network)
+    brief = {}
+    try:
+        from market_intelligence.morning_brief import generate_brief
+        brief = generate_brief()
+    except Exception as e:  # noqa: BLE001
+        console.print(f"[dim]Market brief unavailable for email: {e}[/dim]")
+
+    prices = {s: m["price"] for s, m in metrics.items() if m.get("price")}
+    summary = portfolio_summary(prices)
+    send_trade_notification(executed, brief=brief, paper_summary=summary)
 
 
 def _sync_google_sheets(metrics: dict) -> None:
