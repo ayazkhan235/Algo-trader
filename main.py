@@ -60,6 +60,14 @@ def parse_args():
 
     sub.add_parser("sync-sheets", help="Push paper portfolio to Google Sheets")
 
+    bt = sub.add_parser("backtest", help="Backtest current picks as a monthly SIP vs NIFTY")
+    bt.add_argument("--universe", default="nifty50",
+                    choices=["nifty50", "nifty200", "nifty500"])
+    bt.add_argument("--years", type=int, default=5, help="Years of history (default 5)")
+    bt.add_argument("--amount", type=float, default=config.REAL_MONTHLY_BUDGET_INR,
+                    help="Monthly SIP amount (default = your ₹7k real budget)")
+    bt.add_argument("--mode", choices=["STANDARD", "STRICT_INDIA"], default="STANDARD")
+
     return p.parse_args()
 
 
@@ -200,6 +208,65 @@ def run_portfolio(args) -> None:
     print_portfolio_report(analyses)
 
 
+def run_backtest(args) -> None:
+    """Backtest the current BUY basket as a monthly SIP vs the NIFTY index."""
+    from data.nse_universe import get_symbols
+    from data.fetcher import fetch_batch
+    from screening.halal_screener import screen_batch
+    from analysis.fundamental import compute
+    from analysis.scorer import compute_conviction_score
+    from signals.generator import generate
+    from analysis.backtest import load_monthly_prices, simulate_sip
+
+    config.SCREENING_MODE = args.mode
+
+    console.print(f"[cyan]Selecting current picks from {args.universe}...[/cyan]")
+    symbols = get_symbols(args.universe)
+    data = fetch_batch(symbols, max_workers=config.MAX_WORKERS)
+    halal = screen_batch(data)
+    passed = {s: d for s, d in data.items() if halal[s].passed}
+    metrics = {s: compute(s, d) for s, d in passed.items()}
+    scores = {s: compute_conviction_score(d, metrics[s]) for s, d in passed.items()}
+    signals = generate(data, halal, metrics, scores, min_score=config.BUY_THRESHOLD)
+
+    basket = [s for s in signals if s.tier in ("STRONG BUY", "BUY")]
+    basket.sort(key=lambda s: s.score, reverse=True)
+    basket = basket[:config.MAX_POSITIONS]
+    if not basket:
+        console.print("[red]No BUY signals to backtest.[/red]")
+        return
+
+    basket_syms = [s.symbol for s in basket]
+    console.print(f"[cyan]Backtesting {len(basket_syms)} stocks as ₹{args.amount:,.0f}/mo "
+                  f"SIP over {args.years}y...[/cyan]")
+
+    months, prices = load_monthly_prices(basket_syms, args.years)
+    bench_months, bench_prices = load_monthly_prices(["^NSEI"], args.years)
+
+    strat = simulate_sip(months, prices, args.amount)
+    bench = simulate_sip(bench_months, bench_prices, args.amount)
+
+    def _line(label, r):
+        ann = f"{r['annual_return']:+.1%}/yr" if r["annual_return"] is not None else "n/a"
+        console.print(f"  {label:18} invested ₹{r['invested']:,.0f}  →  "
+                      f"₹{r['final_value']:,.0f}  ({r['return_pct']:+.1%}, {ann})")
+
+    console.print("\n[bold]═══ BACKTEST (monthly SIP) ═══[/bold]")
+    _line("Strategy basket", strat)
+    _line("NIFTY 50", bench)
+    edge = strat["return_pct"] - bench["return_pct"]
+    verdict = "[green]beat[/green]" if edge > 0 else "[red]lagged[/red]"
+    console.print(f"\n  Strategy {verdict} NIFTY by {edge:+.1%} over the period.")
+
+    console.print("\n  [bold]Per-stock (final value):[/bold]")
+    for sym, b in strat["breakdown"].items():
+        console.print(f"    {sym.replace('.NS',''):12} ₹{b['value']:>9,.0f}  "
+                      f"({b['shares']} sh @ ₹{b['last_price']:,.2f})")
+
+    console.print("\n[yellow]⚠ Look-ahead/survivorship bias: basket chosen with today's "
+                  "fundamentals. Treat as an optimistic sanity check, not a guarantee.[/yellow]")
+
+
 def run_sync_sheets(args) -> None:
     """Fetch live prices for held positions and push the portfolio to Google Sheets."""
     from integrations import gsheets
@@ -254,6 +321,8 @@ def main():
         run_paper(args)
     elif args.command == "sync-sheets":
         run_sync_sheets(args)
+    elif args.command == "backtest":
+        run_backtest(args)
     elif args.command == "dashboard":
         from dashboard.app import app as flask_app
         console.print("[cyan]Starting dashboard at http://localhost:5000[/cyan]")
