@@ -42,3 +42,13 @@ def test_trade_rows_closed_position_blanks_live_fields():
 def test_snapshot_and_daily_headers():
     assert gsheets.build_snapshot_rows([])[0] == gsheets.SNAP_HEADER
     assert gsheets.build_daily_rows([])[0] == gsheets.DAILY_HEADER
+
+
+def test_benchmark_return_from_nifty_levels():
+    snaps = [{"nifty": 20000.0}, {"nifty": 21000.0}, {"nifty": 22000.0}]
+    assert gsheets.benchmark_return(snaps) == 0.1   # 20000 -> 22000 = +10%
+
+
+def test_benchmark_return_none_without_data():
+    assert gsheets.benchmark_return([{"nifty": None}]) is None
+    assert gsheets.benchmark_return([]) is None
