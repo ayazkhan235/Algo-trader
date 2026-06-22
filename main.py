@@ -58,6 +58,8 @@ def parse_args():
 
     sub.add_parser("dashboard", help="Launch web dashboard")
 
+    sub.add_parser("sync-sheets", help="Push paper portfolio to Google Sheets")
+
     return p.parse_args()
 
 
@@ -177,6 +179,33 @@ def run_portfolio(args) -> None:
     print_portfolio_report(analyses)
 
 
+def run_sync_sheets(args) -> None:
+    """Fetch live prices for held positions and push the portfolio to Google Sheets."""
+    from integrations import gsheets
+    from paper_trading.sqlite_engine import init_db, get_open_trades
+    from data.fetcher import fetch_batch
+
+    if not gsheets.is_configured():
+        console.print("[red]Google Sheets not configured. Set GOOGLE_SERVICE_ACCOUNT_JSON "
+                      "or GOOGLE_APPLICATION_CREDENTIALS.[/red]")
+        return
+
+    init_db()
+    open_trades = get_open_trades()
+    prices: dict[str, float] = {}
+    if open_trades:
+        symbols = sorted({t["symbol"] for t in open_trades})
+        console.print(f"[cyan]Fetching live prices for {len(symbols)} held positions...[/cyan]")
+        data = fetch_batch(symbols, max_workers=config.MAX_WORKERS)
+        for s, d in data.items():
+            cp = (d or {}).get("info", {}).get("current_price")
+            if cp:
+                prices[s] = cp
+
+    url = gsheets.sync(prices)
+    console.print(f"[green]Google Sheet updated:[/green] {url}")
+
+
 def run_paper(args) -> None:
     from paper_trading.executor import print_portfolio_summary
     from paper_trading.sqlite_engine import get_all_trades
@@ -202,6 +231,8 @@ def main():
         run_portfolio(args)
     elif args.command == "paper":
         run_paper(args)
+    elif args.command == "sync-sheets":
+        run_sync_sheets(args)
     elif args.command == "dashboard":
         from dashboard.app import app as flask_app
         console.print("[cyan]Starting dashboard at http://localhost:5000[/cyan]")

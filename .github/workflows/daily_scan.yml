@@ -20,6 +20,13 @@ jobs:
       UPSTOX_REDIRECT_URI: "http://127.0.0.1:8080/callback"
       UPSTOX_SANDBOX:      "true"
       POSITION_SIZE_INR:   "5000"
+      # Shared persistent store (Render Postgres) — keeps paper history across runs.
+      # Falls back to committed sqlite DB if unset.
+      DATABASE_URL:        ${{ secrets.DATABASE_URL }}
+      # Google Sheets dashboard
+      GOOGLE_SERVICE_ACCOUNT_JSON: ${{ secrets.GOOGLE_SERVICE_ACCOUNT_JSON }}
+      GOOGLE_SHEET_ID:     ${{ secrets.GOOGLE_SHEET_ID }}
+      GSHEET_SHARE_EMAIL:  ${{ secrets.GSHEET_SHARE_EMAIL }}
 
     steps:
       - name: Checkout repo
@@ -136,12 +143,19 @@ jobs:
               json.dump(out, f, indent=2, default=str)
           EOF
 
+      # ── Step 4b: Sync paper portfolio to Google Sheets ───────────────────────
+      - name: Sync to Google Sheets
+        if: env.GOOGLE_SERVICE_ACCOUNT_JSON != ''
+        run: python main.py sync-sheets
+
       # ── Step 5: Commit results ────────────────────────────────────────────────
       - name: Commit results
         run: |
           git config user.name  "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
+          # Persist the saved sheet id and (when no Postgres) the sqlite paper DB
           git add output/
+          git add -f output/gsheet_id.txt output/paper_trades.db 2>/dev/null || true
           git diff --cached --quiet || git commit -m "chore: scan $(date -u '+%Y-%m-%d') [skip ci]"
           git push
 
