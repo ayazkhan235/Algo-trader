@@ -131,10 +131,35 @@ def _share(drive, sheet_id: str) -> None:
         print(f"[gsheets] Could not share sheet with {email}: {e}")
 
 
+def _is_valid_sheet(sheets, sheet_id: str) -> bool:
+    try:
+        sheets.spreadsheets().get(
+            spreadsheetId=sheet_id, fields="spreadsheetId"
+        ).execute()
+        return True
+    except Exception:  # noqa: BLE001 — 404 / permission / bad id
+        return False
+
+
 def _ensure_spreadsheet(sheets, drive) -> str:
-    sheet_id = _saved_sheet_id()
-    if sheet_id:
-        return sheet_id
+    # Try the configured id (env first, then the persisted file). If a
+    # candidate is missing/invalid (e.g. a stale GOOGLE_SHEET_ID secret), skip
+    # it and fall through to creating a fresh spreadsheet.
+    candidates = []
+    env_id = os.getenv("GOOGLE_SHEET_ID", "").strip()
+    if env_id:
+        candidates.append(env_id)
+    if os.path.exists(SHEET_ID_FILE):
+        with open(SHEET_ID_FILE) as f:
+            file_id = f.read().strip()
+        if file_id and file_id not in candidates:
+            candidates.append(file_id)
+
+    for sid in candidates:
+        if _is_valid_sheet(sheets, sid):
+            _persist_sheet_id(sid)
+            return sid
+        print(f"[gsheets] Configured sheet '{sid}' not found/accessible — creating a new one.")
 
     body = {
         "properties": {"title": "Algo-Trader Paper Trades"},
