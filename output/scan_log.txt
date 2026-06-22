@@ -45,4 +45,24 @@ Computing fundamentals for 22 halal stocks...
 ││         │       │ ││ │ │  │  ││              │ 3 year                       │
 ╰┴─────────┴───────┴─┴┴─┴─┴──┴──┴┴──────────────┴──────────────────────────────╯
 [report] CSV exported → output/signals_2026-06-22.csv
---no-execute: skipping trade placement (CI mode)
+[paper] OPEN  COALINDIA.NS @ ₹449.00  qty=22.2717  tier=BUY  score=71  id=1
+[paper] OPEN  WIPRO.NS @ ₹180.18  qty=55.5001  tier=BUY  score=68  id=2
+[paper] OPEN  INFY.NS @ ₹1065.40  qty=9.3861  tier=BUY  score=64  id=3
+[paper] OPEN  BAJAJ-AUTO.NS @ ₹10191.00  qty=0.9813  tier=BUY  score=63  id=4
+[paper] OPEN  EICHERMOT.NS @ ₹7639.50  qty=1.3090  tier=BUY  score=63  id=5
+[paper] OPEN  TECHM.NS @ ₹1435.20  qty=6.9677  tier=BUY  score=60  id=6
+Paper trades placed: 6 new positions
+  + COALINDIA.NS  BUY  ₹449.00
+  + WIPRO.NS  BUY  ₹180.18
+  + INFY.NS  BUY  ₹1,065.40
+  + BAJAJ-AUTO.NS  BUY  ₹10,191.00
+  + EICHERMOT.NS  BUY  ₹7,639.50
+  + TECHM.NS  BUY  ₹1,435.20
+[gsheets] Configured sheet 'DATABASE_URL' not found/accessible — creating a new one.
+Google Sheets sync failed: Could not create a spreadsheet. Service accounts have
+no personal Google Drive, so auto-create often fails with a 403. Instead, create
+a blank Google Sheet yourself, share it (Editor) with the service account email,
+and set GOOGLE_SHEET_ID to that sheet's id. Original error: <HttpError 403 when 
+requesting https://sheets.googleapis.com/v4/spreadsheets?alt=json returned "The 
+caller does not have permission". Details: "The caller does not have 
+permission">
