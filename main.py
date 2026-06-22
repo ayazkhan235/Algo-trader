@@ -135,6 +135,23 @@ def run_scan(args) -> None:
             for t in executed:
                 console.print(f"  [green]+[/green] {t['symbol']}  {t['tier']}  ₹{t['price']:,.2f}")
 
+        # ── Step 9: Sync paper portfolio to Google Sheets ──────────────────────
+        _sync_google_sheets(metrics)
+
+
+def _sync_google_sheets(metrics: dict) -> None:
+    """Mirror the paper portfolio + dashboard to Google Sheets (if configured)."""
+    from integrations import gsheets
+    if not gsheets.is_configured():
+        console.print("[dim]Google Sheets sync skipped (no credentials configured)[/dim]")
+        return
+    prices = {s: m["price"] for s, m in metrics.items() if m.get("price")}
+    try:
+        url = gsheets.sync(prices)
+        console.print(f"[green]Google Sheet updated:[/green] {url}")
+    except Exception as e:  # noqa: BLE001
+        console.print(f"[red]Google Sheets sync failed: {e}[/red]")
+
 
 def run_brief(args) -> None:
     from market_intelligence.morning_brief import generate_brief, print_brief
