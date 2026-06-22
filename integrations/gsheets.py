@@ -170,7 +170,16 @@ def _ensure_spreadsheet(sheets, drive) -> str:
             {"properties": {"title": SNAP_TAB}},
         ],
     }
-    ss = sheets.spreadsheets().create(body=body).execute()
+    try:
+        ss = sheets.spreadsheets().create(body=body).execute()
+    except Exception as e:  # noqa: BLE001
+        raise RuntimeError(
+            "Could not create a spreadsheet. Service accounts have no personal "
+            "Google Drive, so auto-create often fails with a 403. Instead, create "
+            "a blank Google Sheet yourself, share it (Editor) with the service "
+            "account email, and set GOOGLE_SHEET_ID to that sheet's id. "
+            f"Original error: {e}"
+        ) from e
     sheet_id = ss["spreadsheetId"]
     _persist_sheet_id(sheet_id)
     _share(drive, sheet_id)
