@@ -106,6 +106,11 @@ def init_db() -> None:
                 closed_trades   INTEGER
             );
             """)
+        # Migration: add NIFTY benchmark column to snapshots if missing
+        try:
+            cur.execute("ALTER TABLE portfolio_snapshots ADD COLUMN nifty REAL")
+        except Exception:  # noqa: BLE001 — column already exists
+            pass
         con.commit()
     finally:
         con.close()
@@ -253,8 +258,13 @@ def record_daily_prices(prices: dict[str, float]) -> None:
         con.close()
 
 
-def save_snapshot(current_prices: dict[str, float] = None) -> dict:
-    """Upsert one portfolio snapshot row for today (idempotent per day)."""
+def save_snapshot(current_prices: dict[str, float] = None,
+                  nifty_level: float = None) -> dict:
+    """Upsert one portfolio snapshot row for today (idempotent per day).
+
+    nifty_level: current NIFTY 50 index level, stored so the dashboard can show
+    the portfolio's performance vs the index since inception.
+    """
     s = portfolio_summary(current_prices)
     today = date.today().isoformat()
     ph = placeholder()
@@ -267,10 +277,11 @@ def save_snapshot(current_prices: dict[str, float] = None) -> dict:
         cur.execute(
             f"""INSERT INTO portfolio_snapshots
                (date, total_invested, total_value, total_pnl, total_pnl_pct,
-                open_positions, closed_trades)
-               VALUES ({ph}, {ph}, {ph}, {ph}, {ph}, {ph}, {ph})""",
+                open_positions, closed_trades, nifty)
+               VALUES ({ph}, {ph}, {ph}, {ph}, {ph}, {ph}, {ph}, {ph})""",
             (today, s["total_invested"], s["total_value"], s["total_pnl_inr"],
-             round(total_pnl_pct, 4), s["open_positions"], s["closed_trades"]),
+             round(total_pnl_pct, 4), s["open_positions"], s["closed_trades"],
+             nifty_level),
         )
         con.commit()
     finally:

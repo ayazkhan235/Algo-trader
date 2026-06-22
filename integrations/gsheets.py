@@ -49,7 +49,7 @@ TRADES_HEADER = [
 DAILY_HEADER = ["Date", "Symbol", "Trade ID", "Price", "P&L (INR)", "P&L %"]
 SNAP_HEADER = [
     "Date", "Total Invested", "Total Value", "Total P&L (INR)", "Total P&L %",
-    "Open Positions", "Closed Trades",
+    "Open Positions", "Closed Trades", "NIFTY 50",
 ]
 
 
@@ -253,8 +253,28 @@ def build_snapshot_rows(snaps: list[dict]) -> list[list]:
             s["date"], _num(s.get("total_invested")), _num(s.get("total_value")),
             _num(s.get("total_pnl")), _num(s.get("total_pnl_pct")),
             _num(s.get("open_positions")), _num(s.get("closed_trades")),
+            _num(s.get("nifty")),
         ])
     return rows
+
+
+def benchmark_return(snaps: list[dict]) -> float:
+    """NIFTY 50 return since inception, from the first/last stored index level."""
+    levels = [_num(s.get("nifty")) for s in snaps if _num(s.get("nifty"))]
+    if len(levels) >= 1 and levels[0]:
+        return round((levels[-1] / levels[0]) - 1, 4)
+    return None
+
+
+def fetch_nifty_level() -> float:
+    """Latest NIFTY 50 index level (best-effort, needs network)."""
+    try:
+        import yfinance as yf
+        hist = yf.Ticker("^NSEI").history(period="5d")["Close"].dropna()
+        return float(hist.iloc[-1]) if len(hist) else None
+    except Exception as e:  # noqa: BLE001
+        print(f"[gsheets] NIFTY level fetch failed: {e}")
+        return None
 
 
 # ─────────────────────────────────────────────────────────────────────────────
@@ -272,10 +292,10 @@ def _rewrite_tab(sheets, sheet_id: str, tab: str, rows: list[list]) -> None:
     ).execute()
 
 
-def _write_dashboard(sheets, sheet_id: str, tab_ids: dict) -> None:
+def _write_dashboard(sheets, sheet_id: str, tab_ids: dict, nifty_return=None) -> None:
     """Formula-driven dashboard referencing the data tabs."""
     t = f"'{TRADES_TAB}'"
-    s = f"'{SNAP_TAB}'"
+    nifty_cell = nifty_return if nifty_return is not None else ""
     rows = [
         ["ALGO-TRADER PAPER PORTFOLIO", "", f"Updated: {date.today().isoformat()}"],
         [],
@@ -286,6 +306,8 @@ def _write_dashboard(sheets, sheet_id: str, tab_ids: dict) -> None:
         ["Realized P&L (INR)", f"=SUM({t}!R2:R)"],
         ["Total P&L (INR)", "=B5+B6"],
         ["Total % Change", "=IFERROR(B7/B3,0)"],
+        ["NIFTY 50 since inception", nifty_cell],
+        ["Strategy vs NIFTY", "=IF(ISNUMBER(B9),B8-B9,\"awaiting data\")"],
         ["Open Positions", f"=COUNTIF({t}!N2:N,\"OPEN\")"],
         ["Closed Trades", f"=COUNTIF({t}!N2:N,\"CLOSED\")"],
         ["Win Rate (closed)",
@@ -323,14 +345,15 @@ def _format_dashboard(sheets, sheet_id: str, tab_ids: dict) -> None:
             "range": {"sheetId": dash, "startRowIndex": 0, "endRowIndex": 1},
             "cell": {"userEnteredFormat": {"textFormat": {"bold": True, "fontSize": 12}}},
             "fields": "userEnteredFormat.textFormat"}},
-        # % cells: B8 (Total % Change) and B12 (Avg Open %)
+        # % cells: B8 Total %, B9 NIFTY %, B10 Strategy vs NIFTY
         {"repeatCell": {
-            "range": {"sheetId": dash, "startRowIndex": 7, "endRowIndex": 8,
+            "range": {"sheetId": dash, "startRowIndex": 7, "endRowIndex": 10,
                       "startColumnIndex": 1, "endColumnIndex": 2},
             "cell": {"userEnteredFormat": pct_fmt},
             "fields": "userEnteredFormat.numberFormat"}},
+        # % cells: B13 Win Rate, B14 Avg Open %
         {"repeatCell": {
-            "range": {"sheetId": dash, "startRowIndex": 10, "endRowIndex": 12,
+            "range": {"sheetId": dash, "startRowIndex": 12, "endRowIndex": 14,
                       "startColumnIndex": 1, "endColumnIndex": 2},
             "cell": {"userEnteredFormat": pct_fmt},
             "fields": "userEnteredFormat.numberFormat"}},
@@ -369,17 +392,18 @@ def sync(current_prices: dict[str, float] = None) -> str:
     current_prices = current_prices or {}
     init_db()
     record_daily_prices(current_prices)
-    save_snapshot(current_prices)
+    save_snapshot(current_prices, nifty_level=fetch_nifty_level())
 
     sheets, drive = _services()
     sheet_id = _ensure_spreadsheet(sheets, drive)
     tab_ids = _ensure_tabs(sheets, sheet_id)
 
+    snaps = get_all_snapshots()
     _rewrite_tab(sheets, sheet_id, TRADES_TAB,
                  build_trade_rows(get_all_trades(), current_prices))
     _rewrite_tab(sheets, sheet_id, DAILY_TAB, build_daily_rows(get_all_daily_pnl()))
-    _rewrite_tab(sheets, sheet_id, SNAP_TAB, build_snapshot_rows(get_all_snapshots()))
-    _write_dashboard(sheets, sheet_id, tab_ids)
+    _rewrite_tab(sheets, sheet_id, SNAP_TAB, build_snapshot_rows(snaps))
+    _write_dashboard(sheets, sheet_id, tab_ids, nifty_return=benchmark_return(snaps))
 
     url = f"https://docs.google.com/spreadsheets/d/{sheet_id}"
     print(f"[gsheets] Synced to {url}")
