@@ -21,6 +21,7 @@ python main.py portfolio       # analyse real holdings (CSV/Upstox)
 python main.py paper [--history]   # show paper portfolio
 python main.py sync-sheets     # push paper portfolio to Google Sheets
 python main.py backtest --universe nifty50 --years 5 --amount 7000  # SIP vs NIFTY
+python main.py last30days [--days 30]  # market/sector/company sentiment memory
 python main.py dashboard       # Flask web dashboard (localhost:5000)
 ```
 Key `scan` flags: `--no-execute` (signals only, no trades), `--live` (real Upstox
@@ -34,7 +35,7 @@ orders, asks per order), `--output csv|none`, `--detail SYMBOL`, `--show-rejecte
 - `paper_trading/` — `sqlite_engine.py` (trades / daily_pnl / portfolio_snapshots; SQLite or Postgres via `DATABASE_URL`), `executor.py` (budget-aware buy/sell), `db.py`
 - `integrations/gsheets.py` — service-account Sheets sync + dashboard
 - `reports/` — `cli_report.py`, `csv_report.py`, `email_report.py` (Gmail API)
-- `market_intelligence/` — `morning_brief.py`, `pre_market.py`, `india_macro.py` (VIX/FII), `crypto_pulse.py`
+- `market_intelligence/` — `morning_brief.py`, `pre_market.py`, `india_macro.py` (VIX/FII), `crypto_pulse.py`, `sentiment.py` (keyword news scoring + yfinance headlines), `regime.py` (market snapshot + 30-day market/sector/company summarisers)
 - `brokers/` — Upstox live executor (sandbox/live)
 
 ## Paper trading & budget model
@@ -88,3 +89,9 @@ to be testable without network.
 - **NIFTY benchmark tracker**: snapshots store the NIFTY level; dashboard shows "NIFTY 50 since inception" and "Strategy vs NIFTY".
 - CI: `daily_scan.yml` records paper trades + syncs sheet + emails (Upstox order step removed); secrets wired.
 - Fix: SyntaxError in `morning_brief.print_brief` (nested f-string backslash).
+
+## Changelog — added 2026-06-22 (market memory + news)
+- **Market memory**: each scan logs a `market_regime` row (global indices + India VIX + FII) → `last30days` command + `/last30days` skill report market/sector/company sentiment over N days. New DB tables `market_regime`, `sector_sentiment`, `stock_news`; **Market Regime** tab added to the Sheet.
+- **News-aware picks**: `market_intelligence/sentiment.py` pulls free yfinance headlines and keyword-scores them; `executor.execute_buy_signals(signals, news_map)` nudges ranking by news (bounded ±5) and stores the headline (`trades.news` column, **News** column in the Sheet).
+- Trade email now quotes the actual headline behind each buy.
+- Tests: `test_sentiment.py`, `test_regime.py` (pure scoring/summarising).

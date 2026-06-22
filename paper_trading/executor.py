@@ -12,15 +12,24 @@ from signals.generator import BuySignal
 from screening.halal_screener import HalalResult
 
 
-def execute_buy_signals(signals: list[BuySignal]) -> list[dict]:
+def effective_score(base_score: float, news: dict, max_bonus: float = 5.0) -> float:
+    """Conviction score nudged by news sentiment (bounded ±max_bonus)."""
+    if not news:
+        return base_score
+    return base_score + max(-max_bonus, min(max_bonus, news.get("score", 0.0) * max_bonus))
+
+
+def execute_buy_signals(signals: list[BuySignal], news_map: dict = None) -> list[dict]:
     """
     Places paper buy trades for STRONG BUY and BUY signals within a fixed budget.
 
     Total open exposure is capped at config.MONTHLY_BUDGET_INR across at most
-    config.MAX_POSITIONS positions. The remaining budget is split equally across
-    the highest-scoring new (not already held) signals. Skips already-held names.
+    config.MAX_POSITIONS positions. Candidates are ranked by conviction score
+    nudged by recent news sentiment (news_map = {symbol: {score,label,top_headline}}),
+    then the remaining budget is split equally across the top picks.
     """
     init_db()
+    news_map = news_map or {}
     executed = []
 
     open_trades = get_open_trades()
@@ -41,7 +50,7 @@ def execute_buy_signals(signals: list[BuySignal]) -> list[dict]:
         and s.metrics.get("price")
         and not is_already_held(s.symbol)
     ]
-    candidates.sort(key=lambda s: s.score, reverse=True)
+    candidates.sort(key=lambda s: effective_score(s.score, news_map.get(s.symbol)), reverse=True)
     candidates = candidates[:free_slots]
     if not candidates:
         return executed
@@ -50,6 +59,8 @@ def execute_buy_signals(signals: list[BuySignal]) -> list[dict]:
 
     for sig in candidates:
         price = sig.metrics["price"]
+        news = news_map.get(sig.symbol) or {}
+        headline = news.get("top_headline") or ""
         trade_id = open_trade(
             symbol=sig.symbol,
             name=sig.name,
@@ -57,6 +68,7 @@ def execute_buy_signals(signals: list[BuySignal]) -> list[dict]:
             signal_tier=sig.tier,
             score=sig.score,
             position_size_inr=per_position,
+            news=headline or None,
         )
         executed.append({
             "trade_id": trade_id,
@@ -69,6 +81,8 @@ def execute_buy_signals(signals: list[BuySignal]) -> list[dict]:
             "invested": round(per_position, 2),
             "qty": round(per_position / price, 4),
             "strengths": list(sig.strengths[:3]),
+            "news_headline": headline,
+            "news_label": news.get("label", ""),
         })
 
     return executed

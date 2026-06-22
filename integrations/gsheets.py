@@ -39,17 +39,22 @@ TRADES_TAB = "Trades"
 DAILY_TAB = "Daily P&L"
 SNAP_TAB = "Snapshots"
 DASH_TAB = "Dashboard"
+REGIME_TAB = "Market Regime"
 
 TRADES_HEADER = [
     "Trade ID", "Symbol", "Name", "Entry Date", "Entry Price", "Quantity",
     "Invested (INR)", "Tier", "Score", "Current Price", "Current Value (INR)",
     "Unrealized P&L (INR)", "% Change", "Status", "Exit Date", "Exit Price",
-    "Exit Reason", "Realized P&L (INR)", "Realized %", "Hold Days",
+    "Exit Reason", "Realized P&L (INR)", "Realized %", "Hold Days", "News",
 ]
 DAILY_HEADER = ["Date", "Symbol", "Trade ID", "Price", "P&L (INR)", "P&L %"]
 SNAP_HEADER = [
     "Date", "Total Invested", "Total Value", "Total P&L (INR)", "Total P&L %",
     "Open Positions", "Closed Trades", "NIFTY 50",
+]
+REGIME_HEADER = [
+    "Date", "Sentiment", "Avg Score", "S&P 500", "Dow", "Nasdaq", "Nikkei",
+    "Hang Seng", "India VIX", "FII Signal",
 ]
 
 
@@ -193,7 +198,7 @@ def _ensure_tabs(sheets, sheet_id: str) -> dict:
     existing = {s["properties"]["title"]: s["properties"]["sheetId"] for s in meta["sheets"]}
     requests = [
         {"addSheet": {"properties": {"title": t}}}
-        for t in (DASH_TAB, TRADES_TAB, DAILY_TAB, SNAP_TAB) if t not in existing
+        for t in (DASH_TAB, TRADES_TAB, DAILY_TAB, SNAP_TAB, REGIME_TAB) if t not in existing
     ]
     if requests:
         sheets.spreadsheets().batchUpdate(
@@ -229,9 +234,21 @@ def build_trade_rows(trades: list[dict], prices: dict[str, float]) -> list[list]
             _num(t.get("score")), cur, cur_val, unreal, pct, t["status"],
             t.get("exit_date") or "", _num(t.get("exit_price")),
             t.get("exit_reason") or "", _num(t.get("pnl_inr")),
-            _num(t.get("pnl_pct")), _num(t.get("hold_days")),
+            _num(t.get("pnl_pct")), _num(t.get("hold_days")), t.get("news") or "",
         ])
     return rows
+
+
+def build_regime_rows(rows: list[dict]) -> list[list]:
+    out = [REGIME_HEADER]
+    for r in rows:
+        out.append([
+            r.get("date"), r.get("sentiment"), _num(r.get("score")),
+            _num(r.get("sp500")), _num(r.get("dow")), _num(r.get("nasdaq")),
+            _num(r.get("nikkei")), _num(r.get("hangseng")),
+            _num(r.get("india_vix")), r.get("fii_signal") or "",
+        ])
+    return out
 
 
 def build_daily_rows(daily: list[dict]) -> list[list]:
@@ -403,6 +420,11 @@ def sync(current_prices: dict[str, float] = None) -> str:
                  build_trade_rows(get_all_trades(), current_prices))
     _rewrite_tab(sheets, sheet_id, DAILY_TAB, build_daily_rows(get_all_daily_pnl()))
     _rewrite_tab(sheets, sheet_id, SNAP_TAB, build_snapshot_rows(snaps))
+    try:
+        from paper_trading.sqlite_engine import get_market_regime
+        _rewrite_tab(sheets, sheet_id, REGIME_TAB, build_regime_rows(get_market_regime()))
+    except Exception as e:  # noqa: BLE001
+        print(f"[gsheets] Market Regime tab skipped: {e}")
     _write_dashboard(sheets, sheet_id, tab_ids, nifty_return=benchmark_return(snaps))
 
     url = f"https://docs.google.com/spreadsheets/d/{sheet_id}"
