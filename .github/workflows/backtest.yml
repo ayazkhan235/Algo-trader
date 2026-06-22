@@ -1,0 +1,43 @@
+name: Backtest (current picks vs NIFTY)
+
+on:
+  workflow_dispatch:
+    inputs:
+      universe:
+        description: "Universe to pick from"
+        default: "nifty50"
+        type: choice
+        options: ["nifty50", "nifty200", "nifty500"]
+      years:
+        description: "Years of history"
+        default: "5"
+      amount:
+        description: "Monthly SIP amount (INR)"
+        default: "7000"
+
+jobs:
+  backtest:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+          cache: pip
+      - name: Install dependencies
+        run: pip install -r requirements.txt
+      - name: Run backtest
+        run: |
+          python main.py backtest \
+            --universe "${{ inputs.universe }}" \
+            --years "${{ inputs.years }}" \
+            --amount "${{ inputs.amount }}" \
+          2>&1 | tee output/backtest.txt
+      - name: Job summary
+        if: always()
+        run: |
+          echo '## Backtest result' >> $GITHUB_STEP_SUMMARY
+          echo '```' >> $GITHUB_STEP_SUMMARY
+          cat output/backtest.txt >> $GITHUB_STEP_SUMMARY || true
+          echo '```' >> $GITHUB_STEP_SUMMARY

@@ -20,6 +20,18 @@ jobs:
       UPSTOX_REDIRECT_URI: "http://127.0.0.1:8080/callback"
       UPSTOX_SANDBOX:      "true"
       POSITION_SIZE_INR:   "5000"
+      # Shared persistent store (Render Postgres) — keeps paper history across runs.
+      # Falls back to committed sqlite DB if unset.
+      DATABASE_URL:        ${{ secrets.DATABASE_URL }}
+      # Google Sheets dashboard
+      GOOGLE_SERVICE_ACCOUNT_JSON: ${{ secrets.GOOGLE_SERVICE_ACCOUNT_JSON }}
+      GOOGLE_SHEET_ID:     ${{ secrets.GOOGLE_SHEET_ID }}
+      GSHEET_SHARE_EMAIL:  ${{ secrets.GSHEET_SHARE_EMAIL }}
+      # Email trade notifications (Gmail API OAuth)
+      GMAIL_CLIENT_ID:     ${{ secrets.GMAIL_CLIENT_ID }}
+      GMAIL_CLIENT_SECRET: ${{ secrets.GMAIL_CLIENT_SECRET }}
+      GMAIL_REFRESH_TOKEN: ${{ secrets.GMAIL_REFRESH_TOKEN }}
+      REPORT_EMAIL_TO:     ${{ secrets.REPORT_EMAIL_TO }}
 
     steps:
       - name: Checkout repo
@@ -34,19 +46,10 @@ jobs:
       - name: Install dependencies
         run: pip install -r requirements.txt
 
-      # ── Step 1: Verify token is available ────────────────────────────────────
-      - name: Check Upstox token
-        run: |
-          if [ -z "$UPSTOX_ACCESS_TOKEN" ]; then
-            echo "::error::UPSTOX_ACCESS_TOKEN secret is not set."
-            echo "::error::Go to Upstox developer portal → Sandbox → your app → Get Token"
-            echo "::error::Then add it as GitHub Secret: UPSTOX_ACCESS_TOKEN"
-            exit 1
-          fi
-          echo "::notice::Upstox access token found ✓"
-
-      # ── Step 2: Run the halal scan ───────────────────────────────────────────
-      - name: Run halal stock scan (Nifty 50)
+      # ── Step 1: Run the halal scan + record paper trades + sync to Sheets ─────
+      # Running without --no-execute records BUY/STRONG BUY signals as paper
+      # trades in the DB, then automatically syncs the portfolio to Google Sheets.
+      - name: Run halal scan, record paper trades & sync to Google Sheets
         run: |
           python main.py scan \
             --universe nifty50 \
@@ -54,74 +57,9 @@ jobs:
             --min-score 50 \
             --output csv \
             --mode STANDARD \
-            --no-execute \
           2>&1 | tee output/scan_log.txt
 
-      # ── Step 3: Place paper orders on Upstox Sandbox ────────────────────────
-      - name: Place paper trades on Upstox Sandbox
-        run: |
-          python - <<'EOF'
-          import os, json, sys, math
-          sys.path.insert(0, ".")
-          import config
-
-          config.LIVE_POSITION_SIZE_INR = int(os.getenv("POSITION_SIZE_INR", 5000))
-
-          from data.nse_universe import get_symbols
-          from data.fetcher import fetch_batch
-          from screening.halal_screener import screen_batch
-          from analysis.fundamental import compute
-          from analysis.scorer import compute_conviction_score
-          from signals.generator import generate
-
-          symbols = get_symbols("nifty50")
-          data    = fetch_batch(symbols, max_workers=5)
-          halal   = screen_batch(data)
-          passed  = {s: d for s, d in data.items() if halal[s].passed}
-          metrics = {s: compute(s, d) for s, d in passed.items()}
-          scores  = {s: compute_conviction_score(d, metrics[s]) for s, d in passed.items()}
-          signals = generate(data, halal, metrics, scores, min_score=50)
-
-          from brokers import upstox_broker
-
-          placed = []
-
-          for sig in signals:
-              if sig.tier not in ("STRONG BUY", "BUY"):
-                  continue
-              price = sig.metrics.get("price")
-              if not price:
-                  continue
-              sym = sig.symbol.replace(".NS", "")
-
-              qty = max(1, math.floor(config.LIVE_POSITION_SIZE_INR / price))
-              key = upstox_broker.get_instrument_key(sym)
-              if not key:
-                  print(f"  [skip] {sym} — instrument key not found on Upstox")
-                  continue
-              try:
-                  result = upstox_broker.place_market_buy(sym, qty, key)
-                  order_id = result.get("data", {}).get("order_id", "?")
-                  print(f"  [ORDER] {sym}  {sig.tier}  score={sig.score:.0f}  qty={qty}  order_id={order_id}")
-                  placed.append({
-                      "symbol": sym, "tier": sig.tier,
-                      "score": round(sig.score, 1),
-                      "qty": qty, "price": price,
-                      "order_value": qty * price,
-                      "order_id": order_id,
-                  })
-              except Exception as e:
-                  print(f"  [FAIL]  {sym} — {e}")
-
-          os.makedirs("output", exist_ok=True)
-          from datetime import date
-          log_file = f"output/upstox_orders_{date.today()}.json"
-          with open(log_file, "w") as f:
-              json.dump(placed, f, indent=2)
-          print(f"\n[done] {len(placed)} new orders placed → {log_file}")
-          EOF
-
-      # ── Step 4: Portfolio snapshot ────────────────────────────────────────────
+      # ── Step 2: Portfolio snapshot ────────────────────────────────────────────
       - name: Save portfolio snapshot
         run: |
           python - <<'EOF'
@@ -141,7 +79,9 @@ jobs:
         run: |
           git config user.name  "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
+          # Persist the saved sheet id and (when no Postgres) the sqlite paper DB
           git add output/
+          git add -f output/gsheet_id.txt output/paper_trades.db 2>/dev/null || true
           git diff --cached --quiet || git commit -m "chore: scan $(date -u '+%Y-%m-%d') [skip ci]"
           git push
 

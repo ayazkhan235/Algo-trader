@@ -122,6 +122,96 @@ def _build_html(brief: dict, signals: list, paper_summary: dict) -> str:
     """
 
 
+def _build_trade_html(executed: list, brief: dict, paper_summary: dict) -> str:
+    today = date.today().strftime("%A, %d %b %Y")
+    sentiment = (brief or {}).get("overall_sentiment", "UNKNOWN")
+    colour = {"BULLISH": "#27ae60", "BEARISH": "#e74c3c", "NEUTRAL": "#f39c12"}.get(sentiment, "#999")
+
+    # External market / global context
+    context_items = "".join(f"<li>{line}</li>" for line in (brief or {}).get("summary_lines", []))
+    context_block = (
+        f"<h3>🌏 Market &amp; Global Context</h3><ul>{context_items}</ul>"
+        if context_items else ""
+    )
+
+    # Per-trade cards with the "why"
+    cards = ""
+    for t in executed:
+        why = "".join(f"<li>{s}</li>" for s in t.get("strengths", [])) or "<li>Passed halal + quality screens</li>"
+        tier_col = {"STRONG BUY": "#27ae60", "BUY": "#f39c12"}.get(t["tier"], "#3498db")
+        cards += f"""
+        <div style="border:1px solid #eee; border-left:4px solid {tier_col}; padding:10px 14px; margin:10px 0; border-radius:4px;">
+          <b>{t['symbol'].replace('.NS','')}</b> — {t.get('name','')}
+          <span style="color:{tier_col}; font-weight:bold;"> {t['tier']}</span>
+          &nbsp;<span style="color:#888;">score {t['score']:.0f} · {t.get('sector','')}</span><br/>
+          Invested ₹{t.get('invested',0):,.0f} · {t.get('qty',0)} sh @ ₹{t['price']:,.2f}
+          <div style="margin-top:6px; color:#444;"><i>Why picked:</i><ul style="margin:4px 0;">{why}</ul></div>
+        </div>"""
+
+    paper_line = ""
+    if paper_summary:
+        paper_line = (
+            f"Open: {paper_summary.get('open_positions', 0)} | "
+            f"Invested: ₹{paper_summary.get('total_invested', 0):,.0f} | "
+            f"P&L: ₹{paper_summary.get('open_pnl_inr', 0):+,.0f} "
+            f"({paper_summary.get('open_pnl_pct', 0):+.1%})"
+        )
+
+    return f"""
+    <html><body style="font-family: Arial, sans-serif; max-width: 700px; margin: 0 auto; color: #222;">
+    <h2 style="border-left: 4px solid {colour}; padding-left: 10px;">
+      Paper Trades Executed — {today}
+      <span style="font-size:0.8em; color:{colour}"> {sentiment}</span>
+    </h2>
+    <p>{len(executed)} new position(s) opened within your ₹{config.MONTHLY_BUDGET_INR:,.0f} budget.</p>
+    {context_block}
+    <h3>🛒 What was bought &amp; why</h3>
+    {cards}
+    {f'<h3>📋 Paper Portfolio</h3><p>{paper_line}</p>' if paper_line else ''}
+    <hr style="margin-top:24px"/>
+    <p style="font-size:0.75em; color:#999">
+      Automated paper-trade notification. Informational only — not investment advice. DYOR.
+    </p>
+    </body></html>
+    """
+
+
+def send_trade_notification(
+    executed: list,
+    brief: dict = None,
+    paper_summary: dict = None,
+    to_email: str = None,
+) -> bool:
+    """Email a short summary of the trades just executed and why."""
+    if not executed:
+        return False
+    to = to_email or config.REPORT_EMAIL_TO
+    if not to:
+        print("[email] No recipient configured — set REPORT_EMAIL_TO in .env")
+        return False
+    if not config.GMAIL_REFRESH_TOKEN:
+        print("[email] Gmail not configured — set GMAIL_REFRESH_TOKEN in .env")
+        return False
+
+    try:
+        service = _get_gmail_service()
+        html = _build_trade_html(executed, brief or {}, paper_summary or {})
+
+        msg = MIMEMultipart("alternative")
+        msg["Subject"] = f"Paper Trades — {date.today().strftime('%d %b')} — {len(executed)} new position(s)"
+        msg["From"]    = "me"
+        msg["To"]      = to
+        msg.attach(MIMEText(html, "html"))
+
+        raw = base64.urlsafe_b64encode(msg.as_bytes()).decode()
+        service.users().messages().send(userId="me", body={"raw": raw}).execute()
+        print(f"[email] Trade notification sent to {to}")
+        return True
+    except Exception as e:
+        print(f"[email] Failed to send trade notification: {e}")
+        return False
+
+
 def send_daily_report(
     brief: dict,
     signals: list,

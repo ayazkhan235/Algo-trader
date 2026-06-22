@@ -234,6 +234,8 @@ def record_daily_prices(prices: dict[str, float]) -> None:
     con = get_connection()
     try:
         cur = con.cursor()
+        # Idempotent per day: clear today's rows before re-recording
+        cur.execute(f"DELETE FROM daily_pnl WHERE date={ph}", (today,))
         for trade in open_trades:
             sym = trade["symbol"]
             price = prices.get(sym)
@@ -247,6 +249,51 @@ def record_daily_prices(prices: dict[str, float]) -> None:
                 (today, sym, trade["id"], price, pnl_inr, pnl_pct),
             )
         con.commit()
+    finally:
+        con.close()
+
+
+def save_snapshot(current_prices: dict[str, float] = None) -> dict:
+    """Upsert one portfolio snapshot row for today (idempotent per day)."""
+    s = portfolio_summary(current_prices)
+    today = date.today().isoformat()
+    ph = placeholder()
+    total_pnl_pct = (s["total_pnl_inr"] / s["total_invested"]) if s["total_invested"] else 0.0
+
+    con = get_connection()
+    try:
+        cur = con.cursor()
+        cur.execute(f"DELETE FROM portfolio_snapshots WHERE date={ph}", (today,))
+        cur.execute(
+            f"""INSERT INTO portfolio_snapshots
+               (date, total_invested, total_value, total_pnl, total_pnl_pct,
+                open_positions, closed_trades)
+               VALUES ({ph}, {ph}, {ph}, {ph}, {ph}, {ph}, {ph})""",
+            (today, s["total_invested"], s["total_value"], s["total_pnl_inr"],
+             round(total_pnl_pct, 4), s["open_positions"], s["closed_trades"]),
+        )
+        con.commit()
+    finally:
+        con.close()
+    return s
+
+
+def get_all_daily_pnl() -> list[dict]:
+    con = get_connection()
+    try:
+        cur = con.cursor()
+        cur.execute("SELECT * FROM daily_pnl ORDER BY date, symbol")
+        return [dict(r) for r in cur.fetchall()]
+    finally:
+        con.close()
+
+
+def get_all_snapshots() -> list[dict]:
+    con = get_connection()
+    try:
+        cur = con.cursor()
+        cur.execute("SELECT * FROM portfolio_snapshots ORDER BY date")
+        return [dict(r) for r in cur.fetchall()]
     finally:
         con.close()
 

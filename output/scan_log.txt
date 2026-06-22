@@ -45,4 +45,21 @@ Computing fundamentals for 22 halal stocks...
 ││         │       │ ││ │ │  │  ││              │ 3 year                       │
 ╰┴─────────┴───────┴─┴┴─┴─┴──┴──┴┴──────────────┴──────────────────────────────╯
 [report] CSV exported → output/signals_2026-06-22.csv
---no-execute: skipping trade placement (CI mode)
+[paper] OPEN  COALINDIA.NS @ ₹449.00  qty=3.1180  tier=BUY  score=71  id=1
+[paper] OPEN  WIPRO.NS @ ₹180.18  qty=7.7700  tier=BUY  score=68  id=2
+[paper] OPEN  INFY.NS @ ₹1065.40  qty=1.3141  tier=BUY  score=64  id=3
+[paper] OPEN  BAJAJ-AUTO.NS @ ₹10191.00  qty=0.1374  tier=BUY  score=63  id=4
+[paper] OPEN  EICHERMOT.NS @ ₹7639.50  qty=0.1833  tier=BUY  score=63  id=5
+Paper trades placed: 5 new positions
+  + COALINDIA.NS  BUY  ₹1,400 @ ₹449.00
+  + WIPRO.NS  BUY  ₹1,400 @ ₹180.18
+  + INFY.NS  BUY  ₹1,400 @ ₹1,065.40
+  + BAJAJ-AUTO.NS  BUY  ₹1,400 @ ₹10,191.00
+  + EICHERMOT.NS  BUY  ₹1,400 @ ₹7,639.50
+Market brief unavailable for email: f-string expression part cannot include a 
+backslash (morning_brief.py, line 140)
+[email] No recipient configured — set REPORT_EMAIL_TO in .env
+[gsheets] Synced to https://docs.google.com/spreadsheets/d/1SdSWMOdyG-hSD940ZYLTk-fb5IsVGAIvodWgVIku5Dg
+Google Sheet updated: 
+https://docs.google.com/spreadsheets/d/1SdSWMOdyG-hSD940ZYLTk-fb5IsVGAIvodWgVIku
+5Dg
