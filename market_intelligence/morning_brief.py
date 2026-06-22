@@ -137,7 +137,8 @@ def print_brief(brief: dict) -> None:
     if events:
         console.print("\n  [bold]Upcoming Events:[/bold]")
         for ev in events[:3]:
-            console.print(f"    {'TODAY' if ev['days_away'] == 0 else f'In {ev[\"days_away\"]}d'}: {ev['event']}")
+            when = "TODAY" if ev["days_away"] == 0 else f"In {ev['days_away']}d"
+            console.print(f"    {when}: {ev['event']}")
 
     # Sector impact
     impacts = brief.get("sector_impact", {})
