@@ -1,64 +1,130 @@
 Loading nifty50 universe...
 [universe] Loaded 50 symbols for 'nifty50'
 Fetching data for 50 stocks...
-[fetcher] 50/50 fetched, 50 valid
-[fetcher] Complete: 50/50 symbols returned data
+HTTP Error 401: {"finance":{"result":null,"error":{"code":"Unauthorized","description":"Invalid Crumb"}}}
+HTTP Error 401: {"finance":{"result":null,"error":{"code":"Unauthorized","description":"Invalid Crumb"}}}
+HTTP Error 401: {"finance":{"result":null,"error":{"code":"Unauthorized","description":"Invalid Crumb"}}}
+HTTP Error 401: {"finance":{"result":null,"error":{"code":"Unauthorized","description":"Invalid Crumb"}}}
+HTTP Error 401: {"finance":{"result":null,"error":{"code":"Unauthorized","description":"Invalid Crumb"}}}
+HTTP Error 401: {"finance":{"result":null,"error":{"code":"Unauthorized","description":"Invalid Crumb"}}}
+HTTP Error 401: {"finance":{"result":null,"error":{"code":"Unauthorized","description":"Invalid Crumb"}}}
+HTTP Error 401: {"finance":{"result":null,"error":{"code":"Unauthorized","description":"Invalid Crumb"}}}
+HTTP Error 401: {"finance":{"result":null,"error":{"code":"Unauthorized","description":"User is unable to access this feature - https://bit.ly/yahoo-finance-api-feedback"}}}
+HTTP Error 401: {"finance":{"result":null,"error":{"code":"Unauthorized","description":"User is unable to access this feature - https://bit.ly/yahoo-finance-api-feedback"}}}
+HTTP Error 401: {"finance":{"result":null,"error":{"code":"Unauthorized","description":"User is unable to access this feature - https://bit.ly/yahoo-finance-api-feedback"}}}
+HTTP Error 401: {"finance":{"result":null,"error":{"code":"Unauthorized","description":"User is unable to access this feature - https://bit.ly/yahoo-finance-api-feedback"}}}
+HTTP Error 401: {"finance":{"result":null,"error":{"code":"Unauthorized","description":"User is unable to access this feature - https://bit.ly/yahoo-finance-api-feedback"}}}
+HTTP Error 401: {"finance":{"result":null,"error":{"code":"Unauthorized","description":"User is unable to access this feature - https://bit.ly/yahoo-finance-api-feedback"}}}
+HTTP Error 401: {"finance":{"result":null,"error":{"code":"Unauthorized","description":"User is unable to access this feature - https://bit.ly/yahoo-finance-api-feedback"}}}
+HTTP Error 401: {"finance":{"result":null,"error":{"code":"Unauthorized","description":"Invalid Crumb"}}}
+HTTP Error 401: {"finance":{"result":null,"error":{"code":"Unauthorized","description":"Invalid Crumb"}}}
+HTTP Error 401: {"finance":{"result":null,"error":{"code":"Unauthorized","description":"Invalid Crumb"}}}
+HTTP Error 401: {"finance":{"result":null,"error":{"code":"Unauthorized","description":"Invalid Crumb"}}}
+HTTP Error 401: {"finance":{"result":null,"error":{"code":"Unauthorized","description":"Invalid Crumb"}}}
+HTTP Error 401: {"finance":{"result":null,"error":{"code":"Unauthorized","description":"Invalid Crumb"}}}
+HTTP Error 401: {"finance":{"result":null,"error":{"code":"Unauthorized","description":"Invalid Crumb"}}}
+HTTP Error 401: {"finance":{"result":null,"error":{"code":"Unauthorized","description":"User is unable to access this feature - https://bit.ly/yahoo-finance-api-feedback"}}}
+HTTP Error 401: {"finance":{"result":null,"error":{"code":"Unauthorized","description":"User is unable to access this feature - https://bit.ly/yahoo-finance-api-feedback"}}}
+HTTP Error 401: {"finance":{"result":null,"error":{"code":"Unauthorized","description":"User is unable to access this feature - https://bit.ly/yahoo-finance-api-feedback"}}}
+HTTP Error 401: {"finance":{"result":null,"error":{"code":"Unauthorized","description":"User is unable to access this feature - https://bit.ly/yahoo-finance-api-feedback"}}}
+HTTP Error 401: {"finance":{"result":null,"error":{"code":"Unauthorized","description":"User is unable to access this feature - https://bit.ly/yahoo-finance-api-feedback"}}}
+HTTP Error 401: {"finance":{"result":null,"error":{"code":"Unauthorized","description":"User is unable to access this feature - https://bit.ly/yahoo-finance-api-feedback"}}}
+HTTP Error 401: {"finance":{"result":null,"error":{"code":"Unauthorized","description":"Invalid Crumb"}}}
+HTTP Error 401: {"finance":{"result":null,"error":{"code":"Unauthorized","description":"Invalid Crumb"}}}
+HTTP Error 401: {"finance":{"result":null,"error":{"code":"Unauthorized","description":"Invalid Crumb"}}}
+HTTP Error 401: {"finance":{"result":null,"error":{"code":"Unauthorized","description":"Invalid Crumb"}}}
+HTTP Error 401: {"finance":{"result":null,"error":{"code":"Unauthorized","description":"Invalid Crumb"}}}
+HTTP Error 401: {"finance":{"result":null,"error":{"code":"Unauthorized","description":"Invalid Crumb"}}}
+HTTP Error 401: {"finance":{"result":null,"error":{"code":"Unauthorized","description":"User is unable to access this feature - https://bit.ly/yahoo-finance-api-feedback"}}}
+HTTP Error 401: {"finance":{"result":null,"error":{"code":"Unauthorized","description":"User is unable to access this feature - https://bit.ly/yahoo-finance-api-feedback"}}}
+HTTP Error 401: {"finance":{"result":null,"error":{"code":"Unauthorized","description":"User is unable to access this feature - https://bit.ly/yahoo-finance-api-feedback"}}}
+HTTP Error 401: {"finance":{"result":null,"error":{"code":"Unauthorized","description":"Invalid Crumb"}}}
+HTTP Error 401: {"finance":{"result":null,"error":{"code":"Unauthorized","description":"User is unable to access this feature - https://bit.ly/yahoo-finance-api-feedback"}}}
+HTTP Error 401: {"finance":{"result":null,"error":{"code":"Unauthorized","description":"Invalid Crumb"}}}
+HTTP Error 401: {"finance":{"result":null,"error":{"code":"Unauthorized","description":"User is unable to access this feature - https://bit.ly/yahoo-finance-api-feedback"}}}
+HTTP Error 401: {"finance":{"result":null,"error":{"code":"Unauthorized","description":"User is unable to access this feature - https://bit.ly/yahoo-finance-api-feedback"}}}
+HTTP Error 401: {"finance":{"result":null,"error":{"code":"Unauthorized","description":"User is unable to access this feature - https://bit.ly/yahoo-finance-api-feedback"}}}
+HTTP Error 401: {"finance":{"result":null,"error":{"code":"Unauthorized","description":"Invalid Crumb"}}}
+HTTP Error 401: {"finance":{"result":null,"error":{"code":"Unauthorized","description":"Invalid Crumb"}}}
+HTTP Error 401: {"finance":{"result":null,"error":{"code":"Unauthorized","description":"User is unable to access this feature - https://bit.ly/yahoo-finance-api-feedback"}}}
+HTTP Error 401: {"finance":{"result":null,"error":{"code":"Unauthorized","description":"Invalid Crumb"}}}
+HTTP Error 401: {"finance":{"result":null,"error":{"code":"Unauthorized","description":"Invalid Crumb"}}}
+HTTP Error 401: {"finance":{"result":null,"error":{"code":"Unauthorized","description":"User is unable to access this feature - https://bit.ly/yahoo-finance-api-feedback"}}}
+HTTP Error 401: {"finance":{"result":null,"error":{"code":"Unauthorized","description":"User is unable to access this feature - https://bit.ly/yahoo-finance-api-feedback"}}}
+HTTP Error 401: {"finance":{"result":null,"error":{"code":"Unauthorized","description":"Invalid Crumb"}}}
+HTTP Error 401: {"finance":{"result":null,"error":{"code":"Unauthorized","description":"User is unable to access this feature - https://bit.ly/yahoo-finance-api-feedback"}}}
+HTTP Error 401: {"finance":{"result":null,"error":{"code":"Unauthorized","description":"Invalid Crumb"}}}
+HTTP Error 401: {"finance":{"result":null,"error":{"code":"Unauthorized","description":"Invalid Crumb"}}}
+HTTP Error 401: {"finance":{"result":null,"error":{"code":"Unauthorized","description":"Invalid Crumb"}}}
+HTTP Error 401: {"finance":{"result":null,"error":{"code":"Unauthorized","description":"User is unable to access this feature - https://bit.ly/yahoo-finance-api-feedback"}}}
+HTTP Error 401: {"finance":{"result":null,"error":{"code":"Unauthorized","description":"User is unable to access this feature - https://bit.ly/yahoo-finance-api-feedback"}}}
+HTTP Error 401: {"finance":{"result":null,"error":{"code":"Unauthorized","description":"User is unable to access this feature - https://bit.ly/yahoo-finance-api-feedback"}}}
+HTTP Error 401: {"finance":{"result":null,"error":{"code":"Unauthorized","description":"Invalid Crumb"}}}
+HTTP Error 401: {"finance":{"result":null,"error":{"code":"Unauthorized","description":"User is unable to access this feature - https://bit.ly/yahoo-finance-api-feedback"}}}
+[fetcher] Error fetching ADANIENT.NS: Too Many Requests. Rate limited. Try after a while.
+[fetcher] Error fetching AXISBANK.NS: Too Many Requests. Rate limited. Try after a while.
+[fetcher] Error fetching APOLLOHOSP.NS: Too Many Requests. Rate limited. Try after a while.
+[fetcher] Error fetching BAJAJ-AUTO.NS: argument of type 'NoneType' is not iterable
+[fetcher] Error fetching BAJAJFINSV.NS: argument of type 'NoneType' is not iterable
+[fetcher] Error fetching ASIANPAINT.NS: argument of type 'NoneType' is not iterable
+[fetcher] Error fetching BHARTIARTL.NS: argument of type 'NoneType' is not iterable
+[fetcher] Error fetching ADANIPORTS.NS: argument of type 'NoneType' is not iterable
+[fetcher] Error fetching BAJFINANCE.NS: argument of type 'NoneType' is not iterable
+[fetcher] Error fetching CIPLA.NS: Too Many Requests. Rate limited. Try after a while.
+[fetcher] Error fetching BEL.NS: argument of type 'NoneType' is not iterable
+[fetcher] Error fetching COALINDIA.NS: Too Many Requests. Rate limited. Try after a while.
+[fetcher] Error fetching DRREDDY.NS: Too Many Requests. Rate limited. Try after a while.
+[fetcher] Error fetching HDFCBANK.NS: Too Many Requests. Rate limited. Try after a while.
+[fetcher] Error fetching ICICIBANK.NS: Too Many Requests. Rate limited. Try after a while.
+[fetcher] Error fetching ETERNAL.NS: argument of type 'NoneType' is not iterable
+[fetcher] Error fetching GRASIM.NS: argument of type 'NoneType' is not iterable
+[fetcher] Error fetching HINDUNILVR.NS: argument of type 'NoneType' is not iterable
+[fetcher] Error fetching HINDALCO.NS: argument of type 'NoneType' is not iterable
+[fetcher] Error fetching HDFCLIFE.NS: Too Many Requests. Rate limited. Try after a while.
+[fetcher] Error fetching HCLTECH.NS: argument of type 'NoneType' is not iterable
+[fetcher] Error fetching EICHERMOT.NS: argument of type 'NoneType' is not iterable
+[fetcher] Error fetching INFY.NS: Too Many Requests. Rate limited. Try after a while.
+[fetcher] Error fetching ITC.NS: Too Many Requests. Rate limited. Try after a while.
+[fetcher] Error fetching JSWSTEEL.NS: Too Many Requests. Rate limited. Try after a while.
+[fetcher] Error fetching MAXHEALTH.NS: Too Many Requests. Rate limited. Try after a while.
+[fetcher] Error fetching INDIGO.NS: argument of type 'NoneType' is not iterable
+[fetcher] Error fetching LT.NS: argument of type 'NoneType' is not iterable
+[fetcher] Error fetching KOTAKBANK.NS: Too Many Requests. Rate limited. Try after a while.
+[fetcher] Error fetching MARUTI.NS: argument of type 'NoneType' is not iterable
+[fetcher] Error fetching M&M.NS: argument of type 'NoneType' is not iterable
+[fetcher] Error fetching ONGC.NS: Too Many Requests. Rate limited. Try after a while.
+[fetcher] Error fetching JIOFIN.NS: argument of type 'NoneType' is not iterable
+[fetcher] Error fetching NESTLEIND.NS: argument of type 'NoneType' is not iterable
+[fetcher] Error fetching POWERGRID.NS: Too Many Requests. Rate limited. Try after a while.
+[fetcher] Error fetching NTPC.NS: argument of type 'NoneType' is not iterable
+[fetcher] Error fetching SBILIFE.NS: Too Many Requests. Rate limited. Try after a while.
+[fetcher] Error fetching RELIANCE.NS: argument of type 'NoneType' is not iterable
+[fetcher] Error fetching TATACONSUM.NS: Too Many Requests. Rate limited. Try after a while.
+[fetcher] Error fetching SBIN.NS: argument of type 'NoneType' is not iterable
+[fetcher] Error fetching SUNPHARMA.NS: argument of type 'NoneType' is not iterable
+[fetcher] Error fetching TATASTEEL.NS: Too Many Requests. Rate limited. Try after a while.
+[fetcher] Error fetching TMPV.NS: Too Many Requests. Rate limited. Try after a while.
+[fetcher] Error fetching SHRIRAMFIN.NS: argument of type 'NoneType' is not iterable
+[fetcher] Error fetching TCS.NS: argument of type 'NoneType' is not iterable
+[fetcher] Error fetching ULTRACEMCO.NS: Too Many Requests. Rate limited. Try after a while.
+[fetcher] Error fetching TECHM.NS: argument of type 'NoneType' is not iterable
+[fetcher] Error fetching TRENT.NS: argument of type 'NoneType' is not iterable
+[fetcher] Error fetching TITAN.NS: argument of type 'NoneType' is not iterable
+[fetcher] Error fetching WIPRO.NS: Too Many Requests. Rate limited. Try after a while.
+[fetcher] 50/50 fetched, 0 valid
+[fetcher] Complete: 0/50 symbols returned data
 Running halal screen...
-[halal] 22/50 stocks passed halal screening
-Computing fundamentals for 22 halal stocks...
+[halal] 0/0 stocks passed halal screening
+Computing fundamentals for 0 halal stocks...
 
 ═══ NSE HALAL ALGO TRADER ═══
-  Universe: 50 stocks  →  Halal: 22  →  Quality gates: 11  →  Signals: 10
+  Universe: 50 stocks  →  Halal: 0  →  Quality gates: 0  →  Signals: 0
 
                                   Buy Signals                                   
 ╭┬─────────┬───────┬─┬┬─┬─┬──┬──┬┬──────────────┬──────────────────────────────╮
 ││ Symbol  │ Sign… │ ││ │ │  │  ││ Sector       │ Top Strength                 │
 ├┼─────────┼───────┼─┼┼─┼─┼──┼──┼┼──────────────┼──────────────────────────────┤
-││ COALIN… │ BUY   │ ││ │ │  │  ││ Energy       │ Strong ROE of 28.1% —        │
-││         │       │ ││ │ │  │  ││              │ efficient cap                │
-├┼─────────┼───────┼─┼┼─┼─┼──┼──┼┼──────────────┼──────────────────────────────┤
-││ WIPRO   │ BUY   │ ││ │ │  │  ││ Technology   │ High FCF yield of 6.1% —     │
-││         │       │ ││ │ │  │  ││              │ strong cas                   │
-├┼─────────┼───────┼─┼┼─┼─┼──┼──┼┼──────────────┼──────────────────────────────┤
-││ INFY    │ BUY   │ ││ │ │  │  ││ Technology   │ Strong ROE of 31.4% —        │
-││         │       │ ││ │ │  │  ││              │ efficient cap                │
-├┼─────────┼───────┼─┼┼─┼─┼──┼──┼┼──────────────┼──────────────────────────────┤
-││ BAJAJ-… │ BUY   │ ││ │ │  │  ││ Consumer     │ Strong ROE of 28.0% —        │
-││         │       │ ││ │ │  │  ││ Cyclical     │ efficient cap                │
-├┼─────────┼───────┼─┼┼─┼─┼──┼──┼┼──────────────┼──────────────────────────────┤
-││ EICHER… │ BUY   │ ││ │ │  │  ││ Consumer     │ Strong ROE of 23.8% —        │
-││         │       │ ││ │ │  │  ││ Cyclical     │ efficient cap                │
-├┼─────────┼───────┼─┼┼─┼─┼──┼──┼┼──────────────┼──────────────────────────────┤
-││ TECHM   │ BUY   │ ││ │ │  │  ││ Technology   │ Strong financial health:     │
-││         │       │ ││ │ │  │  ││              │ Piotroski                    │
-├┼─────────┼───────┼─┼┼─┼─┼──┼──┼┼──────────────┼──────────────────────────────┤
-││ SUNPHA… │ WATCH │ ││ │ │  │  ││ Healthcare   │ Gross margin expanding —     │
-││         │       │ ││ │ │  │  ││              │ pricing po                   │
-├┼─────────┼───────┼─┼┼─┼─┼──┼──┼┼──────────────┼──────────────────────────────┤
-││ HCLTECH │ WATCH │ ││ │ │  │  ││ Technology   │ Strong ROE of 23.4% —        │
-││         │       │ ││ │ │  │  ││              │ efficient cap                │
-├┼─────────┼───────┼─┼┼─┼─┼──┼──┼┼──────────────┼──────────────────────────────┤
-││ MARUTI  │ WATCH │ ││ │ │  │  ││ Consumer     │ Revenue grew 16.6% CAGR over │
-││         │       │ ││ │ │  │  ││ Cyclical     │ 3 year                       │
-├┼─────────┼───────┼─┼┼─┼─┼──┼──┼┼──────────────┼──────────────────────────────┤
-││ LT      │ WATCH │ ││ │ │  │  ││ Industrials  │ Revenue grew 16.1% CAGR over │
-││         │       │ ││ │ │  │  ││              │ 3 year                       │
 ╰┴─────────┴───────┴─┴┴─┴─┴──┴──┴┴──────────────┴──────────────────────────────╯
-[report] CSV exported → output/signals_2026-06-22.csv
-[paper] OPEN  COALINDIA.NS @ ₹449.00  qty=3.1180  tier=BUY  score=71  id=1
-[paper] OPEN  WIPRO.NS @ ₹180.18  qty=7.7700  tier=BUY  score=68  id=2
-[paper] OPEN  INFY.NS @ ₹1065.40  qty=1.3141  tier=BUY  score=64  id=3
-[paper] OPEN  BAJAJ-AUTO.NS @ ₹10191.00  qty=0.1374  tier=BUY  score=63  id=4
-[paper] OPEN  EICHERMOT.NS @ ₹7639.50  qty=0.1833  tier=BUY  score=63  id=5
-Paper trades placed: 5 new positions
-  + COALINDIA.NS  BUY  ₹1,400 @ ₹449.00
-  + WIPRO.NS  BUY  ₹1,400 @ ₹180.18
-  + INFY.NS  BUY  ₹1,400 @ ₹1,065.40
-  + BAJAJ-AUTO.NS  BUY  ₹1,400 @ ₹10,191.00
-  + EICHERMOT.NS  BUY  ₹1,400 @ ₹7,639.50
-Market brief unavailable for email: f-string expression part cannot include a 
-backslash (morning_brief.py, line 140)
-[email] No recipient configured — set REPORT_EMAIL_TO in .env
 [gsheets] Synced to https://docs.google.com/spreadsheets/d/1SdSWMOdyG-hSD940ZYLTk-fb5IsVGAIvodWgVIku5Dg
 Google Sheet updated: 
 https://docs.google.com/spreadsheets/d/1SdSWMOdyG-hSD940ZYLTk-fb5IsVGAIvodWgVIku
