@@ -1,6 +1,6 @@
 HTTP Error 404: {"quoteSummary":{"result":null,"error":{"code":"Not Found","description":"Quote not found for symbol: ^SG30"}}}
 $^SG30: possibly delisted; no price data found  (period=2d) (Yahoo error = "No data found, symbol may be delisted")
-Global market: BEARISH (avg -0.88%, India VIX 12.6875)
+Global market: BEARISH (avg -1.35%, India VIX 13.765)
 Loading nifty50 universe...
 [universe] Loaded 50 symbols for 'nifty50'
 Fetching data for 50 stocks...
@@ -20,7 +20,7 @@ Computing fundamentals for 22 halal stocks...
 ││ COALIN… │ BUY   │ ││ │ │  │  ││ Energy       │ Strong ROE of 28.1% —        │
 ││         │       │ ││ │ │  │  ││              │ efficient cap                │
 ├┼─────────┼───────┼─┼┼─┼─┼──┼──┼┼──────────────┼──────────────────────────────┤
-││ WIPRO   │ BUY   │ ││ │ │  │  ││ Technology   │ High FCF yield of 6.2% —     │
+││ WIPRO   │ BUY   │ ││ │ │  │  ││ Technology   │ High FCF yield of 6.3% —     │
 ││         │       │ ││ │ │  │  ││              │ strong cas                   │
 ├┼─────────┼───────┼─┼┼─┼─┼──┼──┼┼──────────────┼──────────────────────────────┤
 ││ INFY    │ BUY   │ ││ │ │  │  ││ Technology   │ Strong ROE of 31.4% —        │
@@ -49,25 +49,7 @@ Computing fundamentals for 22 halal stocks...
 ╰┴─────────┴───────┴─┴┴─┴─┴──┴──┴┴──────────────┴──────────────────────────────╯
 [report] CSV exported → output/signals_2026-06-23.csv
 Checking news for 6 stocks...
-[paper] OPEN  COALINDIA.NS @ ₹448.55  qty=37.1568  tier=BUY  score=71  id=1
-[paper] OPEN  WIPRO.NS @ ₹178.77  qty=93.2297  tier=BUY  score=68  id=2
-[paper] OPEN  EICHERMOT.NS @ ₹7665.00  qty=2.1744  tier=BUY  score=63  id=3
-[paper] OPEN  BAJAJ-AUTO.NS @ ₹10233.00  qty=1.6287  tier=BUY  score=63  id=4
-[paper] OPEN  TECHM.NS @ ₹1423.60  qty=11.7074  tier=BUY  score=60  id=5
-[paper] OPEN  INFY.NS @ ₹1040.50  qty=16.0179  tier=BUY  score=64  id=6
-Paper trades placed: 6 new positions
-  + COALINDIA.NS  BUY  ₹16,667 @ ₹448.55
-  + WIPRO.NS  BUY  ₹16,667 @ ₹178.77
-  + EICHERMOT.NS  BUY  ₹16,667 @ ₹7,665.00
-  + BAJAJ-AUTO.NS  BUY  ₹16,667 @ ₹10,233.00
-  + TECHM.NS  BUY  ₹16,667 @ ₹1,423.60
-  + INFY.NS  BUY  ₹16,667 @ ₹1,040.50
-[email] No recipient configured — set REPORT_EMAIL_TO in .env
-[gsheets] Configured sheet '1SdSWMOdyG-hSD940ZYLTk-fb5IsVGAIvodWgVIku5Dg' not found/accessible — creating a new one.
-Google Sheets sync failed: Could not create a spreadsheet. Service accounts have
-no personal Google Drive, so auto-create often fails with a 403. Instead, create
-a blank Google Sheet yourself, share it (Editor) with the service account email,
-and set GOOGLE_SHEET_ID to that sheet's id. Original error: <HttpError 403 when 
-requesting https://sheets.googleapis.com/v4/spreadsheets?alt=json returned "The 
-caller does not have permission". Details: "The caller does not have 
-permission">
+[gsheets] Synced to https://docs.google.com/spreadsheets/d/1SdSWMOdyG-hSD940ZYLTk-fb5IsVGAIvodWgVIku5Dg
+Google Sheet updated: 
+https://docs.google.com/spreadsheets/d/1SdSWMOdyG-hSD940ZYLTk-fb5IsVGAIvodWgVIku
+5Dg
