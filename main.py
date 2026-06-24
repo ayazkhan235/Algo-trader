@@ -154,11 +154,45 @@ def run_scan(args) -> None:
             for t in executed:
                 console.print(f"  [green]+[/green] {t['symbol']}  {t['tier']}  "
                               f"₹{t['invested']:,.0f} @ ₹{t['price']:,.2f}")
-            # ── Step 9: Email a short why-summary of the trades just placed ─────
-            _email_trade_summary(executed, metrics)
 
-        # ── Step 10: Sync paper portfolio to Google Sheets ─────────────────────
+        # ── Step 9: Sync paper portfolio to Google Sheets ──────────────────────
         _sync_google_sheets(metrics)
+
+        # ── Step 10: Email a daily portfolio digest (always, even no new trades) ─
+        _email_daily_digest(executed, metrics)
+
+
+def _email_daily_digest(executed: list, metrics: dict) -> None:
+    """Email all current holdings + % change + vs NIFTY every run (if configured)."""
+    from reports.email_report import send_portfolio_digest
+    from paper_trading.sqlite_engine import (
+        get_open_trades, portfolio_summary, get_all_snapshots,
+    )
+    from integrations.gsheets import benchmark_return
+
+    prices = {s: m["price"] for s, m in metrics.items() if m.get("price")}
+    holdings = []
+    for t in get_open_trades():
+        entry = t["entry_price"]
+        price = prices.get(t["symbol"], entry)
+        holdings.append({
+            "symbol": t["symbol"], "name": t.get("name") or "",
+            "entry": entry, "qty": t["quantity"], "price": price,
+            "value": price * t["quantity"],
+            "pct": (price / entry - 1) if entry else 0.0,
+        })
+
+    brief = {}
+    try:
+        from market_intelligence.morning_brief import generate_brief
+        brief = generate_brief()
+    except Exception as e:  # noqa: BLE001
+        console.print(f"[dim]Market brief unavailable for digest: {e}[/dim]")
+
+    summary = portfolio_summary(prices)
+    nifty_return = benchmark_return(get_all_snapshots())
+    send_portfolio_digest(holdings, summary, brief=brief,
+                          nifty_return=nifty_return, executed=executed)
 
 
 def _email_trade_summary(executed: list, metrics: dict) -> None:

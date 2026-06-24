@@ -50,7 +50,8 @@ orders, asks per order), `--output csv|none`, `--detail SYMBOL`, `--show-rejecte
 - Dashboard shows: totals, **Total % Change**, **NIFTY 50 since inception**, **Strategy vs NIFTY**, win rate, top movers, equity-curve chart.
 
 ## Email notifications
-- `reports/email_report.send_trade_notification` emails after trades execute: per-stock "why" (strengths) + market/global context (sentiment, S&P 500, India VIX, FII/DII, crude, USD/INR) + portfolio summary.
+- `reports/email_report.send_portfolio_digest` emails a **daily digest every run** (even with no new trades): all current holdings with live % change, totals, and **vs NIFTY since inception**, plus market/global context and any new buys that day.
+- `reports/email_report.send_trade_notification` (legacy) emails only after trades execute: per-stock "why" (strengths) + market/global context + portfolio summary.
 - Needs Gmail OAuth: `GMAIL_CLIENT_ID/SECRET/REFRESH_TOKEN` (one-time `setup_gmail()`), `REPORT_EMAIL_TO`. Silently skips if unconfigured.
 
 ## Backtest
