@@ -60,12 +60,13 @@ SELL_ROE_FLOOR = 0.10
 SELL_DRAWDOWN_STOP = -0.30
 MAX_PE_SELL = 60
 POSITION_SIZE_INR = 10_000          # (legacy) per-trade size, fallback only
-# Paper money is free, so the VALIDATION portfolio is sized larger to build a
-# meaningful track record faster. Your real-money plan is ₹7k/month (see
-# REAL_MONTHLY_BUDGET_INR) — that cap only applies when trading live.
-MONTHLY_BUDGET_INR = 100_000        # Paper validation capital to deploy
-MAX_POSITIONS = 15                  # Max concurrent open positions; budget split across these
-REAL_MONTHLY_BUDGET_INR = 7_000     # Your actual monthly real-money budget (live only)
+# Paper trading mirrors the real plan: a fresh MONTHLY_BUDGET_INR is deployed
+# each calendar month (accumulating), in whole shares, so paper results predict
+# what the real ₹7k/month portfolio would actually do.
+MONTHLY_BUDGET_INR = 7_000          # Cash invested each month (paper = real plan)
+MAX_NEW_PER_MONTH = 3              # Max new positions opened per month
+MAX_POSITIONS = 24                 # Max total concurrent holdings (accumulates over time)
+REAL_MONTHLY_BUDGET_INR = 7_000     # Real-money monthly budget (backtest default / live)
 LIVE_POSITION_SIZE_INR = 5_000      # Real money per trade via Upstox
 LIVE_TRADING = False                # Set True via --live flag; never commit True
 
