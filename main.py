@@ -145,9 +145,20 @@ def run_scan(args) -> None:
         from brokers.live_executor import execute_live_signals
         execute_live_signals(signals)
     else:
-        from paper_trading.executor import execute_buy_signals
+        from paper_trading.executor import execute_buy_signals, check_sell_signals
         # ── News: headlines + sector sentiment for the shortlist (logged) ──────
         news_map = _gather_news(signals)
+        prices = {s: m["price"] for s, m in metrics.items() if m.get("price")}
+
+        # ── Sells first (stop-loss / halal breach / score collapse, etc.) ──────
+        closed = check_sell_signals(scores, metrics, halal_results, prices)
+        if closed:
+            console.print(f"[yellow]Paper positions closed: {len(closed)}[/yellow]")
+            for c in closed:
+                console.print(f"  [red]-[/red] {c['symbol']}  {c['reason']}  "
+                              f"({c['pnl_pct']:+.1%})")
+
+        # ── Buys (within the monthly budget) ───────────────────────────────────
         executed = execute_buy_signals(signals, news_map=news_map)
         if executed:
             console.print(f"[green]Paper trades placed: {len(executed)} new positions[/green]")
@@ -155,14 +166,18 @@ def run_scan(args) -> None:
                 console.print(f"  [green]+[/green] {t['symbol']}  {t['tier']}  "
                               f"₹{t['invested']:,.0f} @ ₹{t['price']:,.2f}")
 
-        # ── Step 9: Sync paper portfolio to Google Sheets ──────────────────────
+        # ── Step 9a: Trade-notification email (only when buys or sells happen) ──
+        if executed or closed:
+            _email_trade_summary(executed, metrics, closed=closed)
+
+        # ── Step 9b: Sync paper portfolio to Google Sheets ─────────────────────
         _sync_google_sheets(metrics)
 
-        # ── Step 10: Email a daily portfolio digest (always, even no new trades) ─
-        _email_daily_digest(executed, metrics)
+        # ── Step 10: Daily portfolio digest email (always, even no changes) ────
+        _email_daily_digest(executed, metrics, closed=closed)
 
 
-def _email_daily_digest(executed: list, metrics: dict) -> None:
+def _email_daily_digest(executed: list, metrics: dict, closed: list = None) -> None:
     """Email all current holdings + % change + vs NIFTY every run (if configured)."""
     from reports.email_report import send_portfolio_digest
     from paper_trading.sqlite_engine import (
@@ -192,11 +207,11 @@ def _email_daily_digest(executed: list, metrics: dict) -> None:
     summary = portfolio_summary(prices)
     nifty_return = benchmark_return(get_all_snapshots())
     send_portfolio_digest(holdings, summary, brief=brief,
-                          nifty_return=nifty_return, executed=executed)
+                          nifty_return=nifty_return, executed=executed, closed=closed)
 
 
-def _email_trade_summary(executed: list, metrics: dict) -> None:
-    """Send a short email summarising the executed trades and why (if configured)."""
+def _email_trade_summary(executed: list, metrics: dict, closed: list = None) -> None:
+    """Send a short email summarising the buys/sells just executed (if configured)."""
     from reports.email_report import send_trade_notification
     from paper_trading.sqlite_engine import portfolio_summary
 
@@ -210,7 +225,7 @@ def _email_trade_summary(executed: list, metrics: dict) -> None:
 
     prices = {s: m["price"] for s, m in metrics.items() if m.get("price")}
     summary = portfolio_summary(prices)
-    send_trade_notification(executed, brief=brief, paper_summary=summary)
+    send_trade_notification(executed, brief=brief, paper_summary=summary, closed=closed)
 
 
 def _sync_google_sheets(metrics: dict) -> None:

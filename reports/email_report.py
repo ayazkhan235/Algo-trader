@@ -122,17 +122,61 @@ def _build_html(brief: dict, signals: list, paper_summary: dict) -> str:
     """
 
 
-def _build_trade_html(executed: list, brief: dict, paper_summary: dict) -> str:
+# Plain-English explanation for each market indicator (matched by keyword)
+MARKET_GLOSSARY = [
+    ("sentiment", "The bot's overall read of today's global mood."),
+    ("s&p 500", "US stock market. Rising = healthy global appetite for risk, usually good for Indian stocks too."),
+    ("vix", "India's ‘fear gauge’. Below 15 = calm, good for buying; above 20 = nervous, jumpy markets."),
+    ("fii", "Foreign investor money flow. Net BUYING lifts Indian stocks; net SELLING is a caution sign."),
+    ("crude", "Oil price. India imports most of its oil, so FALLING crude is good (less inflation, stronger rupee)."),
+    ("usd/inr", "Rupee per US dollar. A HIGHER number = weaker rupee (helps IT/exporters, hurts importers)."),
+    ("btc", "Crypto + Fear/Greed gauge. ‘Extreme Fear’ means investors are panicking — a global risk-off signal."),
+    ("risk-off", "Investors worldwide are avoiding risk — expect caution and possible foreign selling in India."),
+    ("risk-on", "Investors worldwide are embracing risk — a supportive backdrop for stocks."),
+]
+
+
+def _explain_line(line: str) -> str:
+    low = line.lower()
+    for key, exp in MARKET_GLOSSARY:
+        if key in low:
+            return exp
+    return ""
+
+
+def _market_context_html(brief: dict) -> str:
+    """Market cues with a plain-English explanation under each line."""
+    lines = (brief or {}).get("summary_lines", [])
+    if not lines:
+        return ""
+    rows = ""
+    for ln in lines:
+        exp = _explain_line(ln)
+        exp_html = (f"<div style='color:#777; font-size:0.9em; margin:0 0 8px 14px'>↳ {exp}</div>"
+                    if exp else "")
+        rows += f"<li style='margin-bottom:2px'><b>{ln}</b>{exp_html}</li>"
+    return ("<h3>🌏 What's happening in the markets (plain English)</h3>"
+            "<ul style='list-style:none; padding-left:0'>" + rows + "</ul>")
+
+
+def _build_trade_html(executed: list, brief: dict, paper_summary: dict, closed: list = None) -> str:
     today = date.today().strftime("%A, %d %b %Y")
     sentiment = (brief or {}).get("overall_sentiment", "UNKNOWN")
     colour = {"BULLISH": "#27ae60", "BEARISH": "#e74c3c", "NEUTRAL": "#f39c12"}.get(sentiment, "#999")
 
-    # External market / global context
-    context_items = "".join(f"<li>{line}</li>" for line in (brief or {}).get("summary_lines", []))
-    context_block = (
-        f"<h3>🌏 Market &amp; Global Context</h3><ul>{context_items}</ul>"
-        if context_items else ""
-    )
+    context_block = _market_context_html(brief)
+
+    # Sold positions (if any)
+    sold = ""
+    for c in (closed or []):
+        pcol = "#27ae60" if (c.get("pnl_inr", 0) or 0) >= 0 else "#e74c3c"
+        sold += (f"<div style='border:1px solid #eee; border-left:4px solid #e67e22; "
+                 f"padding:10px 14px; margin:10px 0; border-radius:4px;'>"
+                 f"<b>{c['symbol'].replace('.NS','')}</b> "
+                 f"<span style='color:#e67e22; font-weight:bold;'>SOLD</span> — {c.get('reason','')}"
+                 f"<br/><span style='color:{pcol}'>Realized P&L ₹{c.get('pnl_inr',0):+,.0f} "
+                 f"({c.get('pnl_pct',0):+.1%})</span> · held {c.get('hold_days','?')} days</div>")
+    sold_block = f"<h3>📤 Sold today</h3>{sold}" if sold else ""
 
     # Per-trade cards with the "why"
     cards = ""
@@ -171,10 +215,10 @@ def _build_trade_html(executed: list, brief: dict, paper_summary: dict) -> str:
       Paper Trades Executed — {today}
       <span style="font-size:0.8em; color:{colour}"> {sentiment}</span>
     </h2>
-    <p>{len(executed)} new position(s) opened within your ₹{config.MONTHLY_BUDGET_INR:,.0f} budget.</p>
+    <p>{len(executed)} new buy(s) · {len(closed or [])} sell(s) this run (budget ₹{config.MONTHLY_BUDGET_INR:,.0f}/month).</p>
+    {sold_block}
+    {f'<h3>🛒 What was bought &amp; why</h3>{cards}' if cards else ''}
     {context_block}
-    <h3>🛒 What was bought &amp; why</h3>
-    {cards}
     {f'<h3>📋 Paper Portfolio</h3><p>{paper_line}</p>' if paper_line else ''}
     <hr style="margin-top:24px"/>
     <p style="font-size:0.75em; color:#999">
@@ -189,9 +233,12 @@ def send_trade_notification(
     brief: dict = None,
     paper_summary: dict = None,
     to_email: str = None,
+    closed: list = None,
 ) -> bool:
-    """Email a short summary of the trades just executed and why."""
-    if not executed:
+    """Email a summary of the buys and/or sells just executed and why."""
+    executed = executed or []
+    closed = closed or []
+    if not executed and not closed:
         return False
     to = to_email or config.REPORT_EMAIL_TO
     if not to:
@@ -203,10 +250,15 @@ def send_trade_notification(
 
     try:
         service = _get_gmail_service()
-        html = _build_trade_html(executed, brief or {}, paper_summary or {})
+        html = _build_trade_html(executed, brief or {}, paper_summary or {}, closed=closed)
 
+        bits = []
+        if executed:
+            bits.append(f"{len(executed)} buy")
+        if closed:
+            bits.append(f"{len(closed)} sell")
         msg = MIMEMultipart("alternative")
-        msg["Subject"] = f"Paper Trades — {date.today().strftime('%d %b')} — {len(executed)} new position(s)"
+        msg["Subject"] = f"Paper Trades — {date.today().strftime('%d %b')} — {' · '.join(bits)}"
         msg["From"]    = "me"
         msg["To"]      = to
         msg.attach(MIMEText(html, "html"))
@@ -221,7 +273,8 @@ def send_trade_notification(
 
 
 def _build_digest_html(holdings: list, summary: dict, brief: dict,
-                       nifty_return, executed: list) -> str:
+                       nifty_return, executed: list, closed: list = None) -> str:
+    closed = closed or []
     today = date.today().strftime("%A, %d %b %Y")
     sentiment = (brief or {}).get("overall_sentiment", "UNKNOWN")
     colour = {"BULLISH": "#27ae60", "BEARISH": "#e74c3c", "NEUTRAL": "#f39c12"}.get(sentiment, "#999")
@@ -240,7 +293,7 @@ def _build_digest_html(holdings: list, summary: dict, brief: dict,
         c = "#27ae60" if h.get("pct", 0) >= 0 else "#e74c3c"
         rows += (
             f"<tr><td><b>{h['symbol'].replace('.NS','')}</b></td>"
-            f"<td align='right'>{h['qty']:.3f}</td>"
+            f"<td align='right'>{h['qty']:.0f}</td>"
             f"<td align='right'>₹{h['entry']:,.2f}</td>"
             f"<td align='right'>₹{h['price']:,.2f}</td>"
             f"<td align='right' style='color:{c}'>{h['pct']:+.1%}</td>"
@@ -250,10 +303,12 @@ def _build_digest_html(holdings: list, summary: dict, brief: dict,
     new_block = ""
     if executed:
         names = ", ".join(t["symbol"].replace(".NS", "") for t in executed)
-        new_block = f"<p>🛒 <b>New today:</b> {len(executed)} — {names}</p>"
+        new_block += f"<p>🛒 <b>Bought today:</b> {len(executed)} — {names}</p>"
+    if closed:
+        snames = ", ".join(c["symbol"].replace(".NS", "") for c in closed)
+        new_block += f"<p>📤 <b>Sold today:</b> {len(closed)} — {snames}</p>"
 
-    context = "".join(f"<li>{l}</li>" for l in (brief or {}).get("summary_lines", []))
-    context_block = f"<h3>🌏 Market &amp; Global Context</h3><ul>{context}</ul>" if context else ""
+    context_block = _market_context_html(brief)
 
     return f"""
     <html><body style="font-family: Arial, sans-serif; max-width: 720px; margin: 0 auto; color: #222;">
@@ -283,7 +338,7 @@ def _build_digest_html(holdings: list, summary: dict, brief: dict,
 
 def send_portfolio_digest(holdings: list, summary: dict, brief: dict = None,
                           nifty_return=None, executed: list = None,
-                          to_email: str = None) -> bool:
+                          to_email: str = None, closed: list = None) -> bool:
     """Daily email of ALL current holdings + % change + vs NIFTY (sends every run)."""
     to = to_email or config.REPORT_EMAIL_TO
     if not to or not config.GMAIL_REFRESH_TOKEN:
@@ -291,7 +346,8 @@ def send_portfolio_digest(holdings: list, summary: dict, brief: dict = None,
         return False
     try:
         service = _get_gmail_service()
-        html = _build_digest_html(holdings, summary or {}, brief or {}, nifty_return, executed or [])
+        html = _build_digest_html(holdings, summary or {}, brief or {}, nifty_return,
+                                  executed or [], closed=closed or [])
         pct = (summary or {}).get("open_pnl_pct", 0) or 0
         msg = MIMEMultipart("alternative")
         msg["Subject"] = (f"Paper Portfolio — {date.today().strftime('%d %b')} — "
