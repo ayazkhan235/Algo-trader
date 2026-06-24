@@ -1,6 +1,6 @@
 HTTP Error 404: {"quoteSummary":{"result":null,"error":{"code":"Not Found","description":"Quote not found for symbol: ^SG30"}}}
 $^SG30: possibly delisted; no price data found  (period=2d) (Yahoo error = "No data found, symbol may be delisted")
-Global market: NEUTRAL (avg -0.84%, India VIX 13.57)
+Global market: BULLISH (avg +0.30%, India VIX 13.385)
 Loading nifty50 universe...
 [universe] Loaded 50 symbols for 'nifty50'
 Fetching data for 50 stocks...
@@ -23,11 +23,11 @@ Computing fundamentals for 22 halal stocks...
 ││ WIPRO   │ BUY   │ ││ │ │  │  ││ Technology   │ High FCF yield of 6.3% —     │
 ││         │       │ ││ │ │  │  ││              │ strong cas                   │
 ├┼─────────┼───────┼─┼┼─┼─┼──┼──┼┼──────────────┼──────────────────────────────┤
-││ INFY    │ BUY   │ ││ │ │  │  ││ Technology   │ Strong ROE of 31.4% —        │
-││         │       │ ││ │ │  │  ││              │ efficient cap                │
-├┼─────────┼───────┼─┼┼─┼─┼──┼──┼┼──────────────┼──────────────────────────────┤
 ││ BAJAJ-… │ BUY   │ ││ │ │  │  ││ Consumer     │ Strong ROE of 28.0% —        │
 ││         │       │ ││ │ │  │  ││ Cyclical     │ efficient cap                │
+├┼─────────┼───────┼─┼┼─┼─┼──┼──┼┼──────────────┼──────────────────────────────┤
+││ INFY    │ BUY   │ ││ │ │  │  ││ Technology   │ Strong ROE of 31.4% —        │
+││         │       │ ││ │ │  │  ││              │ efficient cap                │
 ├┼─────────┼───────┼─┼┼─┼─┼──┼──┼┼──────────────┼──────────────────────────────┤
 ││ EICHER… │ BUY   │ ││ │ │  │  ││ Consumer     │ Strong ROE of 23.8% —        │
 ││         │       │ ││ │ │  │  ││ Cyclical     │ efficient cap                │
@@ -49,6 +49,20 @@ Computing fundamentals for 22 halal stocks...
 ╰┴─────────┴───────┴─┴┴─┴─┴──┴──┴┴──────────────┴──────────────────────────────╯
 [report] CSV exported → output/signals_2026-06-24.csv
 Checking news for 6 stocks...
+[paper] OPEN  COALINDIA.NS @ ₹441.75  qty=37.7287  tier=BUY  score=71  id=1
+[paper] OPEN  WIPRO.NS @ ₹174.48  qty=95.5219  tier=BUY  score=69  id=2
+[paper] OPEN  EICHERMOT.NS @ ₹7572.00  qty=2.2011  tier=BUY  score=63  id=3
+[paper] OPEN  BAJAJ-AUTO.NS @ ₹9750.00  qty=1.7094  tier=BUY  score=64  id=4
+[paper] OPEN  INFY.NS @ ₹1056.60  qty=15.7739  tier=BUY  score=64  id=5
+[paper] OPEN  TECHM.NS @ ₹1461.60  qty=11.4030  tier=BUY  score=60  id=6
+Paper trades placed: 6 new positions
+  + COALINDIA.NS  BUY  ₹16,667 @ ₹441.75
+  + WIPRO.NS  BUY  ₹16,667 @ ₹174.48
+  + EICHERMOT.NS  BUY  ₹16,667 @ ₹7,572.00
+  + BAJAJ-AUTO.NS  BUY  ₹16,667 @ ₹9,750.00
+  + INFY.NS  BUY  ₹16,667 @ ₹1,056.60
+  + TECHM.NS  BUY  ₹16,667 @ ₹1,461.60
+[email] Failed to send trade notification: ('invalid_grant: Bad Request', {'error': 'invalid_grant', 'error_description': 'Bad Request'})
 [gsheets] Synced to https://docs.google.com/spreadsheets/d/1SdSWMOdyG-hSD940ZYLTk-fb5IsVGAIvodWgVIku5Dg
 Google Sheet updated: 
 https://docs.google.com/spreadsheets/d/1SdSWMOdyG-hSD940ZYLTk-fb5IsVGAIvodWgVIku
