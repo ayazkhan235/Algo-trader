@@ -72,6 +72,19 @@ def generate_brief(portfolio_sectors: list[str] = None) -> dict:
     if usdinr:
         lines.append(f"USD/INR: {usdinr['price']:.2f} ({usdinr['change_pct']:+.1%})")
 
+    # Precious metals: prices + a 1-month gold trend with equity impact
+    gold = indicators.get("Gold", {})
+    if gold:
+        lines.append(f"Gold: ${gold['price']:,.0f} ({gold['change_pct']:+.1%})")
+    silver = indicators.get("Silver", {})
+    if silver:
+        lines.append(f"Silver: ${silver['price']:,.1f} ({silver['change_pct']:+.1%})")
+    from market_intelligence.pre_market import metal_trend
+    gt = metal_trend()
+    brief["gold_trend"] = gt or {}
+    if gt:
+        lines.append(f"Gold trend (1M): {gt['change']:+.1%} — {gt['signal']}")
+
     btc = prices.get("BTC", {})
     if btc:
         lines.append(f"BTC: ${btc['price_usd']:,.0f} ({btc['change_24h']:+.1%})  "

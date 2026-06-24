@@ -96,6 +96,33 @@ def fetch_global_indicators(refresh: bool = False) -> dict:
     return result
 
 
+def metal_trend(symbol: str = "GC=F", lookback: str = "1mo") -> Optional[dict]:
+    """
+    1-month trend for a precious metal (default gold) + a plain-English signal
+    on what it implies for equities. Returns {change, signal} or None.
+    Gold is a safe-haven: a sharp rise = fear/risk-off (can pressure stocks);
+    a fall = risk appetite returning (supportive for stocks).
+    """
+    try:
+        t = yf.Ticker(symbol)
+        hist = t.history(period=lookback, interval="1d")
+        closes = hist["Close"].dropna()
+        if len(closes) < 2:
+            return None
+        change = (closes.iloc[-1] - closes.iloc[0]) / closes.iloc[0]
+        if change >= 0.05:
+            signal = "strong safe-haven buying — investors cautious, can pressure equities"
+        elif change >= 0.02:
+            signal = "firm — mild risk-off tilt"
+        elif change <= -0.05:
+            signal = "falling — risk appetite returning, supportive for equities"
+        else:
+            signal = "broadly flat — neutral for equities"
+        return {"change": round(float(change), 4), "signal": signal}
+    except Exception:
+        return None
+
+
 def assess_market_sentiment(indicators: dict) -> str:
     """Returns overall market sentiment: BULLISH / NEUTRAL / BEARISH."""
     if not indicators:
