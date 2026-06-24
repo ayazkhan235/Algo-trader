@@ -1,6 +1,6 @@
 HTTP Error 404: {"quoteSummary":{"result":null,"error":{"code":"Not Found","description":"Quote not found for symbol: ^SG30"}}}
 $^SG30: possibly delisted; no price data found  (period=2d) (Yahoo error = "No data found, symbol may be delisted")
-Global market: BULLISH (avg +0.30%, India VIX 13.385)
+Global market: BULLISH (avg +0.28%, India VIX 13.385)
 Loading nifty50 universe...
 [universe] Loaded 50 symbols for 'nifty50'
 Fetching data for 50 stocks...
@@ -62,7 +62,7 @@ Paper trades placed: 6 new positions
   + BAJAJ-AUTO.NS  BUY  ₹16,667 @ ₹9,750.00
   + INFY.NS  BUY  ₹16,667 @ ₹1,056.60
   + TECHM.NS  BUY  ₹16,667 @ ₹1,461.60
-[email] Failed to send trade notification: ('invalid_grant: Bad Request', {'error': 'invalid_grant', 'error_description': 'Bad Request'})
+[email] Trade notification sent to ayazkhan235.ak@gmail.com
 [gsheets] Synced to https://docs.google.com/spreadsheets/d/1SdSWMOdyG-hSD940ZYLTk-fb5IsVGAIvodWgVIku5Dg
 Google Sheet updated: 
 https://docs.google.com/spreadsheets/d/1SdSWMOdyG-hSD940ZYLTk-fb5IsVGAIvodWgVIku
