@@ -21,26 +21,32 @@ def effective_score(base_score: float, news: dict, max_bonus: float = 5.0) -> fl
 
 def execute_buy_signals(signals: list[BuySignal], news_map: dict = None) -> list[dict]:
     """
-    Places paper buy trades for STRONG BUY and BUY signals within a fixed budget.
+    Places paper buy trades mirroring a real ₹X/month SIP plan.
 
-    Total open exposure is capped at config.MONTHLY_BUDGET_INR across at most
-    config.MAX_POSITIONS positions. Candidates are ranked by conviction score
-    nudged by recent news sentiment (news_map = {symbol: {score,label,top_headline}}),
-    then the remaining budget is split equally across the top picks.
+    Each calendar month a fresh `config.MONTHLY_BUDGET_INR` is available to
+    deploy; positions accumulate month over month (total holdings capped at
+    `config.MAX_POSITIONS`). Within a month, up to `config.MAX_NEW_PER_MONTH`
+    new names are bought, highest news-adjusted conviction first, in whole
+    shares only. Already-held names are skipped.
     """
+    from datetime import date
     init_db()
     news_map = news_map or {}
     executed = []
 
     open_trades = get_open_trades()
-    invested = sum(t["position_inr"] for t in open_trades)
-    remaining = config.MONTHLY_BUDGET_INR - invested
+    month = date.today().isoformat()[:7]   # 'YYYY-MM'
+    invested_this_month = sum(
+        t["position_inr"] for t in open_trades
+        if (t.get("entry_date") or "")[:7] == month
+    )
+    month_remaining = config.MONTHLY_BUDGET_INR - invested_this_month
     free_slots = config.MAX_POSITIONS - len(open_trades)
 
-    if remaining <= 0 or free_slots <= 0:
-        print(f"[paper] Budget fully deployed "
-              f"(₹{invested:,.0f}/₹{config.MONTHLY_BUDGET_INR:,.0f}, "
-              f"{len(open_trades)}/{config.MAX_POSITIONS} positions) — no new trades")
+    if month_remaining < 1 or free_slots <= 0:
+        print(f"[paper] This month's ₹{config.MONTHLY_BUDGET_INR:,.0f} budget already "
+              f"deployed (₹{invested_this_month:,.0f}) or position cap reached "
+              f"({len(open_trades)}/{config.MAX_POSITIONS}) — no new trades")
         return executed
 
     # Highest-conviction, not-yet-held BUY/STRONG BUY signals with a price
@@ -51,11 +57,12 @@ def execute_buy_signals(signals: list[BuySignal], news_map: dict = None) -> list
         and not is_already_held(s.symbol)
     ]
     candidates.sort(key=lambda s: effective_score(s.score, news_map.get(s.symbol)), reverse=True)
-    candidates = candidates[:free_slots]
+    n = min(free_slots, getattr(config, "MAX_NEW_PER_MONTH", 3), len(candidates))
+    candidates = candidates[:n]
     if not candidates:
         return executed
 
-    per_position = remaining / len(candidates)
+    per_position = month_remaining / len(candidates)
 
     for sig in candidates:
         price = sig.metrics["price"]
