@@ -1,6 +1,6 @@
 HTTP Error 404: {"quoteSummary":{"result":null,"error":{"code":"Not Found","description":"Quote not found for symbol: ^SG30"}}}
 $^SG30: possibly delisted; no price data found  (period=2d) (Yahoo error = "No data found, symbol may be delisted")
-Global market: BEARISH (avg -1.35%, India VIX 13.765)
+Global market: NEUTRAL (avg -0.84%, India VIX 13.57)
 Loading nifty50 universe...
 [universe] Loaded 50 symbols for 'nifty50'
 Fetching data for 50 stocks...
@@ -47,7 +47,7 @@ Computing fundamentals for 22 halal stocks...
 ││ LT      │ WATCH │ ││ │ │  │  ││ Industrials  │ Revenue grew 16.1% CAGR over │
 ││         │       │ ││ │ │  │  ││              │ 3 year                       │
 ╰┴─────────┴───────┴─┴┴─┴─┴──┴──┴┴──────────────┴──────────────────────────────╯
-[report] CSV exported → output/signals_2026-06-23.csv
+[report] CSV exported → output/signals_2026-06-24.csv
 Checking news for 6 stocks...
 [gsheets] Synced to https://docs.google.com/spreadsheets/d/1SdSWMOdyG-hSD940ZYLTk-fb5IsVGAIvodWgVIku5Dg
 Google Sheet updated: 
