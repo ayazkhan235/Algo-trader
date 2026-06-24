@@ -138,9 +138,15 @@ def open_trade(
     score: float,
     position_size_inr: float = config.POSITION_SIZE_INR,
     news: str = None,
+    qty: int = None,
 ) -> int:
-    """Records a new paper trade. Returns trade ID."""
-    qty = round(position_size_inr / entry_price, 4)
+    """Records a new paper trade. Returns trade ID.
+
+    Shares are whole numbers only (NSE has no fractional shares); if qty is not
+    provided it is floored from position_size_inr / entry_price.
+    """
+    if qty is None:
+        qty = int(position_size_inr // entry_price)
     today = date.today().isoformat()
     ph = placeholder()
 
@@ -170,7 +176,7 @@ def open_trade(
     finally:
         con.close()
 
-    print(f"[paper] OPEN  {symbol} @ ₹{entry_price:.2f}  qty={qty:.4f}  "
+    print(f"[paper] OPEN  {symbol} @ ₹{entry_price:.2f}  qty={qty}  "
           f"tier={signal_tier}  score={score:.0f}  id={trade_id}")
     return trade_id
 
