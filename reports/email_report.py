@@ -122,8 +122,12 @@ def _build_html(brief: dict, signals: list, paper_summary: dict) -> str:
     """
 
 
-# Plain-English explanation for each market indicator (matched by keyword)
+# Plain-English explanation for each market indicator (matched by keyword).
+# Order matters: more specific phrases (risk-off/on, gold trend) come first so
+# they win over generic keywords that may also appear in the same line.
 MARKET_GLOSSARY = [
+    ("risk-off", "Investors worldwide are avoiding risk — expect caution and possible foreign selling in India."),
+    ("risk-on", "Investors worldwide are embracing risk — a supportive backdrop for stocks."),
     ("sentiment", "The bot's overall read of today's global mood."),
     ("s&p 500", "US stock market. Rising = healthy global appetite for risk, usually good for Indian stocks too."),
     ("vix", "India's ‘fear gauge’. Below 15 = calm, good for buying; above 20 = nervous, jumpy markets."),
@@ -134,8 +138,6 @@ MARKET_GLOSSARY = [
     ("gold", "Safe-haven metal. When gold jumps, money is moving to safety — often a sign of fear that can weigh on equities; steady/falling gold is calmer."),
     ("silver", "Part safe-haven, part industrial metal. Rising silver can mean safe-haven demand AND factory/industrial optimism."),
     ("btc", "Crypto + Fear/Greed gauge. ‘Extreme Fear’ means investors are panicking — a global risk-off signal."),
-    ("risk-off", "Investors worldwide are avoiding risk — expect caution and possible foreign selling in India."),
-    ("risk-on", "Investors worldwide are embracing risk — a supportive backdrop for stocks."),
 ]
 
 
