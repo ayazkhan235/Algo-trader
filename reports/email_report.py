@@ -220,6 +220,94 @@ def send_trade_notification(
         return False
 
 
+def _build_digest_html(holdings: list, summary: dict, brief: dict,
+                       nifty_return, executed: list) -> str:
+    today = date.today().strftime("%A, %d %b %Y")
+    sentiment = (brief or {}).get("overall_sentiment", "UNKNOWN")
+    colour = {"BULLISH": "#27ae60", "BEARISH": "#e74c3c", "NEUTRAL": "#f39c12"}.get(sentiment, "#999")
+
+    total_pct = summary.get("open_pnl_pct", 0) or 0
+    pct_col = "#27ae60" if total_pct >= 0 else "#e74c3c"
+    vs_nifty = ""
+    if nifty_return is not None:
+        edge = total_pct - nifty_return
+        ec = "#27ae60" if edge >= 0 else "#e74c3c"
+        vs_nifty = (f"<p>NIFTY 50 since inception: {nifty_return:+.1%} &nbsp;|&nbsp; "
+                    f"<b style='color:{ec}'>Strategy vs NIFTY: {edge:+.1%}</b></p>")
+
+    rows = ""
+    for h in sorted(holdings, key=lambda x: x.get("pct", 0), reverse=True):
+        c = "#27ae60" if h.get("pct", 0) >= 0 else "#e74c3c"
+        rows += (
+            f"<tr><td><b>{h['symbol'].replace('.NS','')}</b></td>"
+            f"<td align='right'>{h['qty']:.3f}</td>"
+            f"<td align='right'>₹{h['entry']:,.2f}</td>"
+            f"<td align='right'>₹{h['price']:,.2f}</td>"
+            f"<td align='right' style='color:{c}'>{h['pct']:+.1%}</td>"
+            f"<td align='right'>₹{h['value']:,.0f}</td></tr>"
+        )
+
+    new_block = ""
+    if executed:
+        names = ", ".join(t["symbol"].replace(".NS", "") for t in executed)
+        new_block = f"<p>🛒 <b>New today:</b> {len(executed)} — {names}</p>"
+
+    context = "".join(f"<li>{l}</li>" for l in (brief or {}).get("summary_lines", []))
+    context_block = f"<h3>🌏 Market &amp; Global Context</h3><ul>{context}</ul>" if context else ""
+
+    return f"""
+    <html><body style="font-family: Arial, sans-serif; max-width: 720px; margin: 0 auto; color: #222;">
+    <h2 style="border-left: 4px solid {colour}; padding-left: 10px;">
+      Paper Portfolio — {today}
+      <span style="font-size:0.8em; color:{colour}"> {sentiment}</span>
+    </h2>
+    <p>
+      Invested ₹{summary.get('total_invested', 0):,.0f} &nbsp;→&nbsp;
+      Value ₹{summary.get('total_value', 0):,.0f} &nbsp;|&nbsp;
+      <b style="color:{pct_col}">{total_pct:+.1%}</b>
+      (₹{summary.get('open_pnl_inr', 0):+,.0f})
+    </p>
+    {vs_nifty}
+    {new_block}
+    <h3>📊 Current Holdings ({len(holdings)})</h3>
+    <table border="0" cellpadding="6" cellspacing="0" style="border-collapse:collapse; width:100%">
+      <tr style="background:#f5f5f5"><th align="left">Symbol</th><th>Qty</th><th>Entry</th><th>Now</th><th>% Change</th><th>Value</th></tr>
+      {rows or '<tr><td colspan=6><i>No open positions.</i></td></tr>'}
+    </table>
+    {context_block}
+    <hr style="margin-top:24px"/>
+    <p style="font-size:0.75em; color:#999">Automated daily paper-portfolio digest. Informational only — not investment advice. DYOR.</p>
+    </body></html>
+    """
+
+
+def send_portfolio_digest(holdings: list, summary: dict, brief: dict = None,
+                          nifty_return=None, executed: list = None,
+                          to_email: str = None) -> bool:
+    """Daily email of ALL current holdings + % change + vs NIFTY (sends every run)."""
+    to = to_email or config.REPORT_EMAIL_TO
+    if not to or not config.GMAIL_REFRESH_TOKEN:
+        print("[email] Gmail not configured — skipping daily digest")
+        return False
+    try:
+        service = _get_gmail_service()
+        html = _build_digest_html(holdings, summary or {}, brief or {}, nifty_return, executed or [])
+        pct = (summary or {}).get("open_pnl_pct", 0) or 0
+        msg = MIMEMultipart("alternative")
+        msg["Subject"] = (f"Paper Portfolio — {date.today().strftime('%d %b')} — "
+                          f"{len(holdings)} holdings ({pct:+.1%})")
+        msg["From"] = "me"
+        msg["To"] = to
+        msg.attach(MIMEText(html, "html"))
+        raw = base64.urlsafe_b64encode(msg.as_bytes()).decode()
+        service.users().messages().send(userId="me", body={"raw": raw}).execute()
+        print(f"[email] Daily portfolio digest sent to {to}")
+        return True
+    except Exception as e:  # noqa: BLE001
+        print(f"[email] Failed to send daily digest: {e}")
+        return False
+
+
 def send_daily_report(
     brief: dict,
     signals: list,
