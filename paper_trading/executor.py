@@ -59,6 +59,12 @@ def execute_buy_signals(signals: list[BuySignal], news_map: dict = None) -> list
 
     for sig in candidates:
         price = sig.metrics["price"]
+        qty = int(per_position // price)   # whole shares only (NSE has no fractions)
+        if qty < 1:
+            # too expensive to buy even 1 share with this slice of the budget
+            print(f"[paper] SKIP {sig.symbol} — ₹{price:,.0f} > slice ₹{per_position:,.0f}")
+            continue
+        invested = qty * price
         news = news_map.get(sig.symbol) or {}
         headline = news.get("top_headline") or ""
         trade_id = open_trade(
@@ -67,8 +73,9 @@ def execute_buy_signals(signals: list[BuySignal], news_map: dict = None) -> list
             entry_price=price,
             signal_tier=sig.tier,
             score=sig.score,
-            position_size_inr=per_position,
+            position_size_inr=invested,
             news=headline or None,
+            qty=qty,
         )
         executed.append({
             "trade_id": trade_id,
@@ -78,8 +85,8 @@ def execute_buy_signals(signals: list[BuySignal], news_map: dict = None) -> list
             "tier": sig.tier,
             "score": sig.score,
             "sector": sig.sector,
-            "invested": round(per_position, 2),
-            "qty": round(per_position / price, 4),
+            "invested": round(invested, 2),
+            "qty": qty,
             "strengths": list(sig.strengths[:3]),
             "news_headline": headline,
             "news_label": news.get("label", ""),
