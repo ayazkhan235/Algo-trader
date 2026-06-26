@@ -1,6 +1,6 @@
 HTTP Error 404: {"quoteSummary":{"result":null,"error":{"code":"Not Found","description":"Quote not found for symbol: ^SG30"}}}
 $^SG30: possibly delisted; no price data found  (period=2d) (Yahoo error = "No data found, symbol may be delisted")
-Global market: NEUTRAL (avg +0.56%, India VIX 12.8975)
+Global market: BEARISH (avg -1.23%, India VIX 13.05)
 Loading nifty50 universe...
 [universe] Loaded 50 symbols for 'nifty50'
 Fetching data for 50 stocks...
@@ -47,11 +47,11 @@ Computing fundamentals for 22 halal stocks...
 ││ LT      │ WATCH │ ││ │ │  │  ││ Industrials  │ Revenue grew 16.1% CAGR over │
 ││         │       │ ││ │ │  │  ││              │ 3 year                       │
 ╰┴─────────┴───────┴─┴┴─┴─┴──┴──┴┴──────────────┴──────────────────────────────╯
-[report] CSV exported → output/signals_2026-06-25.csv
+[report] CSV exported → output/signals_2026-06-26.csv
 Checking news for 5 stocks...
-[paper] SKIP EICHERMOT.NS — ₹7,720 > slice ₹841
-[paper] SKIP BAJAJ-AUTO.NS — ₹9,908 > slice ₹841
-[paper] SKIP INFY.NS — ₹1,046 > slice ₹841
+[paper] SKIP EICHERMOT.NS — ₹7,600 > slice ₹841
+[paper] SKIP BAJAJ-AUTO.NS — ₹9,850 > slice ₹841
+[paper] SKIP INFY.NS — ₹1,043 > slice ₹841
 [gsheets] Synced to https://docs.google.com/spreadsheets/d/1SdSWMOdyG-hSD940ZYLTk-fb5IsVGAIvodWgVIku5Dg
 Google Sheet updated: 
 https://docs.google.com/spreadsheets/d/1SdSWMOdyG-hSD940ZYLTk-fb5IsVGAIvodWgVIku
