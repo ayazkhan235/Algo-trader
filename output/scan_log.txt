@@ -1,6 +1,6 @@
 HTTP Error 404: {"quoteSummary":{"result":null,"error":{"code":"Not Found","description":"Quote not found for symbol: ^SG30"}}}
 $^SG30: possibly delisted; no price data found  (period=2d) (Yahoo error = "No data found, symbol may be delisted")
-Global market: NEUTRAL (avg +0.27%, India VIX 13.7575)
+Global market: NEUTRAL (avg +0.85%, India VIX 13.3875)
 Loading nifty50 universe...
 [universe] Loaded 50 symbols for 'nifty50'
 Fetching data for 50 stocks...
@@ -20,7 +20,7 @@ Computing fundamentals for 22 halal stocks...
 ││ COALIN… │ BUY   │ ││ │ │  │  ││ Energy       │ Strong ROE of 28.1% —        │
 ││         │       │ ││ │ │  │  ││              │ efficient cap                │
 ├┼─────────┼───────┼─┼┼─┼─┼──┼──┼┼──────────────┼──────────────────────────────┤
-││ WIPRO   │ BUY   │ ││ │ │  │  ││ Technology   │ High FCF yield of 6.3% —     │
+││ WIPRO   │ BUY   │ ││ │ │  │  ││ Technology   │ High FCF yield of 6.4% —     │
 ││         │       │ ││ │ │  │  ││              │ strong cas                   │
 ├┼─────────┼───────┼─┼┼─┼─┼──┼──┼┼──────────────┼──────────────────────────────┤
 ││ INFY    │ BUY   │ ││ │ │  │  ││ Technology   │ Strong ROE of 31.4% —        │
@@ -47,11 +47,11 @@ Computing fundamentals for 22 halal stocks...
 ││ LT      │ WATCH │ ││ │ │  │  ││ Industrials  │ Revenue grew 16.1% CAGR over │
 ││         │       │ ││ │ │  │  ││              │ 3 year                       │
 ╰┴─────────┴───────┴─┴┴─┴─┴──┴──┴┴──────────────┴──────────────────────────────╯
-[report] CSV exported → output/signals_2026-06-29.csv
+[report] CSV exported → output/signals_2026-06-30.csv
 Checking news for 5 stocks...
-[paper] SKIP EICHERMOT.NS — ₹7,444 > slice ₹841
-[paper] SKIP BAJAJ-AUTO.NS — ₹9,649 > slice ₹841
-[paper] SKIP INFY.NS — ₹1,034 > slice ₹841
+[paper] SKIP EICHERMOT.NS — ₹7,127 > slice ₹841
+[paper] SKIP BAJAJ-AUTO.NS — ₹9,706 > slice ₹841
+[paper] SKIP INFY.NS — ₹1,012 > slice ₹841
 [gsheets] Synced to https://docs.google.com/spreadsheets/d/1SdSWMOdyG-hSD940ZYLTk-fb5IsVGAIvodWgVIku5Dg
 Google Sheet updated: 
 https://docs.google.com/spreadsheets/d/1SdSWMOdyG-hSD940ZYLTk-fb5IsVGAIvodWgVIku
