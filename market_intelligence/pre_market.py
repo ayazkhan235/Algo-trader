@@ -123,35 +123,37 @@ def metal_trend(symbol: str = "GC=F", lookback: str = "1mo") -> Optional[dict]:
         return None
 
 
-def fetch_nifty_intraday(refresh: bool = False) -> Optional[dict]:
+def fetch_nifty_trend(refresh: bool = False) -> Optional[dict]:
     """
-    Live intraday move of NIFTY 50 (^NSEI) vs the previous close — i.e. how NSE
-    is *actually* trading right now, after digesting overnight global cues.
-    Returns {price, prev_close, change_pct} or None if unavailable / market shut.
+    NIFTY 50 (^NSEI) level vs its 50- and 200-day moving averages — the
+    multi-week trend that actually matters to a months-long holder (not an
+    intraday wiggle). Returns
+      {price, sma_short, sma_long, pct_vs_long, week_change}
+    or None if unavailable.
     """
-    cache_key = f"nifty_intraday_{datetime.now().strftime('%Y%m%d%H')}"
+    import config
+    long_n = getattr(config, "REGIME_LONG_MA_DAYS", 200)
+    short_n = getattr(config, "REGIME_SHORT_MA_DAYS", 50)
+    cache_key = f"nifty_trend_{datetime.now().strftime('%Y%m%d')}"
     if not refresh:
-        cached = cache.get(cache_key, ttl_hours=1)
+        cached = cache.get(cache_key, ttl_hours=12)
         if cached:
             return cached
     try:
         t = yf.Ticker("^NSEI")
-        # 1-minute bars for today; fall back to daily if intraday is empty.
-        intraday = t.history(period="1d", interval="1m")
-        daily = t.history(period="5d", interval="1d")
-        if daily.empty:
+        closes = t.history(period="1y", interval="1d")["Close"].dropna()
+        if len(closes) < long_n:
             return None
-        prev_close = float(daily["Close"].iloc[-2]) if len(daily) >= 2 else float(daily["Close"].iloc[0])
-        if not intraday.empty:
-            price = float(intraday["Close"].iloc[-1])
-        else:
-            price = float(daily["Close"].iloc[-1])
-        if not prev_close:
-            return None
+        price = float(closes.iloc[-1])
+        sma_short = float(closes.tail(short_n).mean())
+        sma_long = float(closes.tail(long_n).mean())
+        week_ago = float(closes.iloc[-6]) if len(closes) >= 6 else price
         result = {
             "price": round(price, 2),
-            "prev_close": round(prev_close, 2),
-            "change_pct": round((price - prev_close) / prev_close, 4),
+            "sma_short": round(sma_short, 2),
+            "sma_long": round(sma_long, 2),
+            "pct_vs_long": round((price - sma_long) / sma_long, 4),
+            "week_change": round((price - week_ago) / week_ago, 4) if week_ago else 0.0,
         }
         cache.set(cache_key, result)
         return result
@@ -159,35 +161,45 @@ def fetch_nifty_intraday(refresh: bool = False) -> Optional[dict]:
         return None
 
 
-def assess_market_gate(intraday: Optional[dict]) -> dict:
+def assess_regime_gate(trend: Optional[dict]) -> dict:
     """
-    Decide whether new buys are warranted given how NSE is trading today.
-
-    Pure function (no network) so it is unit-testable. Returns:
-      {action, score_bump, nifty_pct, reason}
-    where action is 'allow' | 'caution' | 'block'. On a clearly weak tape we
-    block new buys; in a mild-weakness zone we demand higher conviction; an
-    unavailable reading (market shut / no data) never blocks — it just allows.
+    Months-horizon gate for a SIP accumulator (pure, unit-testable). Returns
+      {action, budget_mult, dip, pct_vs_long, reason}
+    where action is 'allow' | 'pause':
+      • 'pause'  — NIFTY below its long MA: confirmed downtrend, keep cash.
+      • 'allow' + dip=True — healthy market but a short-term pullback (below the
+        short MA, or down on the week): deploy MORE (budget_mult) for a cheaper
+        basis on names we'd hold for months anyway.
+      • 'allow' + dip=False — normal accumulation.
+    A missing reading never pauses — it just allows normal buying.
     """
     import config
-    if not getattr(config, "MARKET_GATE_ENABLED", True) or not intraday:
-        return {"action": "allow", "score_bump": 0.0,
-                "nifty_pct": None, "reason": "No intraday read — gate inactive"}
+    if not getattr(config, "REGIME_GATE_ENABLED", True) or not trend:
+        return {"action": "allow", "budget_mult": 1.0, "dip": False,
+                "pct_vs_long": None, "reason": "No trend read — accumulating normally"}
 
-    pct = intraday.get("change_pct")
-    if pct is None:
-        return {"action": "allow", "score_bump": 0.0,
-                "nifty_pct": None, "reason": "No intraday read — gate inactive"}
+    price = trend.get("price")
+    sma_long = trend.get("sma_long")
+    sma_short = trend.get("sma_short")
+    if not price or not sma_long:
+        return {"action": "allow", "budget_mult": 1.0, "dip": False,
+                "pct_vs_long": None, "reason": "No trend read — accumulating normally"}
 
-    if pct <= config.NIFTY_GATE_BLOCK_PCT:
-        return {"action": "block", "score_bump": 0.0, "nifty_pct": pct,
-                "reason": f"NIFTY {pct:+.1%} intraday — risk-off, no new buys today"}
-    if pct <= config.NIFTY_GATE_CAUTION_PCT:
-        return {"action": "caution", "score_bump": float(config.NIFTY_GATE_SCORE_BUMP),
-                "nifty_pct": pct,
-                "reason": f"NIFTY {pct:+.1%} intraday — soft, buying only top conviction"}
-    return {"action": "allow", "score_bump": 0.0, "nifty_pct": pct,
-            "reason": f"NIFTY {pct:+.1%} intraday — tape constructive"}
+    pct_vs_long = (price - sma_long) / sma_long
+    if price < sma_long:
+        return {"action": "pause", "budget_mult": 1.0, "dip": False,
+                "pct_vs_long": round(pct_vs_long, 4),
+                "reason": f"NIFTY {pct_vs_long:+.1%} vs 200-day avg — confirmed downtrend, preserving cash"}
+
+    week_change = trend.get("week_change", 0.0) or 0.0
+    is_dip = (sma_short and price < sma_short) or week_change <= config.DIP_WEEK_DROP_PCT
+    if is_dip:
+        return {"action": "allow", "budget_mult": float(config.DIP_BUDGET_MULT), "dip": True,
+                "pct_vs_long": round(pct_vs_long, 4),
+                "reason": "Healthy uptrend + short-term dip — deploying extra for a cheaper basis"}
+    return {"action": "allow", "budget_mult": 1.0, "dip": False,
+            "pct_vs_long": round(pct_vs_long, 4),
+            "reason": f"NIFTY {pct_vs_long:+.1%} above 200-day avg — normal accumulation"}
 
 
 def assess_market_sentiment(indicators: dict) -> str:

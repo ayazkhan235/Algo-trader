@@ -150,8 +150,8 @@ def run_scan(args) -> None:
         news_map = _gather_news(signals)
         prices = {s: m["price"] for s, m in metrics.items() if m.get("price")}
 
-        # ── Market-open gate: how is NSE actually trading intraday today? ──────
-        market_gate = _assess_market_gate()
+        # ── Regime gate: pause in a downtrend, buy extra on a healthy dip ──────
+        regime_gate = _assess_regime_gate()
 
         # ── Sells first (stop-loss / halal breach / score collapse, etc.) ──────
         closed = check_sell_signals(scores, metrics, halal_results, prices)
@@ -162,7 +162,7 @@ def run_scan(args) -> None:
                               f"({c['pnl_pct']:+.1%})")
 
         # ── Buys (within the monthly budget) ───────────────────────────────────
-        executed = execute_buy_signals(signals, news_map=news_map, market_gate=market_gate)
+        executed = execute_buy_signals(signals, news_map=news_map, regime_gate=regime_gate)
         if executed:
             console.print(f"[green]Paper trades placed: {len(executed)} new positions[/green]")
             for t in executed:
@@ -283,17 +283,19 @@ def _log_market_regime() -> None:
         console.print(f"[dim]Market regime log skipped: {e}[/dim]")
 
 
-def _assess_market_gate() -> dict:
-    """Read NIFTY's live intraday move and decide if new buys are warranted."""
+def _assess_regime_gate() -> dict:
+    """Read NIFTY's multi-week trend: pause buys in a downtrend, tilt up on a dip."""
     try:
-        from market_intelligence.pre_market import fetch_nifty_intraday, assess_market_gate
-        gate = assess_market_gate(fetch_nifty_intraday())
-        colour = {"block": "red", "caution": "yellow", "allow": "green"}.get(gate["action"], "dim")
-        console.print(f"[{colour}]Market gate: {gate['action'].upper()} — {gate['reason']}[/{colour}]")
+        from market_intelligence.pre_market import fetch_nifty_trend, assess_regime_gate
+        gate = assess_regime_gate(fetch_nifty_trend())
+        colour = {"pause": "red", "allow": "green"}.get(gate["action"], "dim")
+        tag = "DIP-BUY" if gate.get("dip") else gate["action"].upper()
+        console.print(f"[{colour}]Regime: {tag} — {gate['reason']}[/{colour}]")
         return gate
     except Exception as e:  # noqa: BLE001
-        console.print(f"[dim]Market gate skipped: {e}[/dim]")
-        return {"action": "allow", "score_bump": 0.0, "nifty_pct": None, "reason": "gate error"}
+        console.print(f"[dim]Regime gate skipped: {e}[/dim]")
+        return {"action": "allow", "budget_mult": 1.0, "dip": False,
+                "pct_vs_long": None, "reason": "gate error"}
 
 
 def _gather_news(signals) -> dict:

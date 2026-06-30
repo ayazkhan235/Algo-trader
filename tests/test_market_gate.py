@@ -1,36 +1,49 @@
-"""Unit tests for the market-open gate (pure, no network)."""
+"""Unit tests for the regime / dip-accumulation gate (pure, no network)."""
 import config
-from market_intelligence.pre_market import assess_market_gate
+from market_intelligence.pre_market import assess_regime_gate
 
 
-def test_block_on_sharp_selloff():
-    gate = assess_market_gate({"change_pct": -0.02})
-    assert gate["action"] == "block"
-    assert gate["score_bump"] == 0.0
+def _trend(price, sma_short, sma_long, week_change=0.0):
+    return {"price": price, "sma_short": sma_short, "sma_long": sma_long,
+            "week_change": week_change}
 
 
-def test_caution_on_soft_tape():
-    gate = assess_market_gate({"change_pct": -0.01})
-    assert gate["action"] == "caution"
-    assert gate["score_bump"] == config.NIFTY_GATE_SCORE_BUMP
+def test_pause_when_below_long_ma():
+    # NIFTY under its 200-day average = confirmed downtrend.
+    gate = assess_regime_gate(_trend(95, 100, 100))
+    assert gate["action"] == "pause"
+    assert gate["budget_mult"] == 1.0
 
 
-def test_allow_on_constructive_tape():
-    gate = assess_market_gate({"change_pct": 0.005})
+def test_dip_buy_when_below_short_ma_but_healthy():
+    # Above the 200-day (healthy) but below the 50-day (short-term dip).
+    gate = assess_regime_gate(_trend(102, 105, 100))
     assert gate["action"] == "allow"
+    assert gate["dip"] is True
+    assert gate["budget_mult"] == config.DIP_BUDGET_MULT
 
 
-def test_allow_when_no_intraday_read():
-    assert assess_market_gate(None)["action"] == "allow"
-    assert assess_market_gate({"change_pct": None})["action"] == "allow"
+def test_dip_buy_on_weekly_drop():
+    # Above both MAs but down sharply on the week still counts as a dip.
+    gate = assess_regime_gate(_trend(110, 105, 100, week_change=-0.03))
+    assert gate["action"] == "allow"
+    assert gate["dip"] is True
 
 
-def test_boundary_just_inside_caution():
-    # Exactly at the caution threshold counts as caution (<=).
-    gate = assess_market_gate({"change_pct": config.NIFTY_GATE_CAUTION_PCT})
-    assert gate["action"] == "caution"
+def test_normal_accumulation_in_calm_uptrend():
+    gate = assess_regime_gate(_trend(110, 105, 100, week_change=0.005))
+    assert gate["action"] == "allow"
+    assert gate["dip"] is False
+    assert gate["budget_mult"] == 1.0
+
+
+def test_missing_trend_allows_normal_buying():
+    gate = assess_regime_gate(None)
+    assert gate["action"] == "allow"
+    assert gate["budget_mult"] == 1.0
 
 
 def test_gate_disabled_always_allows(monkeypatch):
-    monkeypatch.setattr(config, "MARKET_GATE_ENABLED", False)
-    assert assess_market_gate({"change_pct": -0.05})["action"] == "allow"
+    monkeypatch.setattr(config, "REGIME_GATE_ENABLED", False)
+    gate = assess_regime_gate(_trend(80, 100, 100))   # deep downtrend
+    assert gate["action"] == "allow"

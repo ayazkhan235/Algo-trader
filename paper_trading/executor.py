@@ -20,7 +20,7 @@ def effective_score(base_score: float, news: dict, max_bonus: float = 5.0) -> fl
 
 
 def execute_buy_signals(signals: list[BuySignal], news_map: dict = None,
-                        market_gate: dict = None) -> list[dict]:
+                        regime_gate: dict = None) -> list[dict]:
     """
     Places paper buy trades mirroring a real ₹X/month SIP plan.
 
@@ -30,28 +30,34 @@ def execute_buy_signals(signals: list[BuySignal], news_map: dict = None,
     new names are bought, highest news-adjusted conviction first, in whole
     shares only. Already-held names are skipped.
 
-    `market_gate` (from `pre_market.assess_market_gate`) reflects how NSE is
-    trading intraday: action 'block' suppresses all new buys today, 'caution'
-    requires extra conviction (score bump), 'allow' is business as usual.
+    `regime_gate` (from `pre_market.assess_regime_gate`) tunes accumulation to
+    the market's multi-week trend: action 'pause' keeps cash during a confirmed
+    downtrend (NIFTY below its 200-day average); a 'dip' inside a healthy
+    uptrend raises the deployable budget (`budget_mult`) so we buy more cheaply.
     """
     from datetime import date
     init_db()
     news_map = news_map or {}
-    market_gate = market_gate or {}
+    regime_gate = regime_gate or {}
     executed = []
 
-    if market_gate.get("action") == "block":
-        print(f"[paper] Market gate BLOCK — {market_gate.get('reason', 'weak tape')}; "
-              f"no new buys today")
+    if regime_gate.get("action") == "pause":
+        print(f"[paper] Regime PAUSE — {regime_gate.get('reason', 'downtrend')}; "
+              f"no new buys, preserving cash")
         return executed
 
+    budget_mult = regime_gate.get("budget_mult", 1.0) or 1.0
     open_trades = get_open_trades()
     month = date.today().isoformat()[:7]   # 'YYYY-MM'
     invested_this_month = sum(
         t["position_inr"] for t in open_trades
         if (t.get("entry_date") or "")[:7] == month
     )
-    month_remaining = config.MONTHLY_BUDGET_INR - invested_this_month
+    month_budget = config.MONTHLY_BUDGET_INR * budget_mult
+    if budget_mult != 1.0:
+        print(f"[paper] Dip tilt — {regime_gate.get('reason', 'dip')}; "
+              f"month budget ₹{config.MONTHLY_BUDGET_INR:,.0f}→₹{month_budget:,.0f}")
+    month_remaining = month_budget - invested_this_month
     free_slots = config.MAX_POSITIONS - len(open_trades)
 
     if month_remaining < 1 or free_slots <= 0:
@@ -67,15 +73,6 @@ def execute_buy_signals(signals: list[BuySignal], news_map: dict = None,
         and s.metrics.get("price")
         and not is_already_held(s.symbol)
     ]
-    # On a soft (but not blocked) tape, demand higher conviction for new buys.
-    score_bump = market_gate.get("score_bump", 0.0) if market_gate.get("action") == "caution" else 0.0
-    if score_bump:
-        floor = config.BUY_THRESHOLD + score_bump
-        before = len(candidates)
-        candidates = [s for s in candidates if s.score >= floor]
-        print(f"[paper] Market gate CAUTION — {market_gate.get('reason', 'soft tape')}; "
-              f"requiring score ≥ {floor:.0f} ({before}→{len(candidates)} candidates)")
-
     candidates.sort(key=lambda s: effective_score(s.score, news_map.get(s.symbol)), reverse=True)
     n = min(free_slots, getattr(config, "MAX_NEW_PER_MONTH", 3), len(candidates))
     candidates = candidates[:n]

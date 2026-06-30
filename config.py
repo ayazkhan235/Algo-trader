@@ -68,14 +68,19 @@ MAX_NEW_PER_MONTH = 3              # Max new positions opened per month
 MAX_POSITIONS = 24                 # Max total concurrent holdings (accumulates over time)
 REAL_MONTHLY_BUDGET_INR = 7_000     # Real-money monthly budget (backtest default / live)
 
-# ── MARKET-OPEN GATE ──────────────────────────────────────────────────────────
-# When the scan runs mid-session (e.g. ~2 PM IST), NIFTY's live intraday move
-# shows how NSE is actually reacting to overnight global cues. On clearly weak
-# days we suppress (or tighten) new buys rather than catching a falling market.
-MARKET_GATE_ENABLED   = True
-NIFTY_GATE_BLOCK_PCT  = -0.015   # NIFTY down >1.5% intraday → block all new buys today
-NIFTY_GATE_CAUTION_PCT = -0.007  # down 0.7–1.5% → require higher conviction
-NIFTY_GATE_SCORE_BUMP = 8        # extra conviction required in the caution zone
+# ── REGIME / DIP ACCUMULATION ─────────────────────────────────────────────────
+# Matched to a months-long SIP accumulator (not intraday timing):
+#  • A *confirmed downtrend* — NIFTY below its long (200-day) average — is the
+#    real "the market has turned" signal worth acting on. There we PAUSE new
+#    buys and preserve cash, rather than averaging into a falling market.
+#  • A short-term *dip inside a healthy uptrend* (NIFTY above its 200-day but
+#    below its 50-day, or down on the week) is a buying opportunity for a long
+#    holder — deploy a bit MORE for a cheaper cost basis (value-averaging tilt).
+REGIME_GATE_ENABLED = True
+REGIME_LONG_MA_DAYS  = 200   # below this MA = confirmed downtrend → pause new buys
+REGIME_SHORT_MA_DAYS = 50    # below this (but above long MA) = dip → buy extra
+DIP_WEEK_DROP_PCT    = -0.02 # NIFTY down ≥2% over the past week also counts as a dip
+DIP_BUDGET_MULT      = 1.5   # on a dip, deploy up to 1.5× the month's budget
 LIVE_POSITION_SIZE_INR = 5_000      # Real money per trade via Upstox
 LIVE_TRADING = False                # Set True via --live flag; never commit True
 
