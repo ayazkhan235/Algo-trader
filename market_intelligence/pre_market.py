@@ -123,6 +123,73 @@ def metal_trend(symbol: str = "GC=F", lookback: str = "1mo") -> Optional[dict]:
         return None
 
 
+def fetch_nifty_intraday(refresh: bool = False) -> Optional[dict]:
+    """
+    Live intraday move of NIFTY 50 (^NSEI) vs the previous close — i.e. how NSE
+    is *actually* trading right now, after digesting overnight global cues.
+    Returns {price, prev_close, change_pct} or None if unavailable / market shut.
+    """
+    cache_key = f"nifty_intraday_{datetime.now().strftime('%Y%m%d%H')}"
+    if not refresh:
+        cached = cache.get(cache_key, ttl_hours=1)
+        if cached:
+            return cached
+    try:
+        t = yf.Ticker("^NSEI")
+        # 1-minute bars for today; fall back to daily if intraday is empty.
+        intraday = t.history(period="1d", interval="1m")
+        daily = t.history(period="5d", interval="1d")
+        if daily.empty:
+            return None
+        prev_close = float(daily["Close"].iloc[-2]) if len(daily) >= 2 else float(daily["Close"].iloc[0])
+        if not intraday.empty:
+            price = float(intraday["Close"].iloc[-1])
+        else:
+            price = float(daily["Close"].iloc[-1])
+        if not prev_close:
+            return None
+        result = {
+            "price": round(price, 2),
+            "prev_close": round(prev_close, 2),
+            "change_pct": round((price - prev_close) / prev_close, 4),
+        }
+        cache.set(cache_key, result)
+        return result
+    except Exception:
+        return None
+
+
+def assess_market_gate(intraday: Optional[dict]) -> dict:
+    """
+    Decide whether new buys are warranted given how NSE is trading today.
+
+    Pure function (no network) so it is unit-testable. Returns:
+      {action, score_bump, nifty_pct, reason}
+    where action is 'allow' | 'caution' | 'block'. On a clearly weak tape we
+    block new buys; in a mild-weakness zone we demand higher conviction; an
+    unavailable reading (market shut / no data) never blocks — it just allows.
+    """
+    import config
+    if not getattr(config, "MARKET_GATE_ENABLED", True) or not intraday:
+        return {"action": "allow", "score_bump": 0.0,
+                "nifty_pct": None, "reason": "No intraday read — gate inactive"}
+
+    pct = intraday.get("change_pct")
+    if pct is None:
+        return {"action": "allow", "score_bump": 0.0,
+                "nifty_pct": None, "reason": "No intraday read — gate inactive"}
+
+    if pct <= config.NIFTY_GATE_BLOCK_PCT:
+        return {"action": "block", "score_bump": 0.0, "nifty_pct": pct,
+                "reason": f"NIFTY {pct:+.1%} intraday — risk-off, no new buys today"}
+    if pct <= config.NIFTY_GATE_CAUTION_PCT:
+        return {"action": "caution", "score_bump": float(config.NIFTY_GATE_SCORE_BUMP),
+                "nifty_pct": pct,
+                "reason": f"NIFTY {pct:+.1%} intraday — soft, buying only top conviction"}
+    return {"action": "allow", "score_bump": 0.0, "nifty_pct": pct,
+            "reason": f"NIFTY {pct:+.1%} intraday — tape constructive"}
+
+
 def assess_market_sentiment(indicators: dict) -> str:
     """Returns overall market sentiment: BULLISH / NEUTRAL / BEARISH."""
     if not indicators:

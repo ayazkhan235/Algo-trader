@@ -2,7 +2,7 @@ name: Daily Halal Stock Scan + Upstox Paper Trades
 
 on:
   schedule:
-    - cron: "30 2 * * 1-5"   # 8:00 AM IST (2:30 UTC), weekdays — runs early so GitHub delays land it ~9–10 AM IST
+    - cron: "30 7 * * 1-5"   # 1:00 PM IST (7:30 UTC), weekdays — runs mid-session so GitHub delays land the email ~2 PM IST, after NSE has digested global cues
   workflow_dispatch:          # manual "Run workflow" button on GitHub
 
 permissions:

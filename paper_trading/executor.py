@@ -19,7 +19,8 @@ def effective_score(base_score: float, news: dict, max_bonus: float = 5.0) -> fl
     return base_score + max(-max_bonus, min(max_bonus, news.get("score", 0.0) * max_bonus))
 
 
-def execute_buy_signals(signals: list[BuySignal], news_map: dict = None) -> list[dict]:
+def execute_buy_signals(signals: list[BuySignal], news_map: dict = None,
+                        market_gate: dict = None) -> list[dict]:
     """
     Places paper buy trades mirroring a real ₹X/month SIP plan.
 
@@ -28,11 +29,21 @@ def execute_buy_signals(signals: list[BuySignal], news_map: dict = None) -> list
     `config.MAX_POSITIONS`). Within a month, up to `config.MAX_NEW_PER_MONTH`
     new names are bought, highest news-adjusted conviction first, in whole
     shares only. Already-held names are skipped.
+
+    `market_gate` (from `pre_market.assess_market_gate`) reflects how NSE is
+    trading intraday: action 'block' suppresses all new buys today, 'caution'
+    requires extra conviction (score bump), 'allow' is business as usual.
     """
     from datetime import date
     init_db()
     news_map = news_map or {}
+    market_gate = market_gate or {}
     executed = []
+
+    if market_gate.get("action") == "block":
+        print(f"[paper] Market gate BLOCK — {market_gate.get('reason', 'weak tape')}; "
+              f"no new buys today")
+        return executed
 
     open_trades = get_open_trades()
     month = date.today().isoformat()[:7]   # 'YYYY-MM'
@@ -56,6 +67,15 @@ def execute_buy_signals(signals: list[BuySignal], news_map: dict = None) -> list
         and s.metrics.get("price")
         and not is_already_held(s.symbol)
     ]
+    # On a soft (but not blocked) tape, demand higher conviction for new buys.
+    score_bump = market_gate.get("score_bump", 0.0) if market_gate.get("action") == "caution" else 0.0
+    if score_bump:
+        floor = config.BUY_THRESHOLD + score_bump
+        before = len(candidates)
+        candidates = [s for s in candidates if s.score >= floor]
+        print(f"[paper] Market gate CAUTION — {market_gate.get('reason', 'soft tape')}; "
+              f"requiring score ≥ {floor:.0f} ({before}→{len(candidates)} candidates)")
+
     candidates.sort(key=lambda s: effective_score(s.score, news_map.get(s.symbol)), reverse=True)
     n = min(free_slots, getattr(config, "MAX_NEW_PER_MONTH", 3), len(candidates))
     candidates = candidates[:n]
