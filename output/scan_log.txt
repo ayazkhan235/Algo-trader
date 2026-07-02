@@ -1,6 +1,6 @@
 HTTP Error 404: {"quoteSummary":{"result":null,"error":{"code":"Not Found","description":"Quote not found for symbol: ^SG30"}}}
 $^SG30: possibly delisted; no price data found  (period=2d) (Yahoo error = "No data found, symbol may be delisted")
-Global market: NEUTRAL (avg +0.51%, India VIX 13.3125)
+Global market: BEARISH (avg -0.59%, India VIX 12.5375)
 Loading nifty50 universe...
 [universe] Loaded 50 symbols for 'nifty50'
 Fetching data for 50 stocks...
@@ -20,7 +20,7 @@ Computing fundamentals for 22 halal stocks...
 ││ COALIN… │ BUY   │ ││ │ │  │  ││ Energy       │ Strong ROE of 28.1% —        │
 ││         │       │ ││ │ │  │  ││              │ efficient cap                │
 ├┼─────────┼───────┼─┼┼─┼─┼──┼──┼┼──────────────┼──────────────────────────────┤
-││ WIPRO   │ BUY   │ ││ │ │  │  ││ Technology   │ High FCF yield of 6.9% —     │
+││ WIPRO   │ BUY   │ ││ │ │  │  ││ Technology   │ High FCF yield of 6.7% —     │
 ││         │       │ ││ │ │  │  ││              │ strong cas                   │
 ├┼─────────┼───────┼─┼┼─┼─┼──┼──┼┼──────────────┼──────────────────────────────┤
 ││ INFY    │ BUY   │ ││ │ │  │  ││ Technology   │ Strong ROE of 31.4% —        │
@@ -47,16 +47,12 @@ Computing fundamentals for 22 halal stocks...
 ││ MARUTI  │ WATCH │ ││ │ │  │  ││ Consumer     │ Revenue grew 16.6% CAGR over │
 ││         │       │ ││ │ │  │  ││ Cyclical     │ 3 year                       │
 ╰┴─────────┴───────┴─┴┴─┴─┴──┴──┴┴──────────────┴──────────────────────────────╯
-[report] CSV exported → output/signals_2026-07-01.csv
+[report] CSV exported → output/signals_2026-07-02.csv
 Checking news for 5 stocks...
-[paper] SKIP EICHERMOT.NS — ₹7,136 > slice ₹2,333
-[paper] SKIP BAJAJ-AUTO.NS — ₹9,840 > slice ₹2,333
-[paper] OPEN  INFY.NS @ ₹988.40  qty=2  tier=BUY  score=64  id=3
-Paper trades placed: 1 new positions
-  + INFY.NS  BUY  ₹1,977 @ ₹988.40
-[email] Trade notification sent to ayazkhan235.ak@gmail.com
+[paper] SKIP EICHERMOT.NS — ₹7,232 > slice ₹2,512
+[paper] SKIP BAJAJ-AUTO.NS — ₹9,769 > slice ₹2,512
 [gsheets] Synced to https://docs.google.com/spreadsheets/d/1SdSWMOdyG-hSD940ZYLTk-fb5IsVGAIvodWgVIku5Dg
 Google Sheet updated: 
 https://docs.google.com/spreadsheets/d/1SdSWMOdyG-hSD940ZYLTk-fb5IsVGAIvodWgVIku
 5Dg
-[email] Daily portfolio digest sent to ayazkhan235.ak@gmail.com
+[email] Failed to send daily digest: ('invalid_grant: Token has been expired or revoked.', {'error': 'invalid_grant', 'error_description': 'Token has been expired or revoked.'})
