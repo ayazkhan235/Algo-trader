@@ -1,6 +1,6 @@
 HTTP Error 404: {"quoteSummary":{"result":null,"error":{"code":"Not Found","description":"Quote not found for symbol: ^SG30"}}}
 $^SG30: possibly delisted; no price data found  (period=2d) (Yahoo error = "No data found, symbol may be delisted")
-Global market: NEUTRAL (avg -0.13%, India VIX 11.6725)
+Global market: BEARISH (avg -0.04%, India VIX 12.2225)
 Loading nifty50 universe...
 [universe] Loaded 50 symbols for 'nifty50'
 Fetching data for 50 stocks...
@@ -26,10 +26,10 @@ Computing fundamentals for 22 halal stocks...
 ││ INFY    │ BUY   │ ││ │ │  │  ││ Technology   │ Strong ROE of 31.4% —        │
 ││         │       │ ││ │ │  │  ││              │ efficient cap                │
 ├┼─────────┼───────┼─┼┼─┼─┼──┼──┼┼──────────────┼──────────────────────────────┤
-││ BAJAJ-… │ BUY   │ ││ │ │  │  ││ Consumer     │ Strong ROE of 28.0% —        │
+││ EICHER… │ BUY   │ ││ │ │  │  ││ Consumer     │ Strong ROE of 23.8% —        │
 ││         │       │ ││ │ │  │  ││ Cyclical     │ efficient cap                │
 ├┼─────────┼───────┼─┼┼─┼─┼──┼──┼┼──────────────┼──────────────────────────────┤
-││ EICHER… │ BUY   │ ││ │ │  │  ││ Consumer     │ Strong ROE of 23.8% —        │
+││ BAJAJ-… │ BUY   │ ││ │ │  │  ││ Consumer     │ Strong ROE of 28.0% —        │
 ││         │       │ ││ │ │  │  ││ Cyclical     │ efficient cap                │
 ├┼─────────┼───────┼─┼┼─┼─┼──┼──┼┼──────────────┼──────────────────────────────┤
 ││ TECHM   │ WATCH │ ││ │ │  │  ││ Technology   │ Strong financial health:     │
@@ -38,19 +38,19 @@ Computing fundamentals for 22 halal stocks...
 ││ SUNPHA… │ WATCH │ ││ │ │  │  ││ Healthcare   │ Gross margin expanding —     │
 ││         │       │ ││ │ │  │  ││              │ pricing po                   │
 ├┼─────────┼───────┼─┼┼─┼─┼──┼──┼┼──────────────┼──────────────────────────────┤
-││ LT      │ WATCH │ ││ │ │  │  ││ Industrials  │ Revenue grew 16.1% CAGR over │
-││         │       │ ││ │ │  │  ││              │ 3 year                       │
-├┼─────────┼───────┼─┼┼─┼─┼──┼──┼┼──────────────┼──────────────────────────────┤
 ││ HCLTECH │ WATCH │ ││ │ │  │  ││ Technology   │ Strong ROE of 23.4% —        │
 ││         │       │ ││ │ │  │  ││              │ efficient cap                │
+├┼─────────┼───────┼─┼┼─┼─┼──┼──┼┼──────────────┼──────────────────────────────┤
+││ LT      │ WATCH │ ││ │ │  │  ││ Industrials  │ Revenue grew 16.1% CAGR over │
+││         │       │ ││ │ │  │  ││              │ 3 year                       │
 ├┼─────────┼───────┼─┼┼─┼─┼──┼──┼┼──────────────┼──────────────────────────────┤
 ││ MARUTI  │ WATCH │ ││ │ │  │  ││ Consumer     │ Revenue grew 16.6% CAGR over │
 ││         │       │ ││ │ │  │  ││ Cyclical     │ 3 year                       │
 ╰┴─────────┴───────┴─┴┴─┴─┴──┴──┴┴──────────────┴──────────────────────────────╯
-[report] CSV exported → output/signals_2026-07-07.csv
+[report] CSV exported → output/signals_2026-07-08.csv
 Checking news for 5 stocks...
-[paper] SKIP EICHERMOT.NS — ₹7,568 > slice ₹2,512
-[paper] SKIP BAJAJ-AUTO.NS — ₹10,087 > slice ₹2,512
+[paper] SKIP EICHERMOT.NS — ₹7,495 > slice ₹2,512
+[paper] SKIP BAJAJ-AUTO.NS — ₹10,186 > slice ₹2,512
 [gsheets] Synced to https://docs.google.com/spreadsheets/d/1SdSWMOdyG-hSD940ZYLTk-fb5IsVGAIvodWgVIku5Dg
 Google Sheet updated: 
 https://docs.google.com/spreadsheets/d/1SdSWMOdyG-hSD940ZYLTk-fb5IsVGAIvodWgVIku
