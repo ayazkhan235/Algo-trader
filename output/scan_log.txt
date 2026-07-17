@@ -1,13 +1,14 @@
 HTTP Error 404: {"quoteSummary":{"result":null,"error":{"code":"Not Found","description":"Quote not found for symbol: ^SG30"}}}
 $^SG30: possibly delisted; no price data found  (period=2d) (Yahoo error = "No data found, symbol may be delisted")
-Global market: BULLISH (avg -0.02%, India VIX 12.8475)
+Global market: BEARISH (avg -1.77%, India VIX 13.2925)
 Loading nifty50 universe...
 [universe] Loaded 50 symbols for 'nifty50'
 Fetching data for 50 stocks...
-[fetcher] 50/50 fetched, 50 valid
-[fetcher] Complete: 50/50 symbols returned data
+[fetcher] Error fetching KOTAKBANK.NS: object of type 'NoneType' has no len()
+[fetcher] 50/50 fetched, 49 valid
+[fetcher] Complete: 49/50 symbols returned data
 Running halal screen...
-[halal] 22/50 stocks passed halal screening
+[halal] 22/49 stocks passed halal screening
 Computing fundamentals for 22 halal stocks...
 
 ═══ NSE HALAL ALGO TRADER ═══
@@ -20,7 +21,7 @@ Computing fundamentals for 22 halal stocks...
 ││ COALIN… │ BUY   │ ││ │ │  │  ││ Energy       │ Strong ROE of 28.1% —        │
 ││         │       │ ││ │ │  │  ││              │ efficient cap                │
 ├┼─────────┼───────┼─┼┼─┼─┼──┼──┼┼──────────────┼──────────────────────────────┤
-││ WIPRO   │ BUY   │ ││ │ │  │  ││ Technology   │ High FCF yield of 6.6% —     │
+││ WIPRO   │ BUY   │ ││ │ │  │  ││ Technology   │ High FCF yield of 6.7% —     │
 ││         │       │ ││ │ │  │  ││              │ strong cas                   │
 ├┼─────────┼───────┼─┼┼─┼─┼──┼──┼┼──────────────┼──────────────────────────────┤
 ││ INFY    │ BUY   │ ││ │ │  │  ││ Technology   │ Strong ROE of 31.4% —        │
@@ -44,10 +45,10 @@ Computing fundamentals for 22 halal stocks...
 ││ MARUTI  │ WATCH │ ││ │ │  │  ││ Consumer     │ Revenue grew 16.6% CAGR over │
 ││         │       │ ││ │ │  │  ││ Cyclical     │ 3 year                       │
 ╰┴─────────┴───────┴─┴┴─┴─┴──┴──┴┴──────────────┴──────────────────────────────╯
-[report] CSV exported → output/signals_2026-07-16.csv
+[report] CSV exported → output/signals_2026-07-17.csv
 Checking news for 5 stocks...
-[paper] SKIP EICHERMOT.NS — ₹7,387 > slice ₹2,512
-[paper] SKIP BAJAJ-AUTO.NS — ₹10,346 > slice ₹2,512
+[paper] SKIP EICHERMOT.NS — ₹7,514 > slice ₹2,512
+[paper] SKIP BAJAJ-AUTO.NS — ₹10,432 > slice ₹2,512
 [gsheets] Synced to https://docs.google.com/spreadsheets/d/1SdSWMOdyG-hSD940ZYLTk-fb5IsVGAIvodWgVIku5Dg
 Google Sheet updated: 
 https://docs.google.com/spreadsheets/d/1SdSWMOdyG-hSD940ZYLTk-fb5IsVGAIvodWgVIku
