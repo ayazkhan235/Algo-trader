@@ -1,27 +1,31 @@
 HTTP Error 404: {"quoteSummary":{"result":null,"error":{"code":"Not Found","description":"Quote not found for symbol: ^SG30"}}}
 $^SG30: possibly delisted; no price data found  (period=2d) (Yahoo error = "No data found, symbol may be delisted")
-Global market: BEARISH (avg -1.77%, India VIX 13.2925)
+Global market: NEUTRAL (avg -1.07%, India VIX 13.385)
 Loading nifty50 universe...
-[universe] Loaded 50 symbols for 'nifty50'
+[universe] fetch failed for https://archives.nseindia.com/content/indices/ind_nifty50list.csv: 503 Server Error: Service Unavailable for url: https://archives.nseindia.com/content/indices/ind_nifty50list.csv
+[universe] Using hardcoded Nifty50 fallback
 Fetching data for 50 stocks...
-[fetcher] Error fetching KOTAKBANK.NS: object of type 'NoneType' has no len()
+HTTP Error 404: {"quoteSummary":{"result":null,"error":{"code":"Not Found","description":"Quote not found for symbol: TATAMOTORS.NS"}}}
 [fetcher] 50/50 fetched, 49 valid
 [fetcher] Complete: 49/50 symbols returned data
 Running halal screen...
-[halal] 22/49 stocks passed halal screening
-Computing fundamentals for 22 halal stocks...
+[halal] 23/49 stocks passed halal screening
+Computing fundamentals for 23 halal stocks...
 
 ═══ NSE HALAL ALGO TRADER ═══
-  Universe: 50 stocks  →  Halal: 22  →  Quality gates: 10  →  Signals: 9
+  Universe: 50 stocks  →  Halal: 23  →  Quality gates: 10  →  Signals: 10
 
                                   Buy Signals                                   
 ╭┬─────────┬───────┬─┬┬─┬─┬──┬──┬┬──────────────┬──────────────────────────────╮
 ││ Symbol  │ Sign… │ ││ │ │  │  ││ Sector       │ Top Strength                 │
 ├┼─────────┼───────┼─┼┼─┼─┼──┼──┼┼──────────────┼──────────────────────────────┤
+││ HEROMO… │ STRO… │ ││ │ │  │  ││ Consumer     │ Strong ROE of 28.0% —        │
+││         │ BUY   │ ││ │ │  │  ││ Cyclical     │ efficient cap                │
+├┼─────────┼───────┼─┼┼─┼─┼──┼──┼┼──────────────┼──────────────────────────────┤
 ││ COALIN… │ BUY   │ ││ │ │  │  ││ Energy       │ Strong ROE of 28.1% —        │
 ││         │       │ ││ │ │  │  ││              │ efficient cap                │
 ├┼─────────┼───────┼─┼┼─┼─┼──┼──┼┼──────────────┼──────────────────────────────┤
-││ WIPRO   │ BUY   │ ││ │ │  │  ││ Technology   │ High FCF yield of 6.7% —     │
+││ WIPRO   │ BUY   │ ││ │ │  │  ││ Technology   │ High FCF yield of 6.3% —     │
 ││         │       │ ││ │ │  │  ││              │ strong cas                   │
 ├┼─────────┼───────┼─┼┼─┼─┼──┼──┼┼──────────────┼──────────────────────────────┤
 ││ INFY    │ BUY   │ ││ │ │  │  ││ Technology   │ Strong ROE of 31.4% —        │
@@ -33,22 +37,23 @@ Computing fundamentals for 22 halal stocks...
 ││ BAJAJ-… │ BUY   │ ││ │ │  │  ││ Consumer     │ Strong ROE of 28.0% —        │
 ││         │       │ ││ │ │  │  ││ Cyclical     │ efficient cap                │
 ├┼─────────┼───────┼─┼┼─┼─┼──┼──┼┼──────────────┼──────────────────────────────┤
-││ TECHM   │ WATCH │ ││ │ │  │  ││ Technology   │ Strong financial health:     │
+││ TECHM   │ BUY   │ ││ │ │  │  ││ Technology   │ Strong financial health:     │
 ││         │       │ ││ │ │  │  ││              │ Piotroski                    │
 ├┼─────────┼───────┼─┼┼─┼─┼──┼──┼┼──────────────┼──────────────────────────────┤
 ││ LT      │ WATCH │ ││ │ │  │  ││ Industrials  │ Revenue grew 16.1% CAGR over │
 ││         │       │ ││ │ │  │  ││              │ 3 year                       │
 ├┼─────────┼───────┼─┼┼─┼─┼──┼──┼┼──────────────┼──────────────────────────────┤
-││ HCLTECH │ WATCH │ ││ │ │  │  ││ Technology   │ Strong ROE of 24.1% —        │
-││         │       │ ││ │ │  │  ││              │ efficient cap                │
-├┼─────────┼───────┼─┼┼─┼─┼──┼──┼┼──────────────┼──────────────────────────────┤
 ││ MARUTI  │ WATCH │ ││ │ │  │  ││ Consumer     │ Revenue grew 16.6% CAGR over │
 ││         │       │ ││ │ │  │  ││ Cyclical     │ 3 year                       │
+├┼─────────┼───────┼─┼┼─┼─┼──┼──┼┼──────────────┼──────────────────────────────┤
+││ HCLTECH │ WATCH │ ││ │ │  │  ││ Technology   │ Strong ROE of 24.1% —        │
+││         │       │ ││ │ │  │  ││              │ efficient cap                │
 ╰┴─────────┴───────┴─┴┴─┴─┴──┴──┴┴──────────────┴──────────────────────────────╯
-[report] CSV exported → output/signals_2026-07-17.csv
-Checking news for 5 stocks...
-[paper] SKIP EICHERMOT.NS — ₹7,514 > slice ₹2,512
-[paper] SKIP BAJAJ-AUTO.NS — ₹10,432 > slice ₹2,512
+[report] CSV exported → output/signals_2026-07-20.csv
+Checking news for 7 stocks...
+[paper] SKIP HEROMOTOCO.NS — ₹4,930 > slice ₹1,674
+[paper] SKIP EICHERMOT.NS — ₹7,520 > slice ₹1,674
+[paper] SKIP BAJAJ-AUTO.NS — ₹10,455 > slice ₹1,674
 [gsheets] Synced to https://docs.google.com/spreadsheets/d/1SdSWMOdyG-hSD940ZYLTk-fb5IsVGAIvodWgVIku5Dg
 Google Sheet updated: 
 https://docs.google.com/spreadsheets/d/1SdSWMOdyG-hSD940ZYLTk-fb5IsVGAIvodWgVIku
