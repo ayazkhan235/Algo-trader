@@ -1,6 +1,6 @@
 HTTP Error 404: {"quoteSummary":{"result":null,"error":{"code":"Not Found","description":"Quote not found for symbol: ^SG30"}}}
 $^SG30: possibly delisted; no price data found  (period=2d) (Yahoo error = "No data found, symbol may be delisted")
-Global market: NEUTRAL (avg +0.17%, India VIX 13.08)
+Global market: BEARISH (avg -1.72%, India VIX 14.22)
 Loading nifty50 universe...
 [universe] Loaded 50 symbols for 'nifty50'
 Fetching data for 50 stocks...
@@ -20,11 +20,11 @@ Computing fundamentals for 22 halal stocks...
 ││ COALIN… │ BUY   │ ││ │ │  │  ││ Energy       │ Strong ROE of 28.1% —        │
 ││         │       │ ││ │ │  │  ││              │ efficient cap                │
 ├┼─────────┼───────┼─┼┼─┼─┼──┼──┼┼──────────────┼──────────────────────────────┤
-││ WIPRO   │ BUY   │ ││ │ │  │  ││ Technology   │ High FCF yield of 6.3% —     │
-││         │       │ ││ │ │  │  ││              │ strong cas                   │
-├┼─────────┼───────┼─┼┼─┼─┼──┼──┼┼──────────────┼──────────────────────────────┤
 ││ INFY    │ BUY   │ ││ │ │  │  ││ Technology   │ Strong ROE of 31.4% —        │
 ││         │       │ ││ │ │  │  ││              │ efficient cap                │
+├┼─────────┼───────┼─┼┼─┼─┼──┼──┼┼──────────────┼──────────────────────────────┤
+││ WIPRO   │ BUY   │ ││ │ │  │  ││ Technology   │ High FCF yield of 6.3% —     │
+││         │       │ ││ │ │  │  ││              │ strong cas                   │
 ├┼─────────┼───────┼─┼┼─┼─┼──┼──┼┼──────────────┼──────────────────────────────┤
 ││ EICHER… │ BUY   │ ││ │ │  │  ││ Consumer     │ Strong ROE of 23.8% —        │
 ││         │       │ ││ │ │  │  ││ Cyclical     │ efficient cap                │
@@ -47,10 +47,10 @@ Computing fundamentals for 22 halal stocks...
 ││ RELIAN… │ WATCH │ ││ │ │  │  ││ Energy       │ Gross margin expanding —     │
 ││         │       │ ││ │ │  │  ││              │ pricing po                   │
 ╰┴─────────┴───────┴─┴┴─┴─┴──┴──┴┴──────────────┴──────────────────────────────╯
-[report] CSV exported → output/signals_2026-07-23.csv
+[report] CSV exported → output/signals_2026-07-24.csv
 Checking news for 6 stocks...
-[paper] SKIP EICHERMOT.NS — ₹7,754 > slice ₹1,718
-[paper] SKIP BAJAJ-AUTO.NS — ₹11,292 > slice ₹1,718
+[paper] SKIP EICHERMOT.NS — ₹7,616 > slice ₹1,718
+[paper] SKIP BAJAJ-AUTO.NS — ₹11,216 > slice ₹1,718
 [gsheets] Synced to https://docs.google.com/spreadsheets/d/1SdSWMOdyG-hSD940ZYLTk-fb5IsVGAIvodWgVIku5Dg
 Google Sheet updated: 
 https://docs.google.com/spreadsheets/d/1SdSWMOdyG-hSD940ZYLTk-fb5IsVGAIvodWgVIku
