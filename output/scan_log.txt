@@ -1,6 +1,6 @@
 HTTP Error 404: {"quoteSummary":{"result":null,"error":{"code":"Not Found","description":"Quote not found for symbol: ^SG30"}}}
 $^SG30: possibly delisted; no price data found  (period=2d) (Yahoo error = "No data found, symbol may be delisted")
-Global market: NEUTRAL (avg -0.75%, India VIX 12.525)
+Global market: NEUTRAL (avg +nan%, India VIX 12.0975)
 Loading nifty50 universe...
 [universe] Loaded 50 symbols for 'nifty50'
 Fetching data for 50 stocks...
@@ -11,16 +11,16 @@ Running halal screen...
 Computing fundamentals for 22 halal stocks...
 
 ═══ NSE HALAL ALGO TRADER ═══
-  Universe: 50 stocks  →  Halal: 22  →  Quality gates: 9  →  Signals: 9
+  Universe: 50 stocks  →  Halal: 22  →  Quality gates: 10  →  Signals: 10
 
                                   Buy Signals                                   
 ╭┬─────────┬───────┬─┬┬─┬─┬──┬──┬┬──────────────┬──────────────────────────────╮
 ││ Symbol  │ Sign… │ ││ │ │  │  ││ Sector       │ Top Strength                 │
 ├┼─────────┼───────┼─┼┼─┼─┼──┼──┼┼──────────────┼──────────────────────────────┤
-││ COALIN… │ BUY   │ ││ │ │  │  ││ Energy       │ Strong ROE of 28.1% —        │
-││         │       │ ││ │ │  │  ││              │ efficient cap                │
+││ COALIN… │ STRO… │ ││ │ │  │  ││ Energy       │ High FCF yield of 12.1% —    │
+││         │ BUY   │ ││ │ │  │  ││              │ strong ca                    │
 ├┼─────────┼───────┼─┼┼─┼─┼──┼──┼┼──────────────┼──────────────────────────────┤
-││ WIPRO   │ BUY   │ ││ │ │  │  ││ Technology   │ High FCF yield of 6.1% —     │
+││ WIPRO   │ BUY   │ ││ │ │  │  ││ Technology   │ High FCF yield of 6.0% —     │
 ││         │       │ ││ │ │  │  ││              │ strong cas                   │
 ├┼─────────┼───────┼─┼┼─┼─┼──┼──┼┼──────────────┼──────────────────────────────┤
 ││ EICHER… │ BUY   │ ││ │ │  │  ││ Consumer     │ Strong ROE of 23.8% —        │
@@ -32,22 +32,24 @@ Computing fundamentals for 22 halal stocks...
 ││ TECHM   │ BUY   │ ││ │ │  │  ││ Technology   │ Strong financial health:     │
 ││         │       │ ││ │ │  │  ││              │ Piotroski                    │
 ├┼─────────┼───────┼─┼┼─┼─┼──┼──┼┼──────────────┼──────────────────────────────┤
-││ BAJAJ-… │ BUY   │ ││ │ │  │  ││ Consumer     │ Revenue grew 19.5% CAGR over │
+││ BAJAJ-… │ WATCH │ ││ │ │  │  ││ Consumer     │ Revenue grew 19.5% CAGR over │
 ││         │       │ ││ │ │  │  ││ Cyclical     │ 3 year                       │
-├┼─────────┼───────┼─┼┼─┼─┼──┼──┼┼──────────────┼──────────────────────────────┤
-││ LT      │ WATCH │ ││ │ │  │  ││ Industrials  │ Revenue grew 16.1% CAGR over │
-││         │       │ ││ │ │  │  ││              │ 3 year                       │
 ├┼─────────┼───────┼─┼┼─┼─┼──┼──┼┼──────────────┼──────────────────────────────┤
 ││ HCLTECH │ WATCH │ ││ │ │  │  ││ Technology   │ Strong ROE of 24.1% —        │
 ││         │       │ ││ │ │  │  ││              │ efficient cap                │
 ├┼─────────┼───────┼─┼┼─┼─┼──┼──┼┼──────────────┼──────────────────────────────┤
+││ LT      │ WATCH │ ││ │ │  │  ││ Industrials  │ Revenue grew 16.1% CAGR over │
+││         │       │ ││ │ │  │  ││              │ 3 year                       │
+├┼─────────┼───────┼─┼┼─┼─┼──┼──┼┼──────────────┼──────────────────────────────┤
 ││ MARUTI  │ WATCH │ ││ │ │  │  ││ Consumer     │ Revenue grew 16.6% CAGR over │
 ││         │       │ ││ │ │  │  ││ Cyclical     │ 3 year                       │
+├┼─────────┼───────┼─┼┼─┼─┼──┼──┼┼──────────────┼──────────────────────────────┤
+││ RELIAN… │ WATCH │ ││ │ │  │  ││ Energy       │ Gross margin expanding —     │
+││         │       │ ││ │ │  │  ││              │ pricing po                   │
 ╰┴─────────┴───────┴─┴┴─┴─┴──┴──┴┴──────────────┴──────────────────────────────╯
-[report] CSV exported → output/signals_2026-07-28.csv
-Checking news for 6 stocks...
-[paper] SKIP EICHERMOT.NS — ₹7,824 > slice ₹1,718
-[paper] SKIP BAJAJ-AUTO.NS — ₹11,228 > slice ₹1,718
+[report] CSV exported → output/signals_2026-07-29.csv
+Checking news for 5 stocks...
+[paper] SKIP EICHERMOT.NS — ₹7,828 > slice ₹3,435
 [gsheets] Synced to https://docs.google.com/spreadsheets/d/1SdSWMOdyG-hSD940ZYLTk-fb5IsVGAIvodWgVIku5Dg
 Google Sheet updated: 
 https://docs.google.com/spreadsheets/d/1SdSWMOdyG-hSD940ZYLTk-fb5IsVGAIvodWgVIku
