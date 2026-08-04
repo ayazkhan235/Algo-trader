@@ -1,7 +1,6 @@
 HTTP Error 404: {"quoteSummary":{"result":null,"error":{"code":"Not Found","description":"Quote not found for symbol: ^SG30"}}}
 $^SG30: possibly delisted; no price data found  (period=2d) (Yahoo error = "No data found, symbol may be delisted")
-$BZ=F: possibly delisted; no price data found  (period=2d)
-Global market: NEUTRAL (avg +0.31%, India VIX 11.965)
+Global market: NEUTRAL (avg +nan%, India VIX 12.1925)
 Loading nifty50 universe...
 [universe] Loaded 50 symbols for 'nifty50'
 Fetching data for 50 stocks...
@@ -18,14 +17,14 @@ Computing fundamentals for 22 halal stocks...
 ╭┬─────────┬───────┬─┬┬─┬─┬──┬──┬┬──────────────┬──────────────────────────────╮
 ││ Symbol  │ Sign… │ ││ │ │  │  ││ Sector       │ Top Strength                 │
 ├┼─────────┼───────┼─┼┼─┼─┼──┼──┼┼──────────────┼──────────────────────────────┤
-││ COALIN… │ STRO… │ ││ │ │  │  ││ Energy       │ High FCF yield of 12.1% —    │
+││ COALIN… │ STRO… │ ││ │ │  │  ││ Energy       │ High FCF yield of 12.0% —    │
 ││         │ BUY   │ ││ │ │  │  ││              │ strong ca                    │
-├┼─────────┼───────┼─┼┼─┼─┼──┼──┼┼──────────────┼──────────────────────────────┤
-││ WIPRO   │ BUY   │ ││ │ │  │  ││ Technology   │ High FCF yield of 5.9% —     │
-││         │       │ ││ │ │  │  ││              │ strong cas                   │
 ├┼─────────┼───────┼─┼┼─┼─┼──┼──┼┼──────────────┼──────────────────────────────┤
 ││ EICHER… │ BUY   │ ││ │ │  │  ││ Consumer     │ Revenue grew 17.5% CAGR over │
 ││         │       │ ││ │ │  │  ││ Cyclical     │ 3 year                       │
+├┼─────────┼───────┼─┼┼─┼─┼──┼──┼┼──────────────┼──────────────────────────────┤
+││ WIPRO   │ BUY   │ ││ │ │  │  ││ Technology   │ High FCF yield of 5.9% —     │
+││         │       │ ││ │ │  │  ││              │ strong cas                   │
 ├┼─────────┼───────┼─┼┼─┼─┼──┼──┼┼──────────────┼──────────────────────────────┤
 ││ SUNPHA… │ BUY   │ ││ │ │  │  ││ Healthcare   │ Gross margin expanding —     │
 ││         │       │ ││ │ │  │  ││              │ pricing po                   │
@@ -48,13 +47,9 @@ Computing fundamentals for 22 halal stocks...
 ││ RELIAN… │ WATCH │ ││ │ │  │  ││ Energy       │ Gross margin expanding —     │
 ││         │       │ ││ │ │  │  ││              │ pricing po                   │
 ╰┴─────────┴───────┴─┴┴─┴─┴──┴──┴┴──────────────┴──────────────────────────────╯
-[report] CSV exported → output/signals_2026-08-03.csv
+[report] CSV exported → output/signals_2026-08-04.csv
 Checking news for 6 stocks...
-[paper] SKIP EICHERMOT.NS — ₹8,032 > slice ₹3,500
-[paper] OPEN  SUNPHARMA.NS @ ₹1959.50  qty=1  tier=BUY  score=61  id=5
-Paper trades placed: 1 new positions
-  + SUNPHARMA.NS  BUY  ₹1,960 @ ₹1,959.50
-[email] Failed to send trade notification: ('invalid_grant: Bad Request', {'error': 'invalid_grant', 'error_description': 'Bad Request'})
+[paper] SKIP EICHERMOT.NS — ₹7,916 > slice ₹5,040
 [gsheets] Synced to https://docs.google.com/spreadsheets/d/1SdSWMOdyG-hSD940ZYLTk-fb5IsVGAIvodWgVIku5Dg
 Google Sheet updated: 
 https://docs.google.com/spreadsheets/d/1SdSWMOdyG-hSD940ZYLTk-fb5IsVGAIvodWgVIku
