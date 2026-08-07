@@ -1,17 +1,17 @@
 HTTP Error 404: {"quoteSummary":{"result":null,"error":{"code":"Not Found","description":"Quote not found for symbol: ^SG30"}}}
 $^SG30: possibly delisted; no price data found  (period=2d) (Yahoo error = "No data found, symbol may be delisted")
-Global market: NEUTRAL (avg -0.66%, India VIX 12.2975)
+Global market: NEUTRAL (avg -0.21%, India VIX 12.53)
 Loading nifty50 universe...
 [universe] Loaded 50 symbols for 'nifty50'
 Fetching data for 50 stocks...
 [fetcher] 50/50 fetched, 50 valid
 [fetcher] Complete: 50/50 symbols returned data
 Running halal screen...
-[halal] 22/50 stocks passed halal screening
-Computing fundamentals for 22 halal stocks...
+[halal] 23/50 stocks passed halal screening
+Computing fundamentals for 23 halal stocks...
 
 ═══ NSE HALAL ALGO TRADER ═══
-  Universe: 50 stocks  →  Halal: 22  →  Quality gates: 10  →  Signals: 9
+  Universe: 50 stocks  →  Halal: 23  →  Quality gates: 11  →  Signals: 10
 
                                   Buy Signals                                   
 ╭┬─────────┬───────┬─┬┬─┬─┬──┬──┬┬──────────────┬──────────────────────────────╮
@@ -43,10 +43,13 @@ Computing fundamentals for 22 halal stocks...
 ├┼─────────┼───────┼─┼┼─┼─┼──┼──┼┼──────────────┼──────────────────────────────┤
 ││ HCLTECH │ WATCH │ ││ │ │  │  ││ Technology   │ Strong ROE of 24.1% —        │
 ││         │       │ ││ │ │  │  ││              │ efficient cap                │
+├┼─────────┼───────┼─┼┼─┼─┼──┼──┼┼──────────────┼──────────────────────────────┤
+││ RELIAN… │ WATCH │ ││ │ │  │  ││ Energy       │ Gross margin expanding —     │
+││         │       │ ││ │ │  │  ││              │ pricing po                   │
 ╰┴─────────┴───────┴─┴┴─┴─┴──┴──┴┴──────────────┴──────────────────────────────╯
-[report] CSV exported → output/signals_2026-08-06.csv
+[report] CSV exported → output/signals_2026-08-07.csv
 Checking news for 6 stocks...
-[paper] SKIP EICHERMOT.NS — ₹7,983 > slice ₹5,040
+[paper] SKIP EICHERMOT.NS — ₹8,004 > slice ₹5,040
 [gsheets] Synced to https://docs.google.com/spreadsheets/d/1SdSWMOdyG-hSD940ZYLTk-fb5IsVGAIvodWgVIku5Dg
 Google Sheet updated: 
 https://docs.google.com/spreadsheets/d/1SdSWMOdyG-hSD940ZYLTk-fb5IsVGAIvodWgVIku
