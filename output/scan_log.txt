@@ -1,17 +1,17 @@
 HTTP Error 404: {"quoteSummary":{"result":null,"error":{"code":"Not Found","description":"Quote not found for symbol: ^SG30"}}}
 $^SG30: possibly delisted; no price data found  (period=2d) (Yahoo error = "No data found, symbol may be delisted")
-Global market: BEARISH (avg +0.20%, India VIX 12.185)
+Global market: NEUTRAL (avg -0.32%, India VIX 11.8925)
 Loading nifty50 universe...
 [universe] Loaded 50 symbols for 'nifty50'
 Fetching data for 50 stocks...
 [fetcher] 50/50 fetched, 50 valid
 [fetcher] Complete: 50/50 symbols returned data
 Running halal screen...
-[halal] 23/50 stocks passed halal screening
-Computing fundamentals for 23 halal stocks...
+[halal] 22/50 stocks passed halal screening
+Computing fundamentals for 22 halal stocks...
 
 ═══ NSE HALAL ALGO TRADER ═══
-  Universe: 50 stocks  →  Halal: 23  →  Quality gates: 11  →  Signals: 10
+  Universe: 50 stocks  →  Halal: 22  →  Quality gates: 10  →  Signals: 9
 
                                   Buy Signals                                   
 ╭┬─────────┬───────┬─┬┬─┬─┬──┬──┬┬──────────────┬──────────────────────────────╮
@@ -32,7 +32,7 @@ Computing fundamentals for 23 halal stocks...
 ││ INFY    │ BUY   │ ││ │ │  │  ││ Technology   │ Strong ROE of 32.0% —        │
 ││         │       │ ││ │ │  │  ││              │ efficient cap                │
 ├┼─────────┼───────┼─┼┼─┼─┼──┼──┼┼──────────────┼──────────────────────────────┤
-││ TECHM   │ WATCH │ ││ │ │  │  ││ Technology   │ Strong financial health:     │
+││ TECHM   │ BUY   │ ││ │ │  │  ││ Technology   │ Strong financial health:     │
 ││         │       │ ││ │ │  │  ││              │ Piotroski                    │
 ├┼─────────┼───────┼─┼┼─┼─┼──┼──┼┼──────────────┼──────────────────────────────┤
 ││ BAJAJ-… │ WATCH │ ││ │ │  │  ││ Consumer     │ Revenue grew 19.5% CAGR over │
@@ -43,13 +43,10 @@ Computing fundamentals for 23 halal stocks...
 ├┼─────────┼───────┼─┼┼─┼─┼──┼──┼┼──────────────┼──────────────────────────────┤
 ││ MARUTI  │ WATCH │ ││ │ │  │  ││ Consumer     │ Revenue grew 15.9% CAGR over │
 ││         │       │ ││ │ │  │  ││ Cyclical     │ 3 year                       │
-├┼─────────┼───────┼─┼┼─┼─┼──┼──┼┼──────────────┼──────────────────────────────┤
-││ RELIAN… │ WATCH │ ││ │ │  │  ││ Energy       │ Gross margin expanding —     │
-││         │       │ ││ │ │  │  ││              │ pricing po                   │
 ╰┴─────────┴───────┴─┴┴─┴─┴──┴──┴┴──────────────┴──────────────────────────────╯
-[report] CSV exported → output/signals_2026-08-11.csv
+[report] CSV exported → output/signals_2026-08-12.csv
 Checking news for 6 stocks...
-[paper] SKIP EICHERMOT.NS — ₹8,062 > slice ₹5,040
+[paper] SKIP EICHERMOT.NS — ₹7,980 > slice ₹5,040
 [gsheets] Synced to https://docs.google.com/spreadsheets/d/1SdSWMOdyG-hSD940ZYLTk-fb5IsVGAIvodWgVIku5Dg
 Google Sheet updated: 
 https://docs.google.com/spreadsheets/d/1SdSWMOdyG-hSD940ZYLTk-fb5IsVGAIvodWgVIku
