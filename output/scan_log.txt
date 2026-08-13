@@ -1,6 +1,6 @@
 HTTP Error 404: {"quoteSummary":{"result":null,"error":{"code":"Not Found","description":"Quote not found for symbol: ^SG30"}}}
 $^SG30: possibly delisted; no price data found  (period=2d) (Yahoo error = "No data found, symbol may be delisted")
-Global market: NEUTRAL (avg -0.32%, India VIX 11.8925)
+Global market: BULLISH (avg +0.53%, India VIX 11.61)
 Loading nifty50 universe...
 [universe] Loaded 50 symbols for 'nifty50'
 Fetching data for 50 stocks...
@@ -17,7 +17,7 @@ Computing fundamentals for 22 halal stocks...
 ╭┬─────────┬───────┬─┬┬─┬─┬──┬──┬┬──────────────┬──────────────────────────────╮
 ││ Symbol  │ Sign… │ ││ │ │  │  ││ Sector       │ Top Strength                 │
 ├┼─────────┼───────┼─┼┼─┼─┼──┼──┼┼──────────────┼──────────────────────────────┤
-││ COALIN… │ STRO… │ ││ │ │  │  ││ Energy       │ High FCF yield of 12.1% —    │
+││ COALIN… │ STRO… │ ││ │ │  │  ││ Energy       │ High FCF yield of 12.2% —    │
 ││         │ BUY   │ ││ │ │  │  ││              │ strong ca                    │
 ├┼─────────┼───────┼─┼┼─┼─┼──┼──┼┼──────────────┼──────────────────────────────┤
 ││ WIPRO   │ BUY   │ ││ │ │  │  ││ Technology   │ High FCF yield of 6.0% —     │
@@ -32,7 +32,7 @@ Computing fundamentals for 22 halal stocks...
 ││ INFY    │ BUY   │ ││ │ │  │  ││ Technology   │ Strong ROE of 32.0% —        │
 ││         │       │ ││ │ │  │  ││              │ efficient cap                │
 ├┼─────────┼───────┼─┼┼─┼─┼──┼──┼┼──────────────┼──────────────────────────────┤
-││ TECHM   │ BUY   │ ││ │ │  │  ││ Technology   │ Strong financial health:     │
+││ TECHM   │ WATCH │ ││ │ │  │  ││ Technology   │ Strong financial health:     │
 ││         │       │ ││ │ │  │  ││              │ Piotroski                    │
 ├┼─────────┼───────┼─┼┼─┼─┼──┼──┼┼──────────────┼──────────────────────────────┤
 ││ BAJAJ-… │ WATCH │ ││ │ │  │  ││ Consumer     │ Revenue grew 19.5% CAGR over │
@@ -44,9 +44,9 @@ Computing fundamentals for 22 halal stocks...
 ││ MARUTI  │ WATCH │ ││ │ │  │  ││ Consumer     │ Revenue grew 15.9% CAGR over │
 ││         │       │ ││ │ │  │  ││ Cyclical     │ 3 year                       │
 ╰┴─────────┴───────┴─┴┴─┴─┴──┴──┴┴──────────────┴──────────────────────────────╯
-[report] CSV exported → output/signals_2026-08-12.csv
+[report] CSV exported → output/signals_2026-08-13.csv
 Checking news for 6 stocks...
-[paper] SKIP EICHERMOT.NS — ₹7,980 > slice ₹5,040
+[paper] SKIP EICHERMOT.NS — ₹8,046 > slice ₹5,040
 [gsheets] Synced to https://docs.google.com/spreadsheets/d/1SdSWMOdyG-hSD940ZYLTk-fb5IsVGAIvodWgVIku5Dg
 Google Sheet updated: 
 https://docs.google.com/spreadsheets/d/1SdSWMOdyG-hSD940ZYLTk-fb5IsVGAIvodWgVIku
