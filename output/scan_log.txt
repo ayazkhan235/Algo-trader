@@ -1,6 +1,6 @@
 HTTP Error 404: {"quoteSummary":{"result":null,"error":{"code":"Not Found","description":"Quote not found for symbol: ^SG30"}}}
 $^SG30: No data found, symbol may be delisted
-Global market: BEARISH (avg -0.97%, India VIX 11.455)
+Global market: BULLISH (avg +0.59%, India VIX 10.73)
 Loading nifty50 universe...
 [universe] Loaded 50 symbols for 'nifty50'
 Fetching data for 50 stocks...
@@ -11,7 +11,7 @@ Running halal screen...
 Computing fundamentals for 22 halal stocks...
 
 ═══ NSE HALAL ALGO TRADER ═══
-  Universe: 50 stocks  →  Halal: 22  →  Quality gates: 11  →  Signals: 10
+  Universe: 50 stocks  →  Halal: 22  →  Quality gates: 12  →  Signals: 10
 
                                   Buy Signals                                   
 ╭┬─────────┬───────┬─┬┬─┬─┬──┬──┬┬──────────────┬──────────────────────────────╮
@@ -20,7 +20,7 @@ Computing fundamentals for 22 halal stocks...
 ││ COALIN… │ STRO… │ ││ │ │  │  ││ Energy       │ High FCF yield of 12.5% —    │
 ││         │ BUY   │ ││ │ │  │  ││              │ strong ca                    │
 ├┼─────────┼───────┼─┼┼─┼─┼──┼──┼┼──────────────┼──────────────────────────────┤
-││ WIPRO   │ BUY   │ ││ │ │  │  ││ Technology   │ High FCF yield of 6.1% —     │
+││ WIPRO   │ BUY   │ ││ │ │  │  ││ Technology   │ High FCF yield of 6.0% —     │
 ││         │       │ ││ │ │  │  ││              │ strong cas                   │
 ├┼─────────┼───────┼─┼┼─┼─┼──┼──┼┼──────────────┼──────────────────────────────┤
 ││ EICHER… │ BUY   │ ││ │ │  │  ││ Consumer     │ Revenue grew 17.5% CAGR over │
@@ -47,9 +47,9 @@ Computing fundamentals for 22 halal stocks...
 ││ RELIAN… │ WATCH │ ││ │ │  │  ││ Energy       │ Gross margin expanding —     │
 ││         │       │ ││ │ │  │  ││              │ pricing po                   │
 ╰┴─────────┴───────┴─┴┴─┴─┴──┴──┴┴──────────────┴──────────────────────────────╯
-[report] CSV exported → output/signals_2026-08-19.csv
+[report] CSV exported → output/signals_2026-08-20.csv
 Checking news for 6 stocks...
-[paper] SKIP EICHERMOT.NS — ₹8,021 > slice ₹5,040
+[paper] SKIP EICHERMOT.NS — ₹8,012 > slice ₹5,040
 [gsheets] Synced to https://docs.google.com/spreadsheets/d/1SdSWMOdyG-hSD940ZYLTk-fb5IsVGAIvodWgVIku5Dg
 Google Sheet updated: 
 https://docs.google.com/spreadsheets/d/1SdSWMOdyG-hSD940ZYLTk-fb5IsVGAIvodWgVIku
