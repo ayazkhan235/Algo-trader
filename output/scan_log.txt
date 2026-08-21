@@ -1,6 +1,6 @@
 HTTP Error 404: {"quoteSummary":{"result":null,"error":{"code":"Not Found","description":"Quote not found for symbol: ^SG30"}}}
 $^SG30: No data found, symbol may be delisted
-Global market: BULLISH (avg +0.59%, India VIX 10.73)
+Global market: BEARISH (avg -0.58%, India VIX 11.19)
 Loading nifty50 universe...
 [universe] Loaded 50 symbols for 'nifty50'
 Fetching data for 50 stocks...
@@ -17,10 +17,10 @@ Computing fundamentals for 22 halal stocks...
 ╭┬─────────┬───────┬─┬┬─┬─┬──┬──┬┬──────────────┬──────────────────────────────╮
 ││ Symbol  │ Sign… │ ││ │ │  │  ││ Sector       │ Top Strength                 │
 ├┼─────────┼───────┼─┼┼─┼─┼──┼──┼┼──────────────┼──────────────────────────────┤
-││ COALIN… │ STRO… │ ││ │ │  │  ││ Energy       │ High FCF yield of 12.5% —    │
+││ COALIN… │ STRO… │ ││ │ │  │  ││ Energy       │ High FCF yield of 12.3% —    │
 ││         │ BUY   │ ││ │ │  │  ││              │ strong ca                    │
 ├┼─────────┼───────┼─┼┼─┼─┼──┼──┼┼──────────────┼──────────────────────────────┤
-││ WIPRO   │ BUY   │ ││ │ │  │  ││ Technology   │ High FCF yield of 6.0% —     │
+││ WIPRO   │ BUY   │ ││ │ │  │  ││ Technology   │ High FCF yield of 6.1% —     │
 ││         │       │ ││ │ │  │  ││              │ strong cas                   │
 ├┼─────────┼───────┼─┼┼─┼─┼──┼──┼┼──────────────┼──────────────────────────────┤
 ││ EICHER… │ BUY   │ ││ │ │  │  ││ Consumer     │ Revenue grew 17.5% CAGR over │
@@ -47,9 +47,9 @@ Computing fundamentals for 22 halal stocks...
 ││ RELIAN… │ WATCH │ ││ │ │  │  ││ Energy       │ Gross margin expanding —     │
 ││         │       │ ││ │ │  │  ││              │ pricing po                   │
 ╰┴─────────┴───────┴─┴┴─┴─┴──┴──┴┴──────────────┴──────────────────────────────╯
-[report] CSV exported → output/signals_2026-08-20.csv
+[report] CSV exported → output/signals_2026-08-21.csv
 Checking news for 6 stocks...
-[paper] SKIP EICHERMOT.NS — ₹8,012 > slice ₹5,040
+[paper] SKIP EICHERMOT.NS — ₹8,024 > slice ₹5,040
 [gsheets] Synced to https://docs.google.com/spreadsheets/d/1SdSWMOdyG-hSD940ZYLTk-fb5IsVGAIvodWgVIku5Dg
 Google Sheet updated: 
 https://docs.google.com/spreadsheets/d/1SdSWMOdyG-hSD940ZYLTk-fb5IsVGAIvodWgVIku
