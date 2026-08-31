@@ -1,6 +1,6 @@
 HTTP Error 404: {"quoteSummary":{"result":null,"error":{"code":"Not Found","description":"Quote not found for symbol: ^SG30"}}}
 $^SG30: No data found, symbol may be delisted
-Global market: NEUTRAL (avg -0.10%, India VIX 10.68)
+Global market: NEUTRAL (avg -0.20%, India VIX 11.19)
 Loading nifty50 universe...
 [universe] Loaded 50 symbols for 'nifty50'
 Fetching data for 50 stocks...
@@ -11,7 +11,7 @@ Running halal screen...
 Computing fundamentals for 22 halal stocks...
 
 ═══ NSE HALAL ALGO TRADER ═══
-  Universe: 50 stocks  →  Halal: 22  →  Quality gates: 11  →  Signals: 9
+  Universe: 50 stocks  →  Halal: 22  →  Quality gates: 12  →  Signals: 10
 
                                   Buy Signals                                   
 ╭┬─────────┬───────┬─┬┬─┬─┬──┬──┬┬──────────────┬──────────────────────────────╮
@@ -20,7 +20,7 @@ Computing fundamentals for 22 halal stocks...
 ││ COALIN… │ STRO… │ ││ │ │  │  ││ Energy       │ High FCF yield of 12.4% —    │
 ││         │ BUY   │ ││ │ │  │  ││              │ strong ca                    │
 ├┼─────────┼───────┼─┼┼─┼─┼──┼──┼┼──────────────┼──────────────────────────────┤
-││ WIPRO   │ BUY   │ ││ │ │  │  ││ Technology   │ High FCF yield of 6.1% —     │
+││ WIPRO   │ BUY   │ ││ │ │  │  ││ Technology   │ High FCF yield of 5.9% —     │
 ││         │       │ ││ │ │  │  ││              │ strong cas                   │
 ├┼─────────┼───────┼─┼┼─┼─┼──┼──┼┼──────────────┼──────────────────────────────┤
 ││ EICHER… │ BUY   │ ││ │ │  │  ││ Consumer     │ Revenue grew 17.5% CAGR over │
@@ -43,12 +43,19 @@ Computing fundamentals for 22 halal stocks...
 ├┼─────────┼───────┼─┼┼─┼─┼──┼──┼┼──────────────┼──────────────────────────────┤
 ││ MARUTI  │ WATCH │ ││ │ │  │  ││ Consumer     │ Revenue grew 15.9% CAGR over │
 ││         │       │ ││ │ │  │  ││ Cyclical     │ 3 year                       │
+├┼─────────┼───────┼─┼┼─┼─┼──┼──┼┼──────────────┼──────────────────────────────┤
+││ RELIAN… │ WATCH │ ││ │ │  │  ││ Energy       │ Gross margin expanding —     │
+││         │       │ ││ │ │  │  ││              │ pricing po                   │
 ╰┴─────────┴───────┴─┴┴─┴─┴──┴──┴┴──────────────┴──────────────────────────────╯
-[report] CSV exported → output/signals_2026-08-28.csv
+[report] CSV exported → output/signals_2026-08-31.csv
 Checking news for 6 stocks...
-[paper] SKIP EICHERMOT.NS — ₹8,059 > slice ₹5,040
-[gsheets] Synced to https://docs.google.com/spreadsheets/d/1SdSWMOdyG-hSD940ZYLTk-fb5IsVGAIvodWgVIku5Dg
-Google Sheet updated: 
-https://docs.google.com/spreadsheets/d/1SdSWMOdyG-hSD940ZYLTk-fb5IsVGAIvodWgVIku
-5Dg
+[paper] SKIP EICHERMOT.NS — ₹7,954 > slice ₹5,040
+[gsheets] Configured sheet '1SdSWMOdyG-hSD940ZYLTk-fb5IsVGAIvodWgVIku5Dg' not found/accessible — creating a new one.
+Google Sheets sync failed: Could not create a spreadsheet. Service accounts have
+no personal Google Drive, so auto-create often fails with a 403. Instead, create
+a blank Google Sheet yourself, share it (Editor) with the service account email,
+and set GOOGLE_SHEET_ID to that sheet's id. Original error: <HttpError 403 when 
+requesting https://sheets.googleapis.com/v4/spreadsheets?alt=json returned "The 
+caller does not have permission". Details: "The caller does not have 
+permission">
 [email] Failed to send daily digest: ('invalid_grant: Bad Request', {'error': 'invalid_grant', 'error_description': 'Bad Request'})
