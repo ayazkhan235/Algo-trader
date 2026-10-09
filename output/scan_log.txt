@@ -1,6 +1,6 @@
 HTTP Error 404: {"quoteSummary":{"result":null,"error":{"code":"Not Found","description":"Quote not found for symbol: ^SG30"}}}
 $^SG30: No data found, symbol may be delisted
-Global market: BEARISH (avg -0.79%, India VIX 15.275)
+Global market: NEUTRAL (avg +0.03%, India VIX 14.375)
 Loading nifty50 universe...
 [universe] Loaded 50 symbols for 'nifty50'
 Fetching data for 50 stocks...
@@ -11,13 +11,13 @@ Running halal screen...
 Computing fundamentals for 21 halal stocks...
 
 ═══ NSE HALAL ALGO TRADER ═══
-  Universe: 50 stocks  →  Halal: 21  →  Quality gates: 11  →  Signals: 9
+  Universe: 50 stocks  →  Halal: 21  →  Quality gates: 10  →  Signals: 8
 
                                   Buy Signals                                   
 ╭┬─────────┬───────┬─┬┬─┬─┬──┬──┬┬──────────────┬──────────────────────────────╮
 ││ Symbol  │ Sign… │ ││ │ │  │  ││ Sector       │ Top Strength                 │
 ├┼─────────┼───────┼─┼┼─┼─┼──┼──┼┼──────────────┼──────────────────────────────┤
-││ COALIN… │ STRO… │ ││ │ │  │  ││ Energy       │ High FCF yield of 12.2% —    │
+││ COALIN… │ STRO… │ ││ │ │  │  ││ Energy       │ High FCF yield of 12.1% —    │
 ││         │ BUY   │ ││ │ │  │  ││              │ strong ca                    │
 ├┼─────────┼───────┼─┼┼─┼─┼──┼──┼┼──────────────┼──────────────────────────────┤
 ││ EICHER… │ BUY   │ ││ │ │  │  ││ Consumer     │ Revenue grew 17.5% CAGR over │
@@ -26,11 +26,11 @@ Computing fundamentals for 21 halal stocks...
 ││ SUNPHA… │ BUY   │ ││ │ │  │  ││ Healthcare   │ Gross margin expanding —     │
 ││         │       │ ││ │ │  │  ││              │ pricing po                   │
 ├┼─────────┼───────┼─┼┼─┼─┼──┼──┼┼──────────────┼──────────────────────────────┤
-││ INFY    │ BUY   │ ││ │ │  │  ││ Technology   │ Strong ROE of 32.0% —        │
-││         │       │ ││ │ │  │  ││              │ efficient cap                │
-├┼─────────┼───────┼─┼┼─┼─┼──┼──┼┼──────────────┼──────────────────────────────┤
 ││ BAJAJ-… │ BUY   │ ││ │ │  │  ││ Consumer     │ Revenue grew 19.5% CAGR over │
 ││         │       │ ││ │ │  │  ││ Cyclical     │ 3 year                       │
+├┼─────────┼───────┼─┼┼─┼─┼──┼──┼┼──────────────┼──────────────────────────────┤
+││ INFY    │ BUY   │ ││ │ │  │  ││ Technology   │ Strong ROE of 32.0% —        │
+││         │       │ ││ │ │  │  ││              │ efficient cap                │
 ├┼─────────┼───────┼─┼┼─┼─┼──┼──┼┼──────────────┼──────────────────────────────┤
 ││ TECHM   │ BUY   │ ││ │ │  │  ││ Technology   │ Strong financial health:     │
 ││         │       │ ││ │ │  │  ││              │ Piotroski                    │
@@ -40,14 +40,11 @@ Computing fundamentals for 21 halal stocks...
 ├┼─────────┼───────┼─┼┼─┼─┼──┼──┼┼──────────────┼──────────────────────────────┤
 ││ HCLTECH │ WATCH │ ││ │ │  │  ││ Technology   │ Strong ROE of 24.1% —        │
 ││         │       │ ││ │ │  │  ││              │ efficient cap                │
-├┼─────────┼───────┼─┼┼─┼─┼──┼──┼┼──────────────┼──────────────────────────────┤
-││ RELIAN… │ WATCH │ ││ │ │  │  ││ Energy       │ Gross margin expanding —     │
-││         │       │ ││ │ │  │  ││              │ pricing po                   │
 ╰┴─────────┴───────┴─┴┴─┴─┴──┴──┴┴──────────────┴──────────────────────────────╯
-[report] CSV exported → output/signals_2026-10-08.csv
+[report] CSV exported → output/signals_2026-10-09.csv
 Checking news for 7 stocks...
-[paper] SKIP EICHERMOT.NS — ₹6,768 > slice ₹3,500
-[paper] SKIP BAJAJ-AUTO.NS — ₹9,637 > slice ₹3,500
+[paper] SKIP EICHERMOT.NS — ₹7,050 > slice ₹3,500
+[paper] SKIP BAJAJ-AUTO.NS — ₹9,778 > slice ₹3,500
 [gsheets] Synced to https://docs.google.com/spreadsheets/d/1SdSWMOdyG-hSD940ZYLTk-fb5IsVGAIvodWgVIku5Dg
 Google Sheet updated: 
 https://docs.google.com/spreadsheets/d/1SdSWMOdyG-hSD940ZYLTk-fb5IsVGAIvodWgVIku
