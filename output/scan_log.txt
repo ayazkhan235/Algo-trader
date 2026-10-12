@@ -1,6 +1,6 @@
 HTTP Error 404: {"quoteSummary":{"result":null,"error":{"code":"Not Found","description":"Quote not found for symbol: ^SG30"}}}
 $^SG30: No data found, symbol may be delisted
-Global market: NEUTRAL (avg +0.03%, India VIX 14.375)
+Global market: NEUTRAL (avg +0.46%, India VIX 15.2525)
 Loading nifty50 universe...
 [universe] Loaded 50 symbols for 'nifty50'
 Fetching data for 50 stocks...
@@ -17,7 +17,7 @@ Computing fundamentals for 21 halal stocks...
 ╭┬─────────┬───────┬─┬┬─┬─┬──┬──┬┬──────────────┬──────────────────────────────╮
 ││ Symbol  │ Sign… │ ││ │ │  │  ││ Sector       │ Top Strength                 │
 ├┼─────────┼───────┼─┼┼─┼─┼──┼──┼┼──────────────┼──────────────────────────────┤
-││ COALIN… │ STRO… │ ││ │ │  │  ││ Energy       │ High FCF yield of 12.1% —    │
+││ COALIN… │ STRO… │ ││ │ │  │  ││ Energy       │ High FCF yield of 12.3% —    │
 ││         │ BUY   │ ││ │ │  │  ││              │ strong ca                    │
 ├┼─────────┼───────┼─┼┼─┼─┼──┼──┼┼──────────────┼──────────────────────────────┤
 ││ EICHER… │ BUY   │ ││ │ │  │  ││ Consumer     │ Revenue grew 17.5% CAGR over │
@@ -26,14 +26,14 @@ Computing fundamentals for 21 halal stocks...
 ││ SUNPHA… │ BUY   │ ││ │ │  │  ││ Healthcare   │ Gross margin expanding —     │
 ││         │       │ ││ │ │  │  ││              │ pricing po                   │
 ├┼─────────┼───────┼─┼┼─┼─┼──┼──┼┼──────────────┼──────────────────────────────┤
-││ BAJAJ-… │ BUY   │ ││ │ │  │  ││ Consumer     │ Revenue grew 19.5% CAGR over │
-││         │       │ ││ │ │  │  ││ Cyclical     │ 3 year                       │
+││ TECHM   │ BUY   │ ││ │ │  │  ││ Technology   │ Strong financial health:     │
+││         │       │ ││ │ │  │  ││              │ Piotroski                    │
 ├┼─────────┼───────┼─┼┼─┼─┼──┼──┼┼──────────────┼──────────────────────────────┤
 ││ INFY    │ BUY   │ ││ │ │  │  ││ Technology   │ Strong ROE of 32.0% —        │
 ││         │       │ ││ │ │  │  ││              │ efficient cap                │
 ├┼─────────┼───────┼─┼┼─┼─┼──┼──┼┼──────────────┼──────────────────────────────┤
-││ TECHM   │ BUY   │ ││ │ │  │  ││ Technology   │ Strong financial health:     │
-││         │       │ ││ │ │  │  ││              │ Piotroski                    │
+││ BAJAJ-… │ BUY   │ ││ │ │  │  ││ Consumer     │ Revenue grew 19.5% CAGR over │
+││         │       │ ││ │ │  │  ││ Cyclical     │ 3 year                       │
 ├┼─────────┼───────┼─┼┼─┼─┼──┼──┼┼──────────────┼──────────────────────────────┤
 ││ MARUTI  │ WATCH │ ││ │ │  │  ││ Consumer     │ Revenue grew 15.9% CAGR over │
 ││         │       │ ││ │ │  │  ││ Cyclical     │ 3 year                       │
@@ -41,10 +41,10 @@ Computing fundamentals for 21 halal stocks...
 ││ HCLTECH │ WATCH │ ││ │ │  │  ││ Technology   │ Strong ROE of 24.1% —        │
 ││         │       │ ││ │ │  │  ││              │ efficient cap                │
 ╰┴─────────┴───────┴─┴┴─┴─┴──┴──┴┴──────────────┴──────────────────────────────╯
-[report] CSV exported → output/signals_2026-10-09.csv
+[report] CSV exported → output/signals_2026-10-12.csv
 Checking news for 7 stocks...
-[paper] SKIP EICHERMOT.NS — ₹7,050 > slice ₹3,500
-[paper] SKIP BAJAJ-AUTO.NS — ₹9,778 > slice ₹3,500
+[paper] SKIP EICHERMOT.NS — ₹7,119 > slice ₹3,500
+[paper] SKIP BAJAJ-AUTO.NS — ₹10,034 > slice ₹3,500
 [gsheets] Synced to https://docs.google.com/spreadsheets/d/1SdSWMOdyG-hSD940ZYLTk-fb5IsVGAIvodWgVIku5Dg
 Google Sheet updated: 
 https://docs.google.com/spreadsheets/d/1SdSWMOdyG-hSD940ZYLTk-fb5IsVGAIvodWgVIku
