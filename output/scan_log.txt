@@ -135,7 +135,7 @@ See https://pandas.pydata.org/docs/dev/whatsnew/v3.1.0.html#deprecation-inplace 
 /opt/hostedtoolcache/Python/3.11.17/x64/lib/python3.11/site-packages/yfinance/utils.py:518: Pandas4Warning: The inplace keyword in DataFrame.rename is deprecated and will be removed in a future version (PDEP-8).
 See https://pandas.pydata.org/docs/dev/whatsnew/v3.1.0.html#deprecation-inplace for more details.
   df.rename(columns={
-Global market: NEUTRAL (avg -1.14%, India VIX 15.5)
+Global market: NEUTRAL (avg -0.19%, India VIX 15.7225)
 Loading nifty50 universe...
 [universe] Loaded 50 symbols for 'nifty50'
 Fetching data for 50 stocks...
@@ -146,7 +146,7 @@ Running halal screen...
 Computing fundamentals for 21 halal stocks...
 
 ═══ NSE HALAL ALGO TRADER ═══
-  Universe: 50 stocks  →  Halal: 21  →  Quality gates: 11  →  Signals: 9
+  Universe: 50 stocks  →  Halal: 21  →  Quality gates: 10  →  Signals: 9
 
                                   Buy Signals                                   
 ╭┬─────────┬───────┬─┬┬─┬─┬──┬──┬┬──────────────┬──────────────────────────────╮
@@ -179,7 +179,7 @@ Computing fundamentals for 21 halal stocks...
 ││ MARUTI  │ WATCH │ ││ │ │  │  ││ Consumer     │ Revenue grew 15.9% CAGR over │
 ││         │       │ ││ │ │  │  ││ Cyclical     │ 3 year                       │
 ╰┴─────────┴───────┴─┴┴─┴─┴──┴──┴┴──────────────┴──────────────────────────────╯
-[report] CSV exported → output/signals_2026-11-02.csv
+[report] CSV exported → output/signals_2026-11-03.csv
 Checking news for 7 stocks...
 /opt/hostedtoolcache/Python/3.11.17/x64/lib/python3.11/site-packages/yfinance/utils.py:568: Pandas4Warning: The inplace keyword in DataFrame.sort_index is deprecated and will be removed in a future version (PDEP-8).
 See https://pandas.pydata.org/docs/dev/whatsnew/v3.1.0.html#deprecation-inplace for more details.
@@ -190,8 +190,15 @@ See https://pandas.pydata.org/docs/dev/whatsnew/v3.1.0.html#deprecation-inplace 
 /opt/hostedtoolcache/Python/3.11.17/x64/lib/python3.11/site-packages/yfinance/utils.py:518: Pandas4Warning: The inplace keyword in DataFrame.rename is deprecated and will be removed in a future version (PDEP-8).
 See https://pandas.pydata.org/docs/dev/whatsnew/v3.1.0.html#deprecation-inplace for more details.
   df.rename(columns={
-[paper] SKIP EICHERMOT.NS — ₹7,213 > slice ₹3,500
-[paper] SKIP BAJAJ-AUTO.NS — ₹10,339 > slice ₹3,500
+[news] SUNPHARMA.NS: headline fetch failed (*** YAHOO! FINANCE IS CURRENTLY DOWN! ***)
+[news] WIPRO.NS: headline fetch failed (*** YAHOO! FINANCE IS CURRENTLY DOWN! ***)
+[news] BAJAJ-AUTO.NS: headline fetch failed (*** YAHOO! FINANCE IS CURRENTLY DOWN! ***)
+[news] COALINDIA.NS: headline fetch failed (*** YAHOO! FINANCE IS CURRENTLY DOWN! ***)
+[news] INFY.NS: headline fetch failed (Failed to perform, curl: (18) end of response with 665 bytes missing. See https://curl.se/libcurl/c/libcurl-errors.html first for more details.)
+[news] EICHERMOT.NS: headline fetch failed (*** YAHOO! FINANCE IS CURRENTLY DOWN! ***)
+[news] TECHM.NS: headline fetch failed (*** YAHOO! FINANCE IS CURRENTLY DOWN! ***)
+[paper] SKIP EICHERMOT.NS — ₹7,440 > slice ₹3,500
+[paper] SKIP BAJAJ-AUTO.NS — ₹10,540 > slice ₹3,500
 [gsheets] Synced to https://docs.google.com/spreadsheets/d/1SdSWMOdyG-hSD940ZYLTk-fb5IsVGAIvodWgVIku5Dg
 Google Sheet updated: 
 https://docs.google.com/spreadsheets/d/1SdSWMOdyG-hSD940ZYLTk-fb5IsVGAIvodWgVIku
