@@ -1,6 +1,6 @@
 HTTP Error 404: {"quoteSummary":{"result":null,"error":{"code":"Not Found","description":"Quote not found for symbol: ^SG30"}}}
 $^SG30: No data found, symbol may be delisted
-Global market: NEUTRAL (avg +0.21%, India VIX 15.1875)
+Global market: NEUTRAL (avg +1.59%, India VIX 15.58)
 Loading nifty50 universe...
 [universe] Loaded 50 symbols for 'nifty50'
 Fetching data for 50 stocks...
@@ -11,7 +11,7 @@ Running halal screen...
 Computing fundamentals for 21 halal stocks...
 
 ═══ NSE HALAL ALGO TRADER ═══
-  Universe: 50 stocks  →  Halal: 21  →  Quality gates: 9  →  Signals: 9
+  Universe: 50 stocks  →  Halal: 21  →  Quality gates: 8  →  Signals: 8
 
                                   Buy Signals                                   
 ╭┬─────────┬───────┬─┬┬─┬─┬──┬──┬┬──────────────┬──────────────────────────────╮
@@ -35,19 +35,16 @@ Computing fundamentals for 21 halal stocks...
 ││ TECHM   │ WATCH │ ││ │ │  │  ││ Technology   │ Strong financial health:     │
 ││         │       │ ││ │ │  │  ││              │ Piotroski                    │
 ├┼─────────┼───────┼─┼┼─┼─┼──┼──┼┼──────────────┼──────────────────────────────┤
-││ SUNPHA… │ WATCH │ ││ │ │  │  ││ Healthcare   │ Gross margin expanding —     │
-││         │       │ ││ │ │  │  ││              │ pricing po                   │
-├┼─────────┼───────┼─┼┼─┼─┼──┼──┼┼──────────────┼──────────────────────────────┤
 ││ HCLTECH │ WATCH │ ││ │ │  │  ││ Technology   │ Strong ROE of 24.6% —        │
 ││         │       │ ││ │ │  │  ││              │ efficient cap                │
 ├┼─────────┼───────┼─┼┼─┼─┼──┼──┼┼──────────────┼──────────────────────────────┤
 ││ MARUTI  │ WATCH │ ││ │ │  │  ││ Consumer     │ Revenue grew 15.9% CAGR over │
 ││         │       │ ││ │ │  │  ││ Cyclical     │ 3 year                       │
 ╰┴─────────┴───────┴─┴┴─┴─┴──┴──┴┴──────────────┴──────────────────────────────╯
-[report] CSV exported → output/signals_2026-11-04.csv
+[report] CSV exported → output/signals_2026-11-05.csv
 Checking news for 7 stocks...
-[paper] SKIP EICHERMOT.NS — ₹7,420 > slice ₹3,500
-[paper] SKIP BAJAJ-AUTO.NS — ₹10,608 > slice ₹3,500
+[paper] SKIP EICHERMOT.NS — ₹7,713 > slice ₹3,500
+[paper] SKIP BAJAJ-AUTO.NS — ₹10,758 > slice ₹3,500
 [gsheets] Synced to https://docs.google.com/spreadsheets/d/1SdSWMOdyG-hSD940ZYLTk-fb5IsVGAIvodWgVIku5Dg
 Google Sheet updated: 
 https://docs.google.com/spreadsheets/d/1SdSWMOdyG-hSD940ZYLTk-fb5IsVGAIvodWgVIku
