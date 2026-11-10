@@ -1,6 +1,6 @@
 HTTP Error 404: {"quoteSummary":{"result":null,"error":{"code":"Not Found","description":"Quote not found for symbol: ^SG30"}}}
 $^SG30: No data found, symbol may be delisted
-Global market: BULLISH (avg +0.63%, India VIX 17.42)
+Global market: BULLISH (avg +2.11%, India VIX 17.42)
 Loading nifty50 universe...
 [universe] Loaded 50 symbols for 'nifty50'
 Fetching data for 50 stocks...
@@ -41,7 +41,7 @@ Computing fundamentals for 21 halal stocks...
 ││ MARUTI  │ WATCH │ ││ │ │  │  ││ Consumer     │ Revenue grew 15.9% CAGR over │
 ││         │       │ ││ │ │  │  ││ Cyclical     │ 3 year                       │
 ╰┴─────────┴───────┴─┴┴─┴─┴──┴──┴┴──────────────┴──────────────────────────────╯
-[report] CSV exported → output/signals_2026-11-09.csv
+[report] CSV exported → output/signals_2026-11-10.csv
 Checking news for 7 stocks...
 [paper] SKIP EICHERMOT.NS — ₹7,629 > slice ₹3,500
 [paper] SKIP BAJAJ-AUTO.NS — ₹10,979 > slice ₹3,500
