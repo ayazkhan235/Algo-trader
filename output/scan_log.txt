@@ -1,6 +1,6 @@
 HTTP Error 404: {"quoteSummary":{"result":null,"error":{"code":"Not Found","description":"Quote not found for symbol: ^SG30"}}}
 $^SG30: No data found, symbol may be delisted
-Global market: NEUTRAL (avg +0.29%, India VIX 16.6175)
+Global market: BEARISH (avg -0.42%, India VIX 15.495)
 Loading nifty50 universe...
 [universe] Loaded 50 symbols for 'nifty50'
 Fetching data for 50 stocks...
@@ -11,7 +11,7 @@ Running halal screen...
 Computing fundamentals for 21 halal stocks...
 
 ═══ NSE HALAL ALGO TRADER ═══
-  Universe: 50 stocks  →  Halal: 21  →  Quality gates: 9  →  Signals: 8
+  Universe: 50 stocks  →  Halal: 21  →  Quality gates: 8  →  Signals: 8
 
                                   Buy Signals                                   
 ╭┬─────────┬───────┬─┬┬─┬─┬──┬──┬┬──────────────┬──────────────────────────────╮
@@ -41,10 +41,10 @@ Computing fundamentals for 21 halal stocks...
 ││ MARUTI  │ WATCH │ ││ │ │  │  ││ Consumer     │ Revenue grew 15.9% CAGR over │
 ││         │       │ ││ │ │  │  ││ Cyclical     │ 3 year                       │
 ╰┴─────────┴───────┴─┴┴─┴─┴──┴──┴┴──────────────┴──────────────────────────────╯
-[report] CSV exported → output/signals_2026-11-12.csv
+[report] CSV exported → output/signals_2026-11-13.csv
 Checking news for 7 stocks...
-[paper] SKIP EICHERMOT.NS — ₹7,549 > slice ₹3,500
-[paper] SKIP BAJAJ-AUTO.NS — ₹10,945 > slice ₹3,500
+[paper] SKIP EICHERMOT.NS — ₹7,650 > slice ₹3,500
+[paper] SKIP BAJAJ-AUTO.NS — ₹10,850 > slice ₹3,500
 [gsheets] Synced to https://docs.google.com/spreadsheets/d/1SdSWMOdyG-hSD940ZYLTk-fb5IsVGAIvodWgVIku5Dg
 Google Sheet updated: 
 https://docs.google.com/spreadsheets/d/1SdSWMOdyG-hSD940ZYLTk-fb5IsVGAIvodWgVIku
