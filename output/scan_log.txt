@@ -1,6 +1,6 @@
 HTTP Error 404: {"quoteSummary":{"result":null,"error":{"code":"Not Found","description":"Quote not found for symbol: ^SG30"}}}
 $^SG30: No data found, symbol may be delisted
-Global market: BEARISH (avg -0.42%, India VIX 15.495)
+Global market: BEARISH (avg -0.63%, India VIX 15.6775)
 Loading nifty50 universe...
 [universe] Loaded 50 symbols for 'nifty50'
 Fetching data for 50 stocks...
@@ -20,8 +20,8 @@ Computing fundamentals for 21 halal stocks...
 ││ COALIN… │ STRO… │ ││ │ │  │  ││ Energy       │ Strong ROE of 28.3% —        │
 ││         │ BUY   │ ││ │ │  │  ││              │ efficient cap                │
 ├┼─────────┼───────┼─┼┼─┼─┼──┼──┼┼──────────────┼──────────────────────────────┤
-││ EICHER… │ BUY   │ ││ │ │  │  ││ Consumer     │ Revenue grew 17.5% CAGR over │
-││         │       │ ││ │ │  │  ││ Cyclical     │ 3 year                       │
+││ EICHER… │ BUY   │ ││ │ │  │  ││ Consumer     │ Strong ROE of 24.9% —        │
+││         │       │ ││ │ │  │  ││ Cyclical     │ efficient cap                │
 ├┼─────────┼───────┼─┼┼─┼─┼──┼──┼┼──────────────┼──────────────────────────────┤
 ││ BAJAJ-… │ BUY   │ ││ │ │  │  ││ Consumer     │ Strong ROE of 35.6% —        │
 ││         │       │ ││ │ │  │  ││ Cyclical     │ efficient cap                │
@@ -41,10 +41,10 @@ Computing fundamentals for 21 halal stocks...
 ││ MARUTI  │ WATCH │ ││ │ │  │  ││ Consumer     │ Revenue grew 15.9% CAGR over │
 ││         │       │ ││ │ │  │  ││ Cyclical     │ 3 year                       │
 ╰┴─────────┴───────┴─┴┴─┴─┴──┴──┴┴──────────────┴──────────────────────────────╯
-[report] CSV exported → output/signals_2026-11-13.csv
+[report] CSV exported → output/signals_2026-11-16.csv
 Checking news for 7 stocks...
-[paper] SKIP EICHERMOT.NS — ₹7,650 > slice ₹3,500
-[paper] SKIP BAJAJ-AUTO.NS — ₹10,850 > slice ₹3,500
+[paper] SKIP EICHERMOT.NS — ₹7,599 > slice ₹3,500
+[paper] SKIP BAJAJ-AUTO.NS — ₹10,734 > slice ₹3,500
 [gsheets] Synced to https://docs.google.com/spreadsheets/d/1SdSWMOdyG-hSD940ZYLTk-fb5IsVGAIvodWgVIku5Dg
 Google Sheet updated: 
 https://docs.google.com/spreadsheets/d/1SdSWMOdyG-hSD940ZYLTk-fb5IsVGAIvodWgVIku
