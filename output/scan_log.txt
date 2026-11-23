@@ -1,6 +1,6 @@
 HTTP Error 404: {"quoteSummary":{"result":null,"error":{"code":"Not Found","description":"Quote not found for symbol: ^SG30"}}}
 $^SG30: No data found, symbol may be delisted
-Global market: BEARISH (avg -2.68%, India VIX 17.32)
+Global market: NEUTRAL (avg -3.22%, India VIX 17.6975)
 Loading nifty50 universe...
 [universe] Loaded 50 symbols for 'nifty50'
 Fetching data for 50 stocks...
@@ -38,10 +38,10 @@ Computing fundamentals for 21 halal stocks...
 ││ HCLTECH │ WATCH │ ││ │ │  │  ││ Technology   │ Strong ROE of 24.6% —        │
 ││         │       │ ││ │ │  │  ││              │ efficient cap                │
 ╰┴─────────┴───────┴─┴┴─┴─┴──┴──┴┴──────────────┴──────────────────────────────╯
-[report] CSV exported → output/signals_2026-11-20.csv
+[report] CSV exported → output/signals_2026-11-23.csv
 Checking news for 7 stocks...
-[paper] SKIP EICHERMOT.NS — ₹8,113 > slice ₹3,500
-[paper] SKIP BAJAJ-AUTO.NS — ₹10,765 > slice ₹3,500
+[paper] SKIP EICHERMOT.NS — ₹8,172 > slice ₹3,500
+[paper] SKIP BAJAJ-AUTO.NS — ₹10,643 > slice ₹3,500
 [gsheets] Synced to https://docs.google.com/spreadsheets/d/1SdSWMOdyG-hSD940ZYLTk-fb5IsVGAIvodWgVIku5Dg
 Google Sheet updated: 
 https://docs.google.com/spreadsheets/d/1SdSWMOdyG-hSD940ZYLTk-fb5IsVGAIvodWgVIku
